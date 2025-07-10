@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Middleware\AdminMiddleware;
-use App\Models\spa;
+use App\Models\Spa;
 use App\Models\User;
-use App\Models\spesialis;
-use App\Models\yoga;
-use App\Models\event;
+use App\Models\Spesialis;
+use App\Models\Yoga;
+use App\Models\Event;
 use App\Models\Payment;
 
 class AdminController extends Controller

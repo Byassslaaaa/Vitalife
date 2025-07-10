@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\spesialis;
+use App\Models\Spesialis;
 use Illuminate\Http\Request;
 
 class SpesialisController extends Controller
@@ -51,7 +51,7 @@ class SpesialisController extends Controller
     public function spesFilter(Request $request)
     {
         $spes = $request->input('spesialisasi');
-        $spesFilter = spesialis::where('spesialisasi', 'like', "%$spes%")->get();
+        $spesFilter = Spesialis::where('spesialisasi', 'like', "%$spes%")->get();
         return view('fitur.spesialisFilter', compact('spesFilter'));
     }
     /**
@@ -102,7 +102,7 @@ class SpesialisController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(spesialis $spesialis)
+    public function show(Spesialis $spesialis)
     {
         //
     }
@@ -110,7 +110,7 @@ class SpesialisController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(spesialis $spesialis)
+    public function edit(Spesialis $spesialis)
     {
         //
     }
@@ -118,7 +118,7 @@ class SpesialisController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, spesialis $spesialis)
+    public function update(Request $request, Spesialis $spesialis)
     {
         //
     }
@@ -126,7 +126,7 @@ class SpesialisController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(spesialis $spesialis)
+    public function destroy(Spesialis $spesialis)
     {
         //
     }
