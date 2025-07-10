@@ -5,11 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Middleware\AdminMiddleware;
-use App\Models\spa;
+use App\Models\Spa;
 use App\Models\User;
-use App\Models\spesialis;
-use App\Models\yoga;
-use App\Models\event;
+use App\Models\Yoga;
+use App\Models\Event;
 use App\Models\Payment;
 
 class AdminController extends Controller
@@ -19,9 +18,8 @@ class AdminController extends Controller
         $spacount = Spa::count();
         $yogacount = Yoga::count();
         $eventcount = Event::count();
-        $spescount = Spesialis::count();
         $payments = Payment::orderBy('created_at', 'desc')->take(5)->get(); // Get the 5 most recent payments
-        return view('admin.dashboard', compact('spacount', 'yogacount', 'eventcount', 'spescount', 'payments'));
+        return view('admin.dashboard', compact('spacount', 'yogacount', 'eventcount', 'payments'));
     }
 
     public function create()
