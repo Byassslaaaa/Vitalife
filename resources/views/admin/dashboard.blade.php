@@ -82,7 +82,7 @@
     <a href="{{ route('admin.spesialisis.index') }}" class="bg-white rounded-lg p-4 flex-1 shadow">
         <div class="flex justify-between items-start">
             <div>
-                <h2 class="text-2xl font-bold">{{ $spescount }}</h2>
+                <h2 class="text-2xl font-bold">{{ $spacount }}</h2>
                 <p class="text-sm text-gray-500">Total Spesialis</p>
             </div>
             <div class="bg-red-100 p-2 rounded-md">
