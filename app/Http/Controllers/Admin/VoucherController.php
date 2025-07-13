@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Voucher;
-use App\Models\Spesialis;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
@@ -133,61 +132,6 @@ class VoucherController extends Controller
         } catch (\Exception $e) {
             Log::error('Error deleting voucher: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to delete voucher: ' . $e->getMessage());
-        }
-    }
-
-    public function apply(Request $request)
-    {
-        $voucherCode = $request->input('voucher_code');
-        $spesialisId = $request->input('id_spesialis');
-
-        $voucher = Voucher::where('code', $voucherCode)->first();
-        $spesialis = Spesialis::find($spesialisId);
-
-        if (!$spesialis) {
-            return redirect()->back()->with('voucher_error', 'Data spesialis tidak ditemukan.');
-        }
-
-        $totalPrice = $spesialis->harga;
-
-        if ($voucher) {
-            // Periksa apakah voucher masih valid
-            if ($voucher->expired_at && now() > $voucher->expired_at) {
-                return redirect()->back()->with('voucher_error', 'Voucher sudah kadaluarsa.');
-            }
-
-            // Periksa apakah voucher sudah digunakan
-            if ($voucher->is_used) {
-                return redirect()->back()->with('voucher_error', 'Voucher sudah digunakan.');
-            }
-
-            // Periksa apakah voucher memiliki batas penggunaan
-            if ($voucher->usage_limit && $voucher->usage_count >= $voucher->usage_limit) {
-                return redirect()->back()->with('voucher_error', 'Batas penggunaan voucher sudah tercapai.');
-            }
-
-            // Hitung diskon
-            $discountAmount = ($totalPrice * $voucher->discount_percentage) / 100;
-            $discountedPrice = $totalPrice - $discountAmount;
-
-            // Update penggunaan voucher
-            $voucher->usage_count += 1;
-            if ($voucher->usage_limit && $voucher->usage_count >= $voucher->usage_limit) {
-                $voucher->is_used = true;
-            }
-            $voucher->save();
-
-            // Simpan informasi voucher dan diskon dalam session
-            session([
-                'applied_voucher' => $voucher->code,
-                'discount_percentage' => $voucher->discount_percentage,
-                'discount_amount' => $discountAmount,
-                'discounted_price' => $discountedPrice
-            ]);
-
-            return redirect()->back()->with('voucher_success', 'Voucher berhasil diterapkan! Potongan harga: ' . $voucher->discount_percentage . '% (Rp ' . number_format($discountAmount, 0, ',', '.') . ')');
-        } else {
-            return redirect()->back()->with('voucher_error', 'Kode voucher tidak valid.');
         }
     }
 }

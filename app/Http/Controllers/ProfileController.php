@@ -94,20 +94,20 @@ class ProfileController extends Controller
         $validatedData = $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-    
+
         if ($request->hasFile('image')) {
             $imageName = time() . '.' . $request->image->extension();
             $request->image->move(public_path('admin/images'), $imageName);
             $validatedData['image'] = 'images/' . $imageName;
         }
-    
+
         try {
             $user = $request->user();
             $user->fill($validatedData);
             $user->save();
-            return redirect()->route('admin.spaShow', $user)->with('success', 'Data Spesialis berhasil disimpan');
+            return redirect()->route('admin.spaShow', $user)->with('success', 'Data berhasil disimpan');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal menyimpan data Spesialis. Silakan coba lagi.');
+            return redirect()->back()->with('error', 'Gagal menyimpan data. Silakan coba lagi.');
         }
     }
 }

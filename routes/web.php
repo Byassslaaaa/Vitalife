@@ -3,7 +3,6 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SpaController;
 use App\Http\Controllers\EventController;
-use App\Http\Controllers\SpesialisController;
 use App\Http\Controllers\YogaController;
 use App\Http\Controllers\GymController;
 use App\Http\Controllers\AdminController;
@@ -16,7 +15,6 @@ use App\Http\Controllers\Admin\SpasController;
 use App\Http\Controllers\Admin\YogasController;
 use App\Http\Controllers\Admin\GymsController;
 use App\Http\Controllers\Admin\GymsDetailController;
-use App\Http\Controllers\Admin\SpesialisisController;
 use App\Http\Controllers\Admin\SpaServicesController;
 use App\Http\Controllers\Admin\SpaDetailController;
 use App\Http\Controllers\Admin\BookingsController;
@@ -127,14 +125,6 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Other existing routes...
-    Route::get('/spesialis', [SpesialisController::class, 'showSpes'])->name('spesialis');
-    Route::get('/spesialisFilter', [SpesialisController::class, 'spesFilter'])->name('spesialisFilter');
-    Route::get('/{id_spesialis}/bayar', [SpesialisController::class, 'bayar'])->name('spesialis.bayar');
-    Route::get('/spesialis/{id_spesialis}/whatsapp', [SpesialisController::class, 'getWhatsAppNumber'])->name('spesialis.whatsapp');
-    Route::post('/spesialis', [SpesialisController::class, 'store'])->name('spesialis.store');
-    Route::get('/pembayaran', function () {
-        return view('fitur.spesBayar');
-    });
 
     // Yoga routes
     Route::get('/yoga', [YogaController::class, 'index'])->name('yoga.index');
@@ -316,11 +306,6 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::put('/{id_event}', [EventController::class, 'update'])->name('update');
         Route::delete('/{id_event}', [EventController::class, 'destroy'])->name('destroy');
     });
-
-    // Spesialis management
-    Route::resource('spesialisis', SpesialisisController::class, ['parameters' => ['spesialisis' => 'id_spesialis']]);
-    Route::get('/formspesialis', [SpesialisController::class, 'create'])->name('formspesialis');
-    Route::post('/spesialis', [SpesialisController::class, 'store'])->name('spesialis.store');
 
     // Feedback management
     Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
