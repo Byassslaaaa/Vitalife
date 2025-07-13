@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\event;
+use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -13,13 +13,13 @@ class EventController extends Controller
      */
     public function index()
     {
-        $eventTotal = event::all();
+        $eventTotal = Event::all();
         return view('fitur.event', compact('eventTotal'));
     }
 
     public function search(Request $request)
     {
-        $query = event::query();
+        $query = Event::query();
 
         if ($request->filled('nama_event')) {
             $query->where('nama', 'like', '%' . $request->nama_event . '%');
@@ -51,14 +51,14 @@ class EventController extends Controller
      */
     public function adminIndex()
     {
-        $events = event::all();
+        $events = Event::all();
         $spacount = $events->count();
         return view('admin.event.index', compact('events', 'spacount'));
     }
 
     public function dashboard()
     {
-        $eventcount = event::count();
+        $eventcount = Event::count();
         return view('admin.dashboard', compact('eventcount'));
     }
     /**
@@ -151,9 +151,9 @@ class EventController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(event $event, $id_event)
+    public function destroy(Event $event, $id_event)
     {
-        $event = event::findOrFail($id_event);
+        $event = Event::findOrFail($id_event);
 
         if ($event->image) {
             Storage::disk('public')->delete($event->image);

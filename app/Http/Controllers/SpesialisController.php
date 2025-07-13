@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\spesialis;
+use App\Models\Spesialis;
 use Illuminate\Http\Request;
 
 class SpesialisController extends Controller
@@ -12,7 +12,7 @@ class SpesialisController extends Controller
         $spesialis = Spesialis::findOrFail($id_spesialis);
         return response()->json(['whatsappNumber' => $spesialis->noHP]);
     }
-    
+
     public function bayar($id_spesialis)
     {
         $spesialis = Spesialis::findOrFail($id_spesialis);
@@ -41,7 +41,7 @@ class SpesialisController extends Controller
 
         if ($request->filled('location')) {
             $query->where('alamat', 'like', '%' . $request->input('location') . '%');
-        }    
+        }
 
         $spesLihat = $query->get();
 
@@ -51,7 +51,7 @@ class SpesialisController extends Controller
     public function spesFilter(Request $request)
     {
         $spes = $request->input('spesialisasi');
-        $spesFilter = spesialis::where('spesialisasi', 'like', "%$spes%")->get();
+        $spesFilter = Spesialis::where('spesialisasi', 'like', "%$spes%")->get();
         return view('fitur.spesialisFilter', compact('spesFilter'));
     }
     /**
