@@ -14,22 +14,43 @@ return new class extends Migration
         Schema::create('gym_bookings', function (Blueprint $table) {
             $table->id();
             $table->string('booking_code')->unique();
+            $table->unsignedBigInteger('user_id')->nullable(); // Link to user account
             $table->unsignedBigInteger('gym_id');
             $table->string('customer_name');
             $table->string('customer_email');
             $table->string('customer_phone');
             $table->unsignedBigInteger('service_id');
             $table->string('service_name');
-            $table->decimal('service_price', 10, 2);
-            $table->string('status');
-            $table->string('payment_status');
+            $table->integer('service_price'); // Changed to integer for consistency
+            $table->date('booking_date');
+            $table->time('booking_time');
+            $table->integer('duration')->default(60); // Duration in minutes
+            $table->integer('total_amount');
+            $table->string('status')->default('pending'); // pending, confirmed, cancelled, completed
+            $table->string('payment_status')->default('pending'); // pending, paid, failed, refunded
+            $table->string('payment_method')->nullable(); // cash, transfer, midtrans
             $table->string('payment_token')->nullable();
-            $table->datetime('booking_date')->nullable();
+            $table->json('payment_details')->nullable();
             $table->text('notes')->nullable();
+            $table->text('special_requests')->nullable();
+            $table->timestamp('confirmed_at')->nullable();
+            $table->timestamp('cancelled_at')->nullable();
             $table->timestamps();
 
+            // Foreign key constraints
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
             $table->foreign('gym_id')->references('id_gym')->on('gyms')->onDelete('cascade');
             $table->foreign('service_id')->references('id')->on('gym_services')->onDelete('cascade');
+
+            // Indexes for better performance
+            $table->index('user_id');
+            $table->index('gym_id');
+            $table->index('service_id');
+            $table->index('booking_code');
+            $table->index('status');
+            $table->index('payment_status');
+            $table->index('booking_date');
+            $table->index(['booking_date', 'booking_time']);
         });
     }
 
