@@ -17,30 +17,36 @@ class SocialiteController extends Controller
 
     public function handleProviderCallback($provider)
     {
-        $socialUser = Socialite::driver($provider)->user();
-        
-        // Check if user already exists
-        $user = User::where('email', $socialUser->getEmail())->first();
-        
+        $socialUser = Socialite::driver($provider)->stateless()->user();
+
+        // Cek email
+        $email = $socialUser->getEmail();
+        $providerId = $socialUser->getId();
+
+        // Cari user berdasarkan email
+        $user = User::where('email', $email)->first();
+
         if ($user) {
-            // Update only the Google ID if user already exists
-            // This preserves their existing password and role
-            $user->update([
-                'google_id' => $socialUser->getId()
-            ]);
+            // Update ID berdasarkan provider
+            if ($provider === 'google') {
+                $user->update(['google_id' => $providerId]);
+            } elseif ($provider === 'facebook') {
+                $user->update(['facebook_id' => $providerId]);
+            }
         } else {
-            // Create a new user
+            // Buat user baru
             $user = User::create([
                 'name' => $socialUser->getName(),
-                'email' => $socialUser->getEmail(),
+                'email' => $email,
                 'password' => bcrypt(Str::random(16)),
-                'role' => 'user', // Default role
-                'google_id' => $socialUser->getId()
+                'role' => 'user',
+                'google_id' => $provider === 'google' ? $providerId : null,
+                'facebook_id' => $provider === 'facebook' ? $providerId : null,
             ]);
         }
-        
+
         Auth::login($user);
-        
+
         return redirect('/dashboard');
     }
 }
