@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Queue\SerializesModels;
 
 class WelcomeEmail extends Mailable
@@ -23,7 +24,8 @@ class WelcomeEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Selamat Datang di Website Kami'
+            from: new Address(env('MAIL_FROM_ADDRESS', 'noreply@vitalife.com'), env('MAIL_FROM_NAME', 'Vitalife Team')),
+            subject: '🎉 Selamat Datang di Vitalife - Platform Wellness Terbaik!'
         );
     }
 
@@ -31,6 +33,12 @@ class WelcomeEmail extends Mailable
     {
         return new Content(
             view: 'emails.welcome',
+            with: is_array($this->user) ? $this->user : [
+                'userName' => $this->user->name,
+                'userEmail' => $this->user->email,
+                'userPhone' => $this->user->phone ?? 'Belum diisi',
+                'supportEmail' => env('MAIL_FROM_ADDRESS', 'support@vitalife.com')
+            ]
         );
     }
 
