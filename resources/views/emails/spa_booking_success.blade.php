@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Konfirmasi Booking Yoga - Vitalife</title>
+    <title>Konfirmasi Booking Spa - Vitalife</title>
     <style>
         .email-container {
             max-width: 600px;
@@ -15,7 +15,7 @@
         }
 
         .header {
-            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
             color: white;
             padding: 30px;
             text-align: center;
@@ -38,15 +38,15 @@
         }
 
         .booking-card {
-            background: #faf5ff;
-            border: 2px solid #8b5cf6;
+            background: #fdf2f8;
+            border: 2px solid #ec4899;
             padding: 20px;
             border-radius: 10px;
             margin: 20px 0;
         }
 
         .booking-code {
-            background: #8b5cf6;
+            background: #ec4899;
             color: white;
             padding: 10px 20px;
             border-radius: 25px;
@@ -78,7 +78,7 @@
         .amount {
             font-size: 24px;
             font-weight: bold;
-            color: #8b5cf6;
+            color: #ec4899;
         }
 
         .info-grid {
@@ -92,7 +92,7 @@
             background: #f9fafb;
             padding: 15px;
             border-radius: 8px;
-            border-left: 4px solid #8b5cf6;
+            border-left: 4px solid #ec4899;
         }
 
         .info-label {
@@ -102,13 +102,13 @@
         }
 
         .info-value {
-            color: #8b5cf6;
+            color: #ec4899;
             font-weight: bold;
         }
 
-        .yoga-tips {
-            background: #f0f9ff;
-            border: 1px solid #0ea5e9;
+        .spa-tips {
+            background: #fff7ed;
+            border: 1px solid #f97316;
             padding: 20px;
             border-radius: 10px;
             margin: 20px 0;
@@ -119,24 +119,24 @@
 <body>
     <div class="email-container">
         <div class="header">
-            <h1>🧘‍♀️ Booking Yoga Berhasil!</h1>
-            <p>Namaste! Perjalanan mindfulness Anda dimulai di sini</p>
+            <h1>💆‍♀️ Booking Spa Berhasil!</h1>
+            <p>Siap-siap untuk pengalaman relaksasi yang tak terlupakan</p>
         </div>
 
         <div class="content">
-            <h2>Halo {{ $customerName }}! 🙏</h2>
+            <h2>Halo {{ $customerName }}! 🌸</h2>
 
-            <p>Terima kasih telah memilih <strong>Vitalife Yoga Studio</strong>! Booking kelas yoga Anda telah berhasil
-                dikonfirmasi.</p>
+            <p>Terima kasih telah memilih <strong>Vitalife Spa & Wellness</strong>! Booking treatment spa Anda telah
+                berhasil dikonfirmasi.</p>
 
             <div class="booking-card">
                 <div class="booking-code">
-                    🧘‍♀️ Kode Booking: {{ $bookingCode }}
+                    💆‍♀️ Kode Booking: {{ $bookingCode }}
                 </div>
 
                 <div class="info-grid">
                     <div class="info-item">
-                        <div class="info-label">👤 Nama Peserta</div>
+                        <div class="info-label">👤 Nama Tamu</div>
                         <div class="info-value">{{ $customerName }}</div>
                     </div>
                     <div class="info-item">
@@ -144,23 +144,23 @@
                         <div class="info-value">{{ $customerEmail }}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">📅 Tanggal Kelas</div>
+                        <div class="info-label">📅 Tanggal Treatment</div>
                         <div class="info-value">{{ \Carbon\Carbon::parse($bookingDate)->format('d F Y') }}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">⏰ Waktu</div>
                         <div class="info-value">{{ $bookingTime }}</div>
                     </div>
-                    @if (isset($classType) && $classType)
+                    @if (isset($duration) && $duration)
                         <div class="info-item">
-                            <div class="info-label">🎯 Jenis Kelas</div>
-                            <div class="info-value">{{ $classType }}</div>
+                            <div class="info-label">⏱️ Durasi</div>
+                            <div class="info-value">{{ $duration }} menit</div>
                         </div>
                     @endif
-                    @if (isset($participants) && $participants)
+                    @if (isset($therapistPreference) && $therapistPreference)
                         <div class="info-item">
-                            <div class="info-label">👥 Jumlah Peserta</div>
-                            <div class="info-value">{{ $participants }} orang</div>
+                            <div class="info-label">👩‍⚕️ Terapis</div>
+                            <div class="info-value">{{ $therapistPreference }}</div>
                         </div>
                     @endif
                 </div>
@@ -187,66 +187,68 @@
                     </div>
                 @endif
 
-                @if (isset($specialRequests) && $specialRequests)
+                @if (isset($notes) && $notes)
                     <div style="margin-top: 15px; padding: 15px; background: #fff7ed; border-radius: 8px;">
-                        <strong>📝 Permintaan Khusus:</strong><br>
-                        {{ $specialRequests }}
+                        <strong>📝 Catatan Khusus:</strong><br>
+                        {{ $notes }}
                     </div>
                 @endif
             </div>
 
-            <div class="yoga-tips">
-                <h3>🌟 Tips untuk Sesi Yoga Anda:</h3>
+            <div class="spa-tips">
+                <h3>🌟 Tips untuk Treatment Spa Anda:</h3>
                 <ul>
-                    <li><strong>Datang 10 menit lebih awal</strong> untuk check-in dan persiapan mental</li>
-                    <li><strong>Pakai pakaian yang nyaman</strong> dan mudah untuk bergerak</li>
-                    <li><strong>Bawa botol air</strong> untuk menjaga hidrasi selama latihan</li>
-                    <li><strong>Beri tahu instruktur</strong> jika Anda memiliki cedera atau kondisi khusus</li>
-                    <li><strong>Jangan makan berat</strong> 2 jam sebelum kelas dimulai</li>
-                    <li><strong>Bawa handuk kecil</strong> untuk comfort selama latihan</li>
+                    <li><strong>Datang 15 menit lebih awal</strong> untuk konsultasi dan persiapan</li>
+                    <li><strong>Mandi sebelum treatment</strong> untuk kebersihan optimal</li>
+                    <li><strong>Informasikan kondisi kesehatan</strong> dan alergi kepada terapis</li>
+                    <li><strong>Lepas semua perhiasan</strong> sebelum treatment dimulai</li>
+                    <li><strong>Hindari makan berat</strong> 1 jam sebelum treatment</li>
+                    <li><strong>Minum air putih</strong> untuk detoksifikasi setelah treatment</li>
                 </ul>
             </div>
 
             <div style="background: #eff6ff; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                <h3>🧘‍♂️ Apa yang Perlu Dibawa:</h3>
+                <h3>🛁 Fasilitas yang Tersedia:</h3>
                 <ul>
-                    <li>🧘‍♀️ <strong>Yoga Mat</strong> (atau sewa di studio Rp 10.000)</li>
-                    <li>💧 <strong>Botol Air</strong> untuk hidrasi</li>
-                    <li>🏃‍♀️ <strong>Pakaian Olahraga</strong> yang nyaman dan fleksibel</li>
-                    <li>🧴 <strong>Handuk Kecil</strong> untuk kenyamanan</li>
-                    <li>📱 <strong>Kode Booking</strong> ini di smartphone Anda</li>
+                    <li>🚿 <strong>Private Shower</strong> dengan amenities premium</li>
+                    <li>🥼 <strong>Spa Robe & Sandal</strong> disediakan</li>
+                    <li>🧴 <strong>Premium Spa Products</strong> untuk treatment</li>
+                    <li>🍵 <strong>Welcome Drink</strong> herbal tea atau infused water</li>
+                    <li>🎵 <strong>Relaxing Music</strong> dan aromatherapy</li>
+                    <li>🛌 <strong>Relaxation Area</strong> untuk istirahat setelah treatment</li>
                 </ul>
             </div>
 
             <div style="background: #fef2f2; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                <h3>⚠️ Kebijakan Studio:</h3>
+                <h3>⚠️ Kebijakan Spa:</h3>
                 <ul>
-                    <li>Pembatalan gratis hingga <strong>4 jam sebelum</strong> kelas dimulai</li>
-                    <li>Late arrival maksimal <strong>5 menit</strong> setelah kelas dimulai</li>
-                    <li>Mohon matikan <strong>ponsel atau set silent mode</strong> selama kelas</li>
-                    <li>Respect terhadap sesama peserta dan instruktur</li>
+                    <li>Pembatalan gratis hingga <strong>6 jam sebelum</strong> appointment</li>
+                    <li>Late arrival akan mengurangi <strong>durasi treatment</strong></li>
+                    <li>Mohon <strong>tidak menggunakan parfum</strong> berlebihan</li>
+                    <li>Treatment tidak dianjurkan untuk <strong>ibu hamil trimester pertama</strong></li>
+                    <li>Informasikan jika sedang <strong>menstruasi atau sakit</strong></li>
                 </ul>
             </div>
 
-            <p>Kami sangat menantikan kehadiran Anda di studio! Tim instruktur berpengalaman kami siap membimbing
-                perjalanan yoga Anda.</p>
+            <p>Tim terapis profesional kami dengan pengalaman lebih dari 5 tahun siap memberikan treatment terbaik untuk
+                Anda. Nikmati momen relaksasi yang tak terlupakan!</p>
 
             <p>Untuk pertanyaan atau bantuan:</p>
             <ul>
                 <li>📧 Email: <a href="mailto:{{ $supportEmail }}">{{ $supportEmail }}</a></li>
                 <li>📞 WhatsApp: +62 812-3456-7890</li>
-                <li>🕰️ Jam Operasional Studio: 05:30 - 21:00 WIB</li>
+                <li>🕰️ Jam Operasional Spa: 09:00 - 21:00 WIB</li>
             </ul>
 
-            <p>Namaste dan sampai jumpa di kelas! 🙏</p>
+            <p>Kami menantikan kedatangan Anda untuk pengalaman spa yang menyegarkan! 🌺</p>
 
-            <p>Dengan cinta dan cahaya,<br>
-                <strong>Tim Vitalife Yoga Studio</strong>
+            <p>Dengan hangat,<br>
+                <strong>Tim Vitalife Spa & Wellness</strong>
             </p>
         </div>
 
         <div class="footer">
-            <p>🧘‍♀️ <strong>Vitalife Yoga Studio</strong></p>
+            <p>💆‍♀️ <strong>Vitalife Spa & Wellness Center</strong></p>
             <p>📍 Jl. Wellness No. 123, Jakarta Selatan 12345</p>
             <p>📞 +62 21-1234-5678 | 📧 {{ $supportEmail }}</p>
             <p>🌐 <a href="{{ url('/') }}">www.vitalife.com</a></p>

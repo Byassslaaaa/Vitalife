@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Konfirmasi Booking Yoga - Vitalife</title>
+    <title>Konfirmasi Booking Gym - Vitalife</title>
     <style>
         .email-container {
             max-width: 600px;
@@ -15,7 +15,7 @@
         }
 
         .header {
-            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
             color: white;
             padding: 30px;
             text-align: center;
@@ -38,15 +38,15 @@
         }
 
         .booking-card {
-            background: #faf5ff;
-            border: 2px solid #8b5cf6;
+            background: #fffbeb;
+            border: 2px solid #f59e0b;
             padding: 20px;
             border-radius: 10px;
             margin: 20px 0;
         }
 
         .booking-code {
-            background: #8b5cf6;
+            background: #f59e0b;
             color: white;
             padding: 10px 20px;
             border-radius: 25px;
@@ -78,7 +78,7 @@
         .amount {
             font-size: 24px;
             font-weight: bold;
-            color: #8b5cf6;
+            color: #f59e0b;
         }
 
         .info-grid {
@@ -92,7 +92,7 @@
             background: #f9fafb;
             padding: 15px;
             border-radius: 8px;
-            border-left: 4px solid #8b5cf6;
+            border-left: 4px solid #f59e0b;
         }
 
         .info-label {
@@ -102,11 +102,11 @@
         }
 
         .info-value {
-            color: #8b5cf6;
+            color: #f59e0b;
             font-weight: bold;
         }
 
-        .yoga-tips {
+        .gym-tips {
             background: #f0f9ff;
             border: 1px solid #0ea5e9;
             padding: 20px;
@@ -119,24 +119,24 @@
 <body>
     <div class="email-container">
         <div class="header">
-            <h1>🧘‍♀️ Booking Yoga Berhasil!</h1>
-            <p>Namaste! Perjalanan mindfulness Anda dimulai di sini</p>
+            <h1>💪 Booking Gym Berhasil!</h1>
+            <p>Siap untuk memulai perjalanan fitness Anda?</p>
         </div>
 
         <div class="content">
-            <h2>Halo {{ $customerName }}! 🙏</h2>
+            <h2>Halo {{ $customerName }}! 🔥</h2>
 
-            <p>Terima kasih telah memilih <strong>Vitalife Yoga Studio</strong>! Booking kelas yoga Anda telah berhasil
-                dikonfirmasi.</p>
+            <p>Selamat! Booking gym Anda di <strong>Vitalife Fitness Center</strong> telah berhasil dikonfirmasi.
+                Saatnya mencapai goals fitness Anda!</p>
 
             <div class="booking-card">
                 <div class="booking-code">
-                    🧘‍♀️ Kode Booking: {{ $bookingCode }}
+                    💪 Kode Booking: {{ $bookingCode }}
                 </div>
 
                 <div class="info-grid">
                     <div class="info-item">
-                        <div class="info-label">👤 Nama Peserta</div>
+                        <div class="info-label">👤 Nama Member</div>
                         <div class="info-value">{{ $customerName }}</div>
                     </div>
                     <div class="info-item">
@@ -144,23 +144,17 @@
                         <div class="info-value">{{ $customerEmail }}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">📅 Tanggal Kelas</div>
+                        <div class="info-label">📅 Tanggal Workout</div>
                         <div class="info-value">{{ \Carbon\Carbon::parse($bookingDate)->format('d F Y') }}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">⏰ Waktu</div>
                         <div class="info-value">{{ $bookingTime }}</div>
                     </div>
-                    @if (isset($classType) && $classType)
+                    @if (isset($duration) && $duration)
                         <div class="info-item">
-                            <div class="info-label">🎯 Jenis Kelas</div>
-                            <div class="info-value">{{ $classType }}</div>
-                        </div>
-                    @endif
-                    @if (isset($participants) && $participants)
-                        <div class="info-item">
-                            <div class="info-label">👥 Jumlah Peserta</div>
-                            <div class="info-value">{{ $participants }} orang</div>
+                            <div class="info-label">⏱️ Durasi</div>
+                            <div class="info-value">{{ $duration }} jam</div>
                         </div>
                     @endif
                 </div>
@@ -187,66 +181,80 @@
                     </div>
                 @endif
 
-                @if (isset($specialRequests) && $specialRequests)
+                @if (isset($notes) && $notes)
                     <div style="margin-top: 15px; padding: 15px; background: #fff7ed; border-radius: 8px;">
-                        <strong>📝 Permintaan Khusus:</strong><br>
-                        {{ $specialRequests }}
+                        <strong>📝 Catatan:</strong><br>
+                        {{ $notes }}
                     </div>
                 @endif
             </div>
 
-            <div class="yoga-tips">
-                <h3>🌟 Tips untuk Sesi Yoga Anda:</h3>
+            <div class="gym-tips">
+                <h3>🏋️‍♂️ Tips untuk Workout Anda:</h3>
                 <ul>
-                    <li><strong>Datang 10 menit lebih awal</strong> untuk check-in dan persiapan mental</li>
-                    <li><strong>Pakai pakaian yang nyaman</strong> dan mudah untuk bergerak</li>
-                    <li><strong>Bawa botol air</strong> untuk menjaga hidrasi selama latihan</li>
-                    <li><strong>Beri tahu instruktur</strong> jika Anda memiliki cedera atau kondisi khusus</li>
-                    <li><strong>Jangan makan berat</strong> 2 jam sebelum kelas dimulai</li>
-                    <li><strong>Bawa handuk kecil</strong> untuk comfort selama latihan</li>
+                    <li><strong>Datang 10 menit lebih awal</strong> untuk warm-up dan check-in</li>
+                    <li><strong>Bawa pakaian olahraga</strong> yang nyaman dan sepatu sport</li>
+                    <li><strong>Siapkan botol air</strong> untuk menjaga hidrasi selama workout</li>
+                    <li><strong>Bawa handuk pribadi</strong> untuk kebersihan dan kenyamanan</li>
+                    <li><strong>Jangan lupa sarapan ringan</strong> 30-60 menit sebelum workout</li>
+                    <li><strong>Konsultasi dengan trainer</strong> jika Anda pemula atau memiliki program khusus</li>
                 </ul>
             </div>
 
             <div style="background: #eff6ff; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                <h3>🧘‍♂️ Apa yang Perlu Dibawa:</h3>
+                <h3>🏃‍♂️ Fasilitas Gym yang Tersedia:</h3>
                 <ul>
-                    <li>🧘‍♀️ <strong>Yoga Mat</strong> (atau sewa di studio Rp 10.000)</li>
-                    <li>💧 <strong>Botol Air</strong> untuk hidrasi</li>
-                    <li>🏃‍♀️ <strong>Pakaian Olahraga</strong> yang nyaman dan fleksibel</li>
-                    <li>🧴 <strong>Handuk Kecil</strong> untuk kenyamanan</li>
-                    <li>📱 <strong>Kode Booking</strong> ini di smartphone Anda</li>
+                    <li>🏋️‍♀️ <strong>Free Weights Area</strong> - Dumbbells, barbells, dan plates lengkap</li>
+                    <li>🚴‍♂️ <strong>Cardio Zone</strong> - Treadmill, elliptical, stationary bike</li>
+                    <li>🤸‍♀️ <strong>Functional Training</strong> - TRX, kettlebells, battle ropes</li>
+                    <li>🚿 <strong>Shower & Locker</strong> dengan amenities lengkap</li>
+                    <li>🧘‍♂️ <strong>Stretching Area</strong> untuk cooldown dan flexibility</li>
+                    <li>👨‍💼 <strong>Personal Trainer</strong> tersedia untuk konsultasi</li>
+                </ul>
+            </div>
+
+            <div style="background: #f0fdf4; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h3>💡 Program Fitness Recommendations:</h3>
+                <ul>
+                    <li>🎯 <strong>Beginner Program</strong> - 3x per minggu, focus pada form dan konsistensi</li>
+                    <li>🔥 <strong>Weight Loss Program</strong> - Kombinasi cardio dan strength training</li>
+                    <li>💪 <strong>Muscle Building</strong> - Progressive overload dengan compound movements</li>
+                    <li>🏃‍♀️ <strong>Endurance Training</strong> - HIIT dan steady-state cardio</li>
+                    <li>⚡ <strong>Functional Fitness</strong> - Movement patterns untuk daily activities</li>
                 </ul>
             </div>
 
             <div style="background: #fef2f2; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                <h3>⚠️ Kebijakan Studio:</h3>
+                <h3>⚠️ Gym Etiquette & Rules:</h3>
                 <ul>
-                    <li>Pembatalan gratis hingga <strong>4 jam sebelum</strong> kelas dimulai</li>
-                    <li>Late arrival maksimal <strong>5 menit</strong> setelah kelas dimulai</li>
-                    <li>Mohon matikan <strong>ponsel atau set silent mode</strong> selama kelas</li>
-                    <li>Respect terhadap sesama peserta dan instruktur</li>
+                    <li>Pembatalan gratis hingga <strong>2 jam sebelum</strong> sesi dimulai</li>
+                    <li><strong>Wipe down equipment</strong> setelah digunakan</li>
+                    <li><strong>Re-rack weights</strong> setelah selesai latihan</li>
+                    <li><strong>Share equipment</strong> dan bergiliran dengan member lain</li>
+                    <li><strong>No phone calls</strong> di area workout</li>
+                    <li><strong>Proper attire</strong> - closed-toe shoes dan workout clothes</li>
                 </ul>
             </div>
 
-            <p>Kami sangat menantikan kehadiran Anda di studio! Tim instruktur berpengalaman kami siap membimbing
-                perjalanan yoga Anda.</p>
+            <p>Tim trainer berpengalaman kami siap membantu Anda mencapai goals fitness. Jangan ragu untuk bertanya
+                tentang form exercise, program training, atau nutrition advice!</p>
 
             <p>Untuk pertanyaan atau bantuan:</p>
             <ul>
                 <li>📧 Email: <a href="mailto:{{ $supportEmail }}">{{ $supportEmail }}</a></li>
                 <li>📞 WhatsApp: +62 812-3456-7890</li>
-                <li>🕰️ Jam Operasional Studio: 05:30 - 21:00 WIB</li>
+                <li>🕰️ Jam Operasional Gym: 05:00 - 23:00 WIB</li>
             </ul>
 
-            <p>Namaste dan sampai jumpa di kelas! 🙏</p>
+            <p>Let's crush your fitness goals together! See you at the gym! 💪🔥</p>
 
-            <p>Dengan cinta dan cahaya,<br>
-                <strong>Tim Vitalife Yoga Studio</strong>
+            <p>Stay strong & healthy,<br>
+                <strong>Tim Vitalife Fitness Center</strong>
             </p>
         </div>
 
         <div class="footer">
-            <p>🧘‍♀️ <strong>Vitalife Yoga Studio</strong></p>
+            <p>💪 <strong>Vitalife Fitness Center</strong></p>
             <p>📍 Jl. Wellness No. 123, Jakarta Selatan 12345</p>
             <p>📞 +62 21-1234-5678 | 📧 {{ $supportEmail }}</p>
             <p>🌐 <a href="{{ url('/') }}">www.vitalife.com</a></p>
