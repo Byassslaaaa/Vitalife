@@ -13,13 +13,39 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Create admin user
+        User::factory()->create([
+            'name' => 'Admin Vitalife',
+            'email' => 'admin@vitalife.com',
+            'password' => bcrypt('admin123'),
+            'role' => 'admin',
+        ]);
 
+        // Create test user
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@test.com',
             'password' => bcrypt('password'),
-            'role' => 'admin',
+            'role' => 'user',
+        ]);
+
+        // Run all feature seeders for Yogyakarta locations
+        $this->call([
+            // Spa related seeders
+            SpaSeeder::class,
+            SpaServiceSeeder::class,
+
+            // Gym related seeders
+            GymSeeder::class,
+            GymServiceSeeder::class,
+
+            // Yoga related seeders
+            YogaSeeder::class,
+            YogaServiceSeeder::class,
+            YogaDetailConfigSeeder::class,
+
+            // Template seeder if exists
+            DetailPageTemplateSeeder::class,
         ]);
     }
 }

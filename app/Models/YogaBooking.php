@@ -19,6 +19,7 @@ class YogaBooking extends Model
         'booking_time',
         'class_type',
         'total_amount',
+        'notes',
         'status',
         'payment_status',
         'payment_token',

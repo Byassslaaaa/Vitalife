@@ -13,9 +13,17 @@ return new class extends Migration
             $table->unsignedBigInteger('booking_id');
             $table->unsignedBigInteger('service_id');
             $table->string('service_name');
-            $table->decimal('price', 10, 2);
+            $table->string('service_type'); // 'spa', 'yoga', 'gym'
+            $table->integer('price'); // Changed to integer for consistency
             $table->timestamps();
+
+            // Foreign key constraint
             $table->foreign('booking_id')->references('id')->on('bookings')->onDelete('cascade');
+
+            // Indexes
+            $table->index('booking_id');
+            $table->index('service_id');
+            $table->index('service_type');
         });
     }
 

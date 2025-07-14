@@ -23,9 +23,18 @@ class CreateYogaBookingsTable extends Migration
             $table->string('payment_status')->default('pending');
             $table->string('payment_token')->nullable();
             $table->text('payment_details')->nullable();
+            $table->text('notes')->nullable(); // Added for consistency
             $table->timestamps();
 
+            // Foreign key constraint
             $table->foreign('yoga_id')->references('id_yoga')->on('yogas')->onDelete('cascade');
+
+            // Indexes for better performance
+            $table->index('yoga_id');
+            $table->index('booking_code');
+            $table->index('status');
+            $table->index('payment_status');
+            $table->index('booking_date');
         });
     }
 

@@ -15,12 +15,14 @@ return new class extends Migration
             $table->text('description');
             $table->decimal('price', 10, 2);
             $table->string('duration')->nullable();
+            $table->string('category');
             $table->string('image')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 
             $table->foreign('gym_id')->references('id_gym')->on('gyms')->onDelete('cascade');
             $table->index('gym_id');
+            $table->index('category');
         });
     }
 

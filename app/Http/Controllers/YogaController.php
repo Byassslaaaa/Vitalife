@@ -141,17 +141,17 @@ class YogaController extends Controller
         if (!preg_match('/^https?:\/\//i', $url)) {
             $url = 'https://' . $url;
         }
-        
+
         // Check if it's a direct embed code pasted from Google Maps
         if (preg_match('/<iframe.*src=[\'"]([^\'"]+)[\'"].*><\/iframe>/i', $url, $matches)) {
             return $matches[1]; // Extract just the URL from the iframe tag
         }
-        
+
         // If it's already a Google Maps embed URL, return it as is
         if (strpos($url, 'google.com/maps/embed') !== false) {
             return $url;
         }
-        
+
         // If it's a standard Google Maps URL, try to convert it to an embed URL
         if (strpos($url, 'google.com/maps') !== false) {
             // For share URLs that contain a place ID
@@ -159,14 +159,14 @@ class YogaController extends Controller
                 $placeId = $matches[1];
                 return "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3951.3!2d0!3d0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s!5e0!3m2!1sen!2sid!4v1620000000000!5m2!1sen!2sid&q=place_id:{$placeId}";
             }
-            
+
             // Pattern 1: @lat,lng,zoom
             if (preg_match('/@([-\d.]+),([-\d.]+),([\d.]+)z/', $url, $matches)) {
                 $lat = $matches[1];
                 $lng = $matches[2];
                 return "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3951.3!2d{$lng}!3d{$lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM!5e0!3m2!1sen!2sid!4v1620000000000!5m2!1sen!2sid";
             }
-            
+
             // Pattern 2: /place/...
             if (strpos($url, '/place/') !== false) {
                 // Extract the place name
@@ -181,7 +181,7 @@ class YogaController extends Controller
                 return "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3951.3!2d0!3d0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s{$encodedPlace}!5e0!3m2!1sen!2sid!4v1620000000000!5m2!1sen!2sid";
             }
         }
-        
+
         // Pattern 3: URL with a query parameter
         if (strpos($url, '?q=') !== false) {
             parse_str(parse_url($url, PHP_URL_QUERY), $query);
@@ -191,7 +191,7 @@ class YogaController extends Controller
             }
         }
     }
-    
+
     // If we can't convert it but it looks like a Google Maps URL, return a fallback embed URL
     if (strpos($url, 'google.com/maps') !== false) {
         // Extract any location information from the URL
@@ -201,19 +201,19 @@ class YogaController extends Controller
         } elseif (preg_match('/\/place\/([^\/]+)/', $url, $matches)) {
             $location = str_replace('+', ' ', $matches[1]);
         }
-        
+
         if (!empty($location)) {
             $encodedLocation = urlencode($location);
             return "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3951.3!2d0!3d0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s!5e0!3m2!1sen!2sid!4v1620000000000!5m2!1sen!2sid&q={$encodedLocation}";
         }
     }
-    
+
     // If it's not a Google Maps URL but contains a location, create a search URL
     if (!strpos($url, 'google.com/maps') && !empty($url)) {
         $encodedLocation = urlencode($url);
         return "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3951.3!2d0!3d0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s!5e0!3m2!1sen!2sid!4v1620000000000!5m2!1sen!2sid&q={$encodedLocation}";
     }
-    
+
     // If all else fails, return the original URL
     return $url;
 }
@@ -226,13 +226,13 @@ class YogaController extends Controller
      */
     public function detail($id_yoga)
     {
-        $yoga = Yoga::findOrFail($id_yoga);
-        
+        $yoga = Yoga::with(['yogaServices', 'detailConfig'])->findOrFail($id_yoga);
+
         // Ensure maps URL is properly formatted
         if (method_exists($this, 'sanitizeMapsUrl')) {
             $yoga->maps = $this->sanitizeMapsUrl($yoga->maps);
         }
-        
+
         return view('fitur.yoga-detail', compact('yoga'));
     }
 }

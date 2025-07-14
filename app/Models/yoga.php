@@ -10,7 +10,7 @@ class Yoga extends Model
     use HasFactory;
 
     protected $primaryKey = 'id_yoga';
-    
+
     protected $fillable = [
         'nama',
         'harga',
@@ -41,6 +41,14 @@ class Yoga extends Model
     public function bookings()
     {
         return $this->hasMany(YogaBooking::class, 'yoga_id', 'id_yoga');
+    }
+
+    /**
+     * Get the services for the yoga.
+     */
+    public function yogaServices()
+    {
+        return $this->hasMany(YogaService::class, 'yoga_id', 'id_yoga');
     }
 
     /**
@@ -103,12 +111,12 @@ class Yoga extends Model
     public function getGalleryImagesAttribute()
     {
         $configImages = $this->detailConfig?->gallery_images ?? [];
-        
+
         // If no custom gallery images, return the main image repeated
         if (empty($configImages)) {
             return array_fill(0, 4, $this->image);
         }
-        
+
         return $configImages;
     }
 

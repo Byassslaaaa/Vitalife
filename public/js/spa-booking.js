@@ -3,6 +3,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     bookingBtns.forEach((btn) => {
         btn.addEventListener("click", function () {
+            // Check if user is authenticated - only for booking action
+            if (!window.userAuthenticated) {
+                Swal.fire({
+                    title: "Login Required",
+                    text: "You need to be logged in to book a spa service. Would you like to login now?",
+                    icon: "info",
+                    showCancelButton: true,
+                    confirmButtonText: "Login",
+                    cancelButtonText: "Cancel",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "/login";
+                    }
+                });
+                return;
+            }
+
             const spaId = this.getAttribute("data-spa-id");
 
             fetch(`/api/spas/${spaId}/services`)

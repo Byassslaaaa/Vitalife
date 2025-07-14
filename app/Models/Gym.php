@@ -32,6 +32,22 @@ class Gym extends Model
         return $this->hasOne(GymDetail::class, 'gym_id', 'id_gym');
     }
 
+    /**
+     * Relationship with GymService model
+     */
+    public function gymServices()
+    {
+        return $this->hasMany(GymService::class, 'gym_id', 'id_gym');
+    }
+
+    /**
+     * Relationship with GymBooking model
+     */
+    public function gymBookings()
+    {
+        return $this->hasMany(GymBooking::class, 'gym_id', 'id_gym');
+    }
+
     // Accessor untuk mendapatkan 3 services pertama
     public function getTopServicesAttribute()
     {
@@ -63,12 +79,12 @@ class Gym extends Model
     public function getAllServicesAttribute()
     {
         $allServices = [];
-        
+
         // Add main services (from gym table)
         if ($this->services && is_array($this->services)) {
             $allServices = array_merge($allServices, $this->services);
         }
-        
+
         // Add additional services (from gym_details table)
         if ($this->gymDetail && $this->gymDetail->additional_services) {
             $additionalServices = $this->gymDetail->additional_services;
@@ -82,7 +98,7 @@ class Gym extends Model
                 }
             }
         }
-        
+
         return $allServices;
     }
 }

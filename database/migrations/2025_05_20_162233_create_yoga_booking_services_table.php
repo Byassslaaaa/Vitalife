@@ -18,10 +18,16 @@ class CreateYogaBookingServicesTable extends Migration
             $table->unsignedBigInteger('booking_id');
             $table->unsignedBigInteger('service_id');
             $table->string('service_name');
-            $table->decimal('price', 10, 2);
+            $table->integer('price'); // Changed to integer for consistency
             $table->timestamps();
-            
+
+            // Foreign key constraints
             $table->foreign('booking_id')->references('id')->on('yoga_bookings')->onDelete('cascade');
+            $table->foreign('service_id')->references('id')->on('yoga_services')->onDelete('cascade');
+
+            // Indexes
+            $table->index('booking_id');
+            $table->index('service_id');
         });
     }
 

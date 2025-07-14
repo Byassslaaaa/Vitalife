@@ -11,7 +11,9 @@ use App\Http\Controllers\AccountUserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\FeedbackController;
-use App\Http\Controllers\Admin\SpasController;
+use App\Http\Controllers\SpaAdminController;
+use App\Http\Controllers\GymAdminController;
+use App\Http\Controllers\YogaAdminController;
 use App\Http\Controllers\Admin\YogasController;
 use App\Http\Controllers\Admin\GymsController;
 use App\Http\Controllers\Admin\GymsDetailController;
@@ -30,11 +32,9 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ChatNotificationController;
 use App\Http\Controllers\BookingController;
-use App\Http\Controllers\YogaBookingController;
 use App\Http\Controllers\Admin\YogaDetailController;
+use App\Http\Controllers\Admin\YogaServiceController;
 use App\Http\Controllers\Admin\GymServiceController;
-use App\Http\Controllers\GymBookingController;
-use App\Http\Controllers\SpaBookingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,12 +67,33 @@ Route::get('/service', function () {
 Route::get('/spa', [SpaController::class, 'index'])->name('spa.index');
 Route::get('/spa/{id_spa}', [SpaController::class, 'show'])->name('spa.show');
 Route::get('/spa/{id_spa}/details', [SpaController::class, 'details'])->name('spa.details');
+Route::get('/spa/detail/{id_spa}', [SpaController::class, 'detail'])->name('spa.detail');
+
+// Public Yoga Routes (for browsing without booking)
+Route::get('/yoga', [YogaController::class, 'index'])->name('yoga.index');
+Route::get('/yoga/{id_yoga}', [YogaController::class, 'detail'])->name('yoga.detail');
+
+// Public Gym Routes (for browsing without booking)
+Route::get('/gym', [GymController::class, 'index'])->name('gym.index');
+Route::get('/gym/{id_gym}', [GymController::class, 'detail'])->name('gym.detail');
+
+// Public Event Routes (for browsing without booking)
+Route::get('/event', [EventController::class, 'index'])->name('event.index');
+Route::get('/events/search', [EventController::class, 'search'])->name('search.events');
+Route::get('/detailEvent', function () {
+    return view('fitur.detailEvent');
+});
+
+// Public Voucher Route (browsing only, claiming requires auth)
+Route::get('/voucher', [VouchersController::class, 'index'])->name('voucher');
 
 // API Routes for public data
 Route::prefix('api')->group(function () {
     Route::get('/spa-service/{serviceId}', [SpaController::class, 'getServiceDetails']);
     Route::get('/spa/{spaId}/services', [SpaController::class, 'getSpaServices']);
-    Route::get('/spa/{spaId}/details', [SpasController::class, 'getSpaDetailsJson']);
+    // Route::get('/spa/{spaId}/details', [SpasController::class, 'getSpaDetailsJson']); // Temporary disabled
+    // Public API endpoints (no authentication required)
+    Route::get('/gym/{gymId}/services', [BookingController::class, 'getGymServices'])->name('gym.services');
 });
 
 // Social Login Routes
@@ -105,49 +126,27 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/notifications', [NotificationController::class, 'getNotifications']);
     Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead']);
 
-    // Enhanced Spa routes for authenticated users
-    Route::get('/spa/detail/{id_spa}', [SpaController::class, 'detail'])->name('spa.detail');
-    Route::post('/spa', [SpaController::class, 'store'])->name('spa.store');
-
-    // Comprehensive Spa Booking Routes
+    // Comprehensive Spa Booking Routes (REQUIRES AUTH)
     Route::prefix('spa')->name('spa.')->group(function () {
-        Route::post('/booking', [SpaBookingController::class, 'store'])->name('booking.store');
-        Route::get('/booking/{bookingCode}', [SpaBookingController::class, 'show'])->name('booking.show');
-        Route::get('/booking/{bookingCode}/payment', [SpaBookingController::class, 'payment'])->name('booking.payment');
-        Route::post('/booking/{bookingCode}/cancel', [SpaBookingController::class, 'cancel'])->name('booking.cancel');
-        Route::get('/my-bookings', [SpaBookingController::class, 'userBookings'])->name('bookings.user');
+        Route::post('/booking', [BookingController::class, 'book'])->name('booking.store');
+        Route::get('/booking/{bookingCode}', [BookingController::class, 'getBooking'])->name('booking.show');
+        Route::get('/booking/{bookingCode}/payment', [BookingController::class, 'payment'])->name('booking.payment');
+        Route::post('/booking/{bookingCode}/cancel', [BookingController::class, 'cancelBooking'])->name('booking.cancel');
     });
 
-    // API Routes for Spa Booking
+    // API Routes for Spa Booking (REQUIRES AUTH)
     Route::prefix('api')->group(function () {
-        Route::post('/spa-booking', [SpaBookingController::class, 'apiStore']);
-        Route::get('/spa-booking/{bookingCode}/status', [SpaBookingController::class, 'getBookingStatus']);
+        Route::post('/spa-booking', [BookingController::class, 'book']);
+        Route::get('/spa-booking/{bookingCode}/status', [BookingController::class, 'getBooking']);
+        Route::post('/create-spa-payment', [BookingController::class, 'createSpaPayment']);
     });
 
-    // Other existing routes...
-
-    // Yoga routes
-    Route::get('/yoga', [YogaController::class, 'index'])->name('yoga.index');
-    Route::get('/yoga/{id_yoga}', [YogaController::class, 'detail'])->name('yoga.detail');
-    Route::post('/yoga/booking', [YogaBookingController::class, 'book']);
+    // BOOKING ROUTES (REQUIRES AUTH)
+    Route::post('/yoga/booking', [BookingController::class, 'book']);
     Route::post('/yoga', [YogaController::class, 'store'])->name('yoga.store');
-
-    // Gym routes
-    Route::get('/gym', [GymController::class, 'index'])->name('gym.index');
-    Route::get('/gym/{id_gym}', [GymController::class, 'detail'])->name('gym.detail');
     Route::post('/gym', [GymController::class, 'store'])->name('gym.store');
-    Route::patch('/admin/gyms/{id_gym}/toggle-status', [GymsController::class, 'toggleStatus'])->name('admin.gyms.toggle-status');
-
-    // Gym booking routes
-    Route::post('/gym/booking', [GymBookingController::class, 'process'])->name('gym.booking.process');
-    Route::get('/gym/{gymId}/services', [GymBookingController::class, 'getGymServices'])->name('gym.services');
-
-    // Event routes
-    Route::get('/event', [EventController::class, 'index'])->name('event.index');
-    Route::get('/events/search', [EventController::class, 'search'])->name('search.events');
-    Route::get('/detailEvent', function () {
-        return view('fitur.detailEvent');
-    });
+    Route::patch('/admin/gyms/{id_gym}/toggle-status', [GymAdminController::class, 'toggleStatus'])->name('admin.gyms.toggle-status');
+    Route::post('/gym/booking', [BookingController::class, 'book'])->name('gym.booking.process');
 
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -164,8 +163,19 @@ Route::middleware(['auth'])->group(function () {
     // Payment routes
     Route::post('/api/save-payment', [PaymentController::class, 'savePayment']);
     Route::post('/midtrans/callback', [BookingController::class, 'handleMidtransCallback']);
-    Route::post('/midtrans/spa-callback', [SpaBookingController::class, 'handleMidtransCallback']);
-    Route::post('/midtrans/yoga-callback', [YogaBookingController::class, 'handleMidtransCallback']);
+
+    // Universal Booking Routes (Unified booking system)
+    Route::get('/universal-booking', function () {
+        return view('universal-booking');
+    })->name('universal.booking.form');
+
+    // Universal Booking API
+    Route::prefix('booking')->name('booking.')->group(function () {
+        Route::get('/entities', [BookingController::class, 'getEntities'])->name('entities');
+        Route::get('/services', [BookingController::class, 'getServices'])->name('services');
+        Route::get('/{bookingCode}', [BookingController::class, 'getBooking'])->name('show');
+        Route::post('/{bookingCode}/cancel', [BookingController::class, 'cancelBooking'])->name('cancel');
+    });
 });
 
 // ============================================================================
@@ -195,14 +205,12 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::put('/payments/{kode}/status', [PaymentController::class, 'updateStatus'])->name('payments.updateStatus');
 
     // ============================================================================
-    // COMPREHENSIVE SPA MANAGEMENT - FIXED ROUTES
+    // COMPREHENSIVE SPA MANAGEMENT - RESTORED
     // ============================================================================
 
     // Main Spa Management
-    Route::resource('spas', SpasController::class, ['parameters' => ['spas' => 'id_spa']]);
-    Route::get('/formspa', [SpasController::class, 'create'])->name('formspa');
-    Route::post('/spa', [SpasController::class, 'store'])->name('spa.store');
-    Route::patch('/spas/{id_spa}/toggle-status', [SpasController::class, 'toggleStatus'])->name('spas.toggle-status');
+    Route::resource('spas', SpaAdminController::class, ['parameters' => ['spas' => 'id_spa']]);
+    Route::get('/formspa', [SpaAdminController::class, 'create'])->name('formspa');
 
     // FIXED: Spa Services Management - Nested routes
     Route::prefix('spas/{spaId}')->name('spas.')->group(function () {
@@ -255,22 +263,23 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     });
 
     // Spa Analytics & Reports
-    Route::prefix('spa-analytics')->name('spa-analytics.')->group(function () {
-        Route::get('/', [SpasController::class, 'analytics'])->name('index');
-        Route::get('/revenue', [SpasController::class, 'revenueReport'])->name('revenue');
-        Route::get('/bookings', [SpasController::class, 'bookingReport'])->name('bookings');
-        Route::get('/services', [SpasController::class, 'serviceReport'])->name('services');
-        Route::get('/export', [SpasController::class, 'exportReport'])->name('export');
-    });
+    // Temporary disabled - SPA Analytics routes
+    // Route::prefix('spa-analytics')->name('spa-analytics.')->group(function () {
+    //     Route::get('/', [SpasController::class, 'analytics'])->name('index');
+    //     Route::get('/revenue', [SpasController::class, 'revenueReport'])->name('revenue');
+    //     Route::get('/bookings', [SpasController::class, 'bookingReport'])->name('bookings');
+    //     Route::get('/services', [SpasController::class, 'serviceReport'])->name('services');
+    //     Route::get('/export', [SpasController::class, 'exportReport'])->name('export');
+    // });
 
     // ============================================================================
     // OTHER EXISTING ROUTES
     // ============================================================================
 
     // Yoga management
-    Route::resource('yogas', YogasController::class, ['parameters' => ['yogas' => 'id_yoga']]);
-    Route::get('/formyoga', [YogasController::class, 'create'])->name('formyoga');
-    Route::post('/yoga', [YogasController::class, 'store'])->name('yoga.store');
+    Route::resource('yogas', YogaAdminController::class, ['parameters' => ['yogas' => 'id_yoga']]);
+    Route::get('/formyoga', [YogaAdminController::class, 'create'])->name('formyoga');
+    Route::post('/yoga', [YogaAdminController::class, 'store'])->name('yoga.store');
 
     // Yoga Detail Management
     Route::prefix('yoga-details')->name('yoga-details.')->group(function () {
@@ -281,10 +290,23 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::get('/{id}/preview', [YogaDetailController::class, 'preview'])->name('preview');
     });
 
+    // Yoga Service Management
+    Route::prefix('yoga-services')->name('yoga-services.')->group(function () {
+        Route::get('/', [YogaServiceController::class, 'index'])->name('index');
+        Route::get('/create', [YogaServiceController::class, 'create'])->name('create');
+        Route::post('/', [YogaServiceController::class, 'store'])->name('store');
+        Route::get('/{id}', [YogaServiceController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [YogaServiceController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [YogaServiceController::class, 'update'])->name('update');
+        Route::delete('/{id}', [YogaServiceController::class, 'destroy'])->name('destroy');
+        Route::patch('/{id}/toggle-status', [YogaServiceController::class, 'toggleStatus'])->name('toggle-status');
+    });
+
     // Gym management
-    Route::resource('gyms', GymsController::class, ['parameters' => ['gyms' => 'id_gym']]);
-    Route::get('/formgym', [GymsController::class, 'create'])->name('formgym');
-    Route::post('/gym', [GymsController::class, 'store'])->name('gym.store');
+    Route::resource('gyms', GymAdminController::class, ['parameters' => ['gyms' => 'id_gym']]);
+    Route::get('/formgym', [GymAdminController::class, 'create'])->name('formgym');
+    Route::post('/gym', [GymAdminController::class, 'store'])->name('gym.store');
+    Route::patch('/admin/gyms/{id_gym}/toggle-status', [GymAdminController::class, 'toggleStatus'])->name('admin.gyms.toggle-status');
 
     // Gym Detail Management
     Route::prefix('gym-details')->name('gym-details.')->group(function () {
@@ -356,6 +378,14 @@ Route::get('/chat-test', function () {
 Route::get('/spaadmin', function () {
     return view('spaadmin');
 });
+
+// Test route for gym services API
+Route::get('/test-gym-api', function () {
+    return view('test-gym-api');
+});
+
+// Public API endpoints (no authentication required)
+Route::get('/gym/{gymId}/services', [BookingController::class, 'getGymServices'])->name('gym.services');
 
 // Include auth routes
 require __DIR__ . '/auth.php';

@@ -20,6 +20,8 @@ return new class extends Migration
             $table->json('facilities')->nullable();
             $table->string('booking_policy_title')->nullable()->default('BOOKING POLICY');
             $table->string('booking_policy_subtitle')->nullable()->default('YOUR WELLNESS PLANS');
+            $table->string('contact_person_name')->nullable();
+            $table->string('contact_person_phone')->nullable();
             $table->boolean('show_opening_hours')->default(true);
             $table->boolean('show_location_map')->default(true);
             $table->boolean('show_facilities')->default(true);
@@ -32,10 +34,10 @@ return new class extends Migration
 
             // Foreign key constraint
             $table->foreign('yoga_id')->references('id_yoga')->on('yogas')->onDelete('cascade');
-            
+
             // Unique constraint to ensure one config per yoga
             $table->unique('yoga_id');
-            
+
             // Index for better performance
             $table->index('yoga_id');
         });

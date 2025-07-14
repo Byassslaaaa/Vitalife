@@ -24,16 +24,18 @@
         .slider-image {
             transition: order 0.3s ease-in-out;
         }
+
         * {
             scrollbar-width: none !important;
             -ms-overflow-style: none !important;
         }
-        
+
         *::-webkit-scrollbar {
             display: none !important;
         }
 
-        html, body {
+        html,
+        body {
             overflow-y: auto;
             overflow-x: hidden;
         }
@@ -43,6 +45,10 @@
             height: 100vh;
         }
     </style>
+    <script>
+        // Global authentication status for JavaScript
+        window.userAuthenticated = {{ auth()->check() ? 'true' : 'false' }};
+    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
@@ -243,7 +249,9 @@
             if (e.ctrlKey) {
                 e.preventDefault();
             }
-        }, { passive: false });
+        }, {
+            passive: false
+        });
     </script>
 </body>
 

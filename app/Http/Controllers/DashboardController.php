@@ -45,19 +45,19 @@ class DashboardController extends Controller
                 ->take(4) // Limit to 4 vouchers for display
                 ->get();
         }
-        
+
         // Get trending data from each category with proper relationships
         $trendingSpas = Spa::with(['spaDetail', 'spaServices'])->take(2)->get();
-        $trendingYogas = Yoga::with('yogaDetail')->take(2)->get();
+        $trendingYogas = Yoga::with('detailConfig')->take(2)->get();
         $trendingGyms = Gym::with('gymDetail')->take(2)->get();
-        
+
         // Combine all trending items
         $trendingItems = collect();
-        
+
         // Add spas to trending
         foreach ($trendingSpas as $spa) {
             $services = collect();
-            
+
             // FIXED: Check if spa has relationship services (spaServices) or JSON services
             if ($spa->spaServices && $spa->spaServices->count() > 0) {
                 // Use relationship services
@@ -85,7 +85,7 @@ class DashboardController extends Controller
                     ['name' => 'Body Scrub', 'description' => 'Exfoliating body treatment', 'image' => 'image/spa-service.png']
                 ]);
             }
-            
+
             $trendingItems->push([
                 'type' => 'spa',
                 'id' => $spa->id_spa,
@@ -98,7 +98,7 @@ class DashboardController extends Controller
                 'detail_url' => route('spa.detail', $spa->id_spa)
             ]);
         }
-        
+
         // Add yogas to trending
         foreach ($trendingYogas as $yoga) {
             $trendingItems->push([
@@ -115,11 +115,11 @@ class DashboardController extends Controller
                 'detail_url' => route('yoga.detail', $yoga->id_yoga)
             ]);
         }
-        
+
         // Add gyms to trending
         foreach ($trendingGyms as $gym) {
             $services = collect();
-            
+
             // FIXED: Properly handle gym services
             if ($gym->services && is_array($gym->services) && count($gym->services) > 0) {
                 $services = collect(array_slice($gym->services, 0, 3))->map(function($service) {
@@ -137,7 +137,7 @@ class DashboardController extends Controller
                     ['name' => 'Personal Trainer', 'description' => 'Professional personal trainers', 'image' => 'image/trainer-icon.png']
                 ]);
             }
-            
+
             $trendingItems->push([
                 'type' => 'gym',
                 'id' => $gym->id_gym,
@@ -151,10 +151,10 @@ class DashboardController extends Controller
                 'detail_url' => route('gym.detail', $gym->id_gym)
             ]);
         }
-        
+
         // Shuffle and take first 6 items for display
         $trendingItems = $trendingItems->shuffle()->take(6);
-        
+
         return view('dashboard', compact('vouchers', 'trendingItems'));
     }
 
@@ -166,30 +166,30 @@ class DashboardController extends Controller
         if (!$waktuBuka) {
             return 'Contact for hours';
         }
-        
+
         if (is_array($waktuBuka)) {
             // Get today's opening hours
             $today = now()->format('l'); // Full day name
             $dayMapping = [
                 'Monday' => 'Senin',
-                'Tuesday' => 'Selasa', 
+                'Tuesday' => 'Selasa',
                 'Wednesday' => 'Rabu',
                 'Thursday' => 'Kamis',
                 'Friday' => 'Jumat',
                 'Saturday' => 'Sabtu',
                 'Sunday' => 'Minggu'
             ];
-            
+
             $indonesianDay = $dayMapping[$today] ?? $today;
-            
+
             if (isset($waktuBuka[$indonesianDay])) {
                 return "Today: " . $waktuBuka[$indonesianDay];
             }
-            
+
             // Return first available day
             return reset($waktuBuka);
         }
-        
+
         return $waktuBuka;
     }
 
@@ -201,7 +201,7 @@ class DashboardController extends Controller
         if (!$price || $price == 0) {
             return 'Contact for price';
         }
-        
+
         return 'Rp ' . number_format($price, 0, ',', '.');
     }
 }

@@ -1,34 +1,35 @@
 <x-app-layout>
     <!-- Add CSRF token meta tag -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    
+
     <link rel="stylesheet" href="{{ asset('css/spa-booking.css') }}">
-    
+
     <!-- Custom CSS from Admin -->
-    @if(isset($spa->detailConfig) && $spa->detailConfig && $spa->detailConfig->custom_css)
+    @if (isset($spa->detailConfig) && $spa->detailConfig && $spa->detailConfig->custom_css)
         <style>
             {!! $spa->detailConfig->custom_css !!}
         </style>
     @endif
-    
+
     <!-- Custom CSS for Image Gallery -->
     <style>
         .thumbnail {
             transition: all 0.2s ease-in-out;
         }
+
         .thumbnail:hover {
             transform: scale(1.05);
         }
     </style>
-    
+
     <!-- Main Container with Light Blue Background -->
     <div class="min-h-screen bg-gradient-to-br from-blue-100 to-blue-50 pt-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                
+
                 <!-- Left Side - Main Content -->
                 <div class="lg:col-span-2 space-y-6">
-                    
+
                     <!-- Hero Image Gallery - FIXED TO MATCH GYM-DETAIL -->
                     <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
                         <!-- Main Image -->
@@ -46,11 +47,17 @@
                                         }
                                     }
                                 }
-                                
+
                                 // Fallback with 5 images like gym-detail
                                 if (empty($galleryImages)) {
                                     $defaultImage = $spa->image ?? 'images/default-spa.jpg';
-                                    $galleryImages = [$defaultImage, $defaultImage, $defaultImage, $defaultImage, $defaultImage];
+                                    $galleryImages = [
+                                        $defaultImage,
+                                        $defaultImage,
+                                        $defaultImage,
+                                        $defaultImage,
+                                        $defaultImage,
+                                    ];
                                 } else {
                                     // Ensure we have exactly 5 images
                                     while (count($galleryImages) < 5) {
@@ -58,141 +65,172 @@
                                     }
                                     $galleryImages = array_slice($galleryImages, 0, 5);
                                 }
-                                
+
                                 $mainImage = $galleryImages[0];
                             @endphp
-                            <img id="mainImage" src="{{ asset($mainImage) }}" alt="{{ $spa->nama ?? 'Spa' }}" 
-                                 class="w-full h-96 object-cover rounded-t-2xl">
+                            <img id="mainImage" src="{{ asset($mainImage) }}" alt="{{ $spa->nama ?? 'Spa' }}"
+                                class="w-full h-96 object-cover rounded-t-2xl">
                         </div>
-                        
+
                         <!-- Thumbnail Images - CHANGED TO 5 COLUMNS LIKE GYM-DETAIL -->
                         <div class="p-4">
                             <div class="grid grid-cols-5 gap-3">
-                                @foreach($galleryImages as $index => $image)
-                                    <img src="{{ asset($image) }}" alt="Image {{ $index + 1 }}" 
-                                         class="thumbnail w-full h-20 object-cover rounded-xl cursor-pointer border-2 transition-all duration-200 {{ $index === 0 ? 'border-blue-500 opacity-100' : 'border-gray-200 opacity-70 hover:opacity-100 hover:border-blue-300' }}">
+                                @foreach ($galleryImages as $index => $image)
+                                    <img src="{{ asset($image) }}" alt="Image {{ $index + 1 }}"
+                                        class="thumbnail w-full h-20 object-cover rounded-xl cursor-pointer border-2 transition-all duration-200 {{ $index === 0 ? 'border-blue-500 opacity-100' : 'border-gray-200 opacity-70 hover:opacity-100 hover:border-blue-300' }}">
                                 @endforeach
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Spa Information -->
                     <div class="bg-white rounded-2xl shadow-lg p-8">
                         <!-- Title and Location -->
                         <div class="mb-8">
                             <h1 class="text-3xl font-bold text-gray-900 mb-3">
-                                {{ (isset($spa->spaDetail) && $spa->spaDetail && $spa->spaDetail->hero_title) ? $spa->spaDetail->hero_title : ($spa->nama ?? 'Spa Name') }}
+                                {{ isset($spa->spaDetail) && $spa->spaDetail && $spa->spaDetail->hero_title ? $spa->spaDetail->hero_title : $spa->nama ?? 'Spa Name' }}
                             </h1>
                             <div class="flex items-center text-gray-600 text-lg">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                    </path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 </svg>
                                 <span>{{ $spa->alamat ?? 'Location not available' }}</span>
                             </div>
                         </div>
-                        
+
                         <!-- Services Section (Display Only - from spa-details admin) -->
-                        @if(!isset($spa->spaDetail) || $spa->spaDetail->show_facilities !== false)
-                        <div class="mb-8">
-                            <h2 class="text-2xl font-bold text-gray-900 mb-6">Our Services</h2>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                @php
-                                    // Get display services from spa-details admin (additional_services)
-                                    $displayServices = [];
-                                    
-                                    if (isset($spa->spaDetail) && $spa->spaDetail && $spa->spaDetail->additional_services) {
-                                        if (is_array($spa->spaDetail->additional_services)) {
-                                            $displayServices = $spa->spaDetail->additional_services;
-                                        } elseif (is_string($spa->spaDetail->additional_services)) {
-                                            $displayServices = json_decode($spa->spaDetail->additional_services, true) ?? [];
+                        @if (!isset($spa->spaDetail) || $spa->spaDetail->show_facilities !== false)
+                            <div class="mb-8">
+                                <h2 class="text-2xl font-bold text-gray-900 mb-6">Our Services</h2>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    @php
+                                        // Get display services from spa-details admin (additional_services)
+                                        $displayServices = [];
+
+                                        if (
+                                            isset($spa->spaDetail) &&
+                                            $spa->spaDetail &&
+                                            $spa->spaDetail->additional_services
+                                        ) {
+                                            if (is_array($spa->spaDetail->additional_services)) {
+                                                $displayServices = $spa->spaDetail->additional_services;
+                                            } elseif (is_string($spa->spaDetail->additional_services)) {
+                                                $displayServices =
+                                                    json_decode($spa->spaDetail->additional_services, true) ?? [];
+                                            }
                                         }
-                                    }
-                                    
-                                    // Fallback to default display services if empty
-                                    if (empty($displayServices)) {
-                                        $displayServices = [
-                                            [
-                                                'name' => 'Traditional Massage',
-                                                'description' => 'Traditional massage to relieve tension and stress.',
-                                                'image' => 'images/massage1.jpg'
-                                            ],
-                                            [
-                                                'name' => 'Deep Tissue Massage',
-                                                'description' => 'Deep tissue massage for muscle relief.',
-                                                'image' => 'images/massage2.jpg'
-                                            ],
-                                            [
-                                                'name' => 'Hot Stone Massage',
-                                                'description' => 'Relaxing hot stone therapy treatment.',
-                                                'image' => 'images/massage3.jpg'
-                                            ],
-                                            [
-                                                'name' => 'Aromatherapy Massage',
-                                                'description' => 'Soothing aromatherapy treatment.',
-                                                'image' => 'images/massage4.jpg'
-                                            ]
-                                        ];
-                                    }
-                                @endphp
-                                
-                                @if(!empty($displayServices))
-                                    @foreach($displayServices as $service)
-                                        <div class="flex items-center space-x-4 p-4 rounded-xl hover:bg-gray-50 transition-colors border border-gray-100">
-                                            <div class="flex-shrink-0">
-                                                @php
-                                                    $serviceImage = 'images/default-massage.jpg';
-                                                    if (isset($service['image']) && $service['image']) {
-                                                        $serviceImage = $service['image'];
-                                                    }
-                                                @endphp
-                                                <img src="{{ asset($serviceImage) }}" 
-                                                     alt="{{ $service['name'] ?? 'Service' }}" 
-                                                     class="w-16 h-16 rounded-full object-cover">
+
+                                        // Fallback to default display services if empty
+                                        if (empty($displayServices)) {
+                                            $displayServices = [
+                                                [
+                                                    'name' => 'Traditional Massage',
+                                                    'description' =>
+                                                        'Traditional massage to relieve tension and stress.',
+                                                    'image' => 'images/massage1.jpg',
+                                                ],
+                                                [
+                                                    'name' => 'Deep Tissue Massage',
+                                                    'description' => 'Deep tissue massage for muscle relief.',
+                                                    'image' => 'images/massage2.jpg',
+                                                ],
+                                                [
+                                                    'name' => 'Hot Stone Massage',
+                                                    'description' => 'Relaxing hot stone therapy treatment.',
+                                                    'image' => 'images/massage3.jpg',
+                                                ],
+                                                [
+                                                    'name' => 'Aromatherapy Massage',
+                                                    'description' => 'Soothing aromatherapy treatment.',
+                                                    'image' => 'images/massage4.jpg',
+                                                ],
+                                            ];
+                                        }
+                                    @endphp
+
+                                    @if (!empty($displayServices))
+                                        @foreach ($displayServices as $service)
+                                            <div
+                                                class="flex items-center space-x-4 p-4 rounded-xl hover:bg-gray-50 transition-colors border border-gray-100">
+                                                <div class="flex-shrink-0">
+                                                    @php
+                                                        $serviceImage = 'images/default-massage.jpg';
+                                                        if (isset($service['image']) && $service['image']) {
+                                                            $serviceImage = $service['image'];
+                                                        }
+                                                    @endphp
+                                                    <img src="{{ asset($serviceImage) }}"
+                                                        alt="{{ $service['name'] ?? 'Service' }}"
+                                                        class="w-16 h-16 rounded-full object-cover">
+                                                </div>
+                                                <div class="flex-1">
+                                                    <h3 class="font-semibold text-gray-900 text-lg">
+                                                        {{ $service['name'] ?? 'Service' }}</h3>
+                                                    <p class="text-sm text-gray-600 mt-1">
+                                                        {{ $service['description'] ?? 'Professional spa service' }}</p>
+                                                </div>
                                             </div>
-                                            <div class="flex-1">
-                                                <h3 class="font-semibold text-gray-900 text-lg">{{ $service['name'] ?? 'Service' }}</h3>
-                                                <p class="text-sm text-gray-600 mt-1">{{ $service['description'] ?? 'Professional spa service' }}</p>
-                                            </div>
+                                        @endforeach
+                                    @else
+                                        <div class="col-span-2 text-center py-8">
+                                            <p class="text-gray-500">No services available at the moment.</p>
                                         </div>
-                                    @endforeach
-                                @else
-                                    <div class="col-span-2 text-center py-8">
-                                        <p class="text-gray-500">No services available at the moment.</p>
-                                    </div>
-                                @endif
+                                    @endif
+                                </div>
                             </div>
-                        </div>
                         @endif
 
-                                            <!-- Facilities Section -->
-                    @if($spa->spaDetail && $spa->spaDetail->facilities && count($spa->spaDetail->facilities) > 0)
-                    <div class="mb-8">
-                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Facilities</h2>
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                            @foreach($spa->spaDetail->facilities as $facility)
-                                <div class="flex items-center space-x-3 p-4 rounded-xl bg-gradient-to-r from-green-50 to-blue-50 border border-green-100 hover:shadow-md transition-shadow">
-                                    <div class="flex-shrink-0">
-                                        <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-                                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                            </svg>
+                        <!-- Facilities Section -->
+                        @php
+                            $facilities = [];
+                            if ($spa->spaDetail && $spa->spaDetail->facilities) {
+                                if (is_array($spa->spaDetail->facilities)) {
+                                    $facilities = $spa->spaDetail->facilities;
+                                } elseif (is_string($spa->spaDetail->facilities)) {
+                                    $decoded = json_decode($spa->spaDetail->facilities, true);
+                                    if ($decoded && is_array($decoded)) {
+                                        $facilities = $decoded;
+                                    }
+                                }
+                            }
+                        @endphp
+
+                        @if (!empty($facilities))
+                            <div class="mb-8">
+                                <h2 class="text-2xl font-bold text-gray-900 mb-6">Facilities</h2>
+                                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                    @foreach ($facilities as $facility)
+                                        <div
+                                            class="flex items-center space-x-3 p-4 rounded-xl bg-gradient-to-r from-green-50 to-blue-50 border border-green-100 hover:shadow-md transition-shadow">
+                                            <div class="flex-shrink-0">
+                                                <div
+                                                    class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                            <span class="font-medium text-gray-900">{{ $facility }}</span>
                                         </div>
-                                    </div>
-                                    <span class="font-medium text-gray-900">{{ $facility }}</span>
+                                    @endforeach
                                 </div>
-                            @endforeach
-                        </div>
-                    </div>
-                    @endif
-                        
+                            </div>
+                        @endif
+
                         <!-- Description Section -->
                         <div class="mb-8">
                             <h2 class="text-2xl font-bold text-gray-900 mb-4">Description</h2>
                             <div class="prose text-gray-600 text-lg leading-relaxed">
                                 @php
-                                    $description = 'Memorable Spa is a professional and affordable on-call massage service in Yogyakarta. We understand how important relaxation and health are in daily life, and we are committed to providing an exceptional massage experience right in the comfort of your home or office.';
-                                    
+                                    $description =
+                                        'Memorable Spa is a professional and affordable on-call massage service in Yogyakarta. We understand how important relaxation and health are in daily life, and we are committed to providing an exceptional massage experience right in the comfort of your home or office.';
+
                                     if (isset($spa->spaDetail) && $spa->spaDetail && $spa->spaDetail->about_spa) {
                                         $description = $spa->spaDetail->about_spa;
                                     }
@@ -202,171 +240,189 @@
                         </div>
 
                         <!-- Opening Work Section -->
-                        @if(!isset($spa->spaDetail) || $spa->spaDetail->show_opening_hours !== false)
-                        <div class="mb-8">
-                            <h2 class="text-2xl font-bold text-gray-900 mb-6">Opening Work</h2>
-                            
-                            <!-- First Row - 3 cards -->
-                            <div class="grid grid-cols-3 gap-4 mb-4">
-                                @php
-                                    // Get waktuBuka from spa if it exists
-                                    $waktuBuka = [];
-                                    if (isset($spa->waktuBuka)) {
-                                        if (is_string($spa->waktuBuka)) {
-                                            $waktuBuka = json_decode($spa->waktuBuka, true) ?? [];
-                                        } else {
-                                            $waktuBuka = $spa->waktuBuka;
+                        @if (!isset($spa->spaDetail) || $spa->spaDetail->show_opening_hours !== false)
+                            <div class="mb-8">
+                                <h2 class="text-2xl font-bold text-gray-900 mb-6">Opening Work</h2>
+
+                                <!-- First Row - 3 cards -->
+                                <div class="grid grid-cols-3 gap-4 mb-4">
+                                    @php
+                                        // Get waktuBuka from spa if it exists
+                                        $waktuBuka = [];
+                                        if (isset($spa->waktuBuka)) {
+                                            if (is_string($spa->waktuBuka)) {
+                                                $waktuBuka = json_decode($spa->waktuBuka, true) ?? [];
+                                            } else {
+                                                $waktuBuka = $spa->waktuBuka;
+                                            }
                                         }
-                                    }
-                                    
-                                    // Default schedule if waktuBuka is empty
-                                    if (empty($waktuBuka)) {
-                                        $waktuBuka = [
-                                            'Senin' => '08:00 AM - 10:00 PM',
-                                            'Selasa' => '08:00 AM - 10:00 PM',
-                                            'Rabu' => '08:00 AM - 10:00 PM',
-                                            'Kamis' => '08:00 AM - 10:00 PM',
-                                            'Jumat' => '08:00 AM - 10:00 PM',
-                                            'Sabtu' => '08:00 AM - 10:00 PM',
-                                            'Minggu' => '08:00 AM - 10:00 PM',
+
+                                        // Default schedule if waktuBuka is empty
+                                        if (empty($waktuBuka)) {
+                                            $waktuBuka = [
+                                                'Senin' => '08:00 AM - 10:00 PM',
+                                                'Selasa' => '08:00 AM - 10:00 PM',
+                                                'Rabu' => '08:00 AM - 10:00 PM',
+                                                'Kamis' => '08:00 AM - 10:00 PM',
+                                                'Jumat' => '08:00 AM - 10:00 PM',
+                                                'Sabtu' => '08:00 AM - 10:00 PM',
+                                                'Minggu' => '08:00 AM - 10:00 PM',
+                                            ];
+                                        }
+
+                                        // English day names mapping
+                                        $dayMapping = [
+                                            'Senin' => 'Monday',
+                                            'Selasa' => 'Tuesday',
+                                            'Rabu' => 'Wednesday',
+                                            'Kamis' => 'Thursday',
+                                            'Jumat' => 'Friday',
+                                            'Sabtu' => 'Saturday',
+                                            'Minggu' => 'Sunday',
                                         ];
-                                    }
-                                    
-                                    // English day names mapping
-                                    $dayMapping = [
-                                        'Senin' => 'Monday',
-                                        'Selasa' => 'Tuesday',
-                                        'Rabu' => 'Wednesday',
-                                        'Kamis' => 'Thursday',
-                                        'Jumat' => 'Friday',
-                                        'Sabtu' => 'Saturday',
-                                        'Minggu' => 'Sunday',
-                                    ];
-                                    
-                                    $scheduleArray = [];
-                                    foreach($waktuBuka as $day => $hours) {
-                                        $scheduleArray[] = [
-                                            'day' => $dayMapping[$day] ?? $day,
-                                            'hours' => $hours
-                                        ];
-                                    }
-                                @endphp
-                                
-                                @for($i = 0; $i < 3; $i++)
-                                    @if(isset($scheduleArray[$i]))
+
+                                        $scheduleArray = [];
+                                        foreach ($waktuBuka as $day => $hours) {
+                                            $scheduleArray[] = [
+                                                'day' => $dayMapping[$day] ?? $day,
+                                                'hours' => $hours,
+                                            ];
+                                        }
+                                    @endphp
+
+                                    @for ($i = 0; $i < 3; $i++)
+                                        @if (isset($scheduleArray[$i]))
+                                            <div class="bg-gray-100 rounded-lg p-4 hover:bg-gray-200 transition-colors">
+                                                <div class="font-medium text-gray-800 mb-1">
+                                                    {{ $scheduleArray[$i]['day'] }}</div>
+                                                <div class="text-sm text-gray-600">{{ $scheduleArray[$i]['hours'] }}
+                                                </div>
+                                            </div>
+                                        @endif
+                                    @endfor
+                                </div>
+
+                                <!-- Second Row - 3 cards -->
+                                <div class="grid grid-cols-3 gap-4 mb-4">
+                                    @for ($i = 3; $i < 6; $i++)
+                                        @if (isset($scheduleArray[$i]))
+                                            <div class="bg-gray-100 rounded-lg p-4 hover:bg-gray-200 transition-colors">
+                                                <div class="font-medium text-gray-800 mb-1">
+                                                    {{ $scheduleArray[$i]['day'] }}</div>
+                                                <div class="text-sm text-gray-600">{{ $scheduleArray[$i]['hours'] }}
+                                                </div>
+                                            </div>
+                                        @endif
+                                    @endfor
+                                </div>
+
+                                <!-- Third Row - 1 card -->
+                                <div class="grid grid-cols-3 gap-4">
+                                    @if (isset($scheduleArray[6]))
                                         <div class="bg-gray-100 rounded-lg p-4 hover:bg-gray-200 transition-colors">
-                                            <div class="font-medium text-gray-800 mb-1">{{ $scheduleArray[$i]['day'] }}</div>
-                                            <div class="text-sm text-gray-600">{{ $scheduleArray[$i]['hours'] }}</div>
+                                            <div class="font-medium text-gray-800 mb-1">{{ $scheduleArray[6]['day'] }}
+                                            </div>
+                                            <div class="text-sm text-gray-600">{{ $scheduleArray[6]['hours'] }}</div>
                                         </div>
                                     @endif
-                                @endfor
+                                    <!-- Empty spaces to maintain grid alignment -->
+                                    <div></div>
+                                    <div></div>
+                                </div>
                             </div>
-                            
-                            <!-- Second Row - 3 cards -->
-                            <div class="grid grid-cols-3 gap-4 mb-4">
-                                @for($i = 3; $i < 6; $i++)
-                                    @if(isset($scheduleArray[$i]))
-                                        <div class="bg-gray-100 rounded-lg p-4 hover:bg-gray-200 transition-colors">
-                                            <div class="font-medium text-gray-800 mb-1">{{ $scheduleArray[$i]['day'] }}</div>
-                                            <div class="text-sm text-gray-600">{{ $scheduleArray[$i]['hours'] }}</div>
-                                        </div>
-                                    @endif
-                                @endfor
-                            </div>
-                            
-                            <!-- Third Row - 1 card -->
-                            <div class="grid grid-cols-3 gap-4">
-                                @if(isset($scheduleArray[6]))
-                                    <div class="bg-gray-100 rounded-lg p-4 hover:bg-gray-200 transition-colors">
-                                        <div class="font-medium text-gray-800 mb-1">{{ $scheduleArray[6]['day'] }}</div>
-                                        <div class="text-sm text-gray-600">{{ $scheduleArray[6]['hours'] }}</div>
-                                    </div>
-                                @endif
-                                <!-- Empty spaces to maintain grid alignment -->
-                                <div></div>
-                                <div></div>
-                            </div>
-                        </div>
                         @endif
                     </div>
                 </div>
-                
+
                 <!-- Right Side - Booking Card -->
                 <div class="lg:col-span-1">
                     <div class="sticky top-24 space-y-6">
-                        
+
                         <!-- Booking Policy Card -->
-                        @if(!isset($spa->spaDetail) || $spa->spaDetail->show_booking_policy !== false)
-                        <div class="bg-white rounded-2xl shadow-lg p-6">
-                            <!-- Policy Header with Clipboard Icon -->
-                            <div class="text-center mb-6">
-                                <div class="bg-gray-50 rounded-2xl p-6 mb-6">
-                                    <div class="flex items-center justify-center mb-4">
-                                        <div class="bg-white p-3 rounded-xl shadow-sm">
-                                            <svg class="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                            </svg>
+                        @if (!isset($spa->spaDetail) || $spa->spaDetail->show_booking_policy !== false)
+                            <div class="bg-white rounded-2xl shadow-lg p-6">
+                                <!-- Policy Header with Clipboard Icon -->
+                                <div class="text-center mb-6">
+                                    <div class="bg-gray-50 rounded-2xl p-6 mb-6">
+                                        <div class="flex items-center justify-center mb-4">
+                                            <div class="bg-white p-3 rounded-xl shadow-sm">
+                                                <svg class="w-8 h-8 text-amber-600" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                                    </path>
+                                                </svg>
+                                            </div>
                                         </div>
+                                        <h3 class="font-bold text-gray-800 text-xl mb-2">
+                                            {{ isset($spa->spaDetail) && $spa->spaDetail && $spa->spaDetail->booking_policy_title ? $spa->spaDetail->booking_policy_title : 'BOOKING POLICY' }}
+                                        </h3>
+                                        <p class="text-sm text-gray-600">
+                                            {{ isset($spa->spaDetail) && $spa->spaDetail && $spa->spaDetail->booking_policy_subtitle ? $spa->spaDetail->booking_policy_subtitle : 'YOUR WELLNESS PLANS' }}
+                                        </p>
                                     </div>
-                                    <h3 class="font-bold text-gray-800 text-xl mb-2">
-                                        {{ (isset($spa->spaDetail) && $spa->spaDetail && $spa->spaDetail->booking_policy_title) ? $spa->spaDetail->booking_policy_title : 'BOOKING POLICY' }}
-                                    </h3>
-                                    <p class="text-sm text-gray-600">
-                                        {{ (isset($spa->spaDetail) && $spa->spaDetail && $spa->spaDetail->booking_policy_subtitle) ? $spa->spaDetail->booking_policy_subtitle : 'YOUR WELLNESS PLANS' }}
-                                    </p>
                                 </div>
+
+                                <!-- Booking Button -->
+                                <button
+                                    class="bookingBtn w-full bg-gray-800 hover:bg-gray-900 text-white font-bold py-4 px-6 rounded-xl transition duration-300 transform hover:scale-105 text-lg"
+                                    data-spa-id="{{ $spa->id_spa ?? '' }}">
+                                    Booking Online
+                                </button>
                             </div>
-                            
-                            <!-- Booking Button -->
-                            <button class="bookingBtn w-full bg-gray-800 hover:bg-gray-900 text-white font-bold py-4 px-6 rounded-xl transition duration-300 transform hover:scale-105 text-lg"
-                                data-spa-id="{{ $spa->id_spa ?? '' }}">
-                                Booking Online
-                            </button>
-                        </div>
                         @endif
-                        
+
                         <!-- Contact Person Card -->
                         <div class="bg-white rounded-2xl shadow-lg p-6">
                             <h3 class="text-xl font-bold text-gray-900 mb-6">Contact Person</h3>
                             <div class="flex items-center space-x-4 mb-6">
                                 <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
-                                    <svg class="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    <svg class="w-8 h-8 text-gray-500" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
+                                        </path>
                                     </svg>
                                 </div>
                                 <div>
                                     <p class="font-semibold text-gray-900 text-lg">
-                                        {{ (isset($spa->spaDetail) && $spa->spaDetail && $spa->spaDetail->contact_person_name) ? $spa->spaDetail->contact_person_name : 'Contact Person' }}
+                                        {{ isset($spa->spaDetail) && $spa->spaDetail && $spa->spaDetail->contact_person_name ? $spa->spaDetail->contact_person_name : 'Contact Person' }}
                                     </p>
                                     <p class="text-gray-600">
-                                        {{ (isset($spa->spaDetail) && $spa->spaDetail && $spa->spaDetail->contact_person_phone) ? $spa->spaDetail->contact_person_phone : ($spa->noHP ?? 'N/A') }}
+                                        {{ isset($spa->spaDetail) && $spa->spaDetail && $spa->spaDetail->contact_person_phone ? $spa->spaDetail->contact_person_phone : $spa->noHP ?? 'N/A' }}
                                     </p>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Location Card -->
-                        @if(!isset($spa->spaDetail) || $spa->spaDetail->show_location_map !== false)
-                        <div class="bg-white rounded-2xl shadow-lg p-6">
-                            <h3 class="text-xl font-bold text-gray-900 mb-4">Location</h3>
-                            @if($spa->maps)
-                                <div class="rounded-xl overflow-hidden h-48">
-                                    {!! $spa->maps !!}
-                                </div>
-                            @else
-                                <div class="bg-gray-100 rounded-xl h-48 flex items-center justify-center">
-                                    <div class="text-center">
-                                        <svg class="w-12 h-12 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        </svg>
-                                        <p class="text-gray-600 text-sm">{{ $spa->alamat ?? 'Location not available' }}</p>
+                        @if (!isset($spa->spaDetail) || $spa->spaDetail->show_location_map !== false)
+                            <div class="bg-white rounded-2xl shadow-lg p-6">
+                                <h3 class="text-xl font-bold text-gray-900 mb-4">Location</h3>
+                                @if ($spa->maps)
+                                    <div class="rounded-xl overflow-hidden h-48">
+                                        {!! $spa->maps !!}
                                     </div>
-                                </div>
-                            @endif
-                        </div>
+                                @else
+                                    <div class="bg-gray-100 rounded-xl h-48 flex items-center justify-center">
+                                        <div class="text-center">
+                                            <svg class="w-12 h-12 text-gray-400 mx-auto mb-2" fill="none"
+                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                                </path>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            </svg>
+                                            <p class="text-gray-600 text-sm">
+                                                {{ $spa->alamat ?? 'Location not available' }}</p>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
                         @endif
-                        
+
                     </div>
                 </div>
             </div>
@@ -374,7 +430,8 @@
     </div>
 
     <!-- Booking Modal -->
-    <div id="spaBookingModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+    <div id="spaBookingModal"
+        class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
         <div class="relative top-20 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-2xl bg-white">
             <div class="mt-3">
                 <!-- Modal Header -->
@@ -382,53 +439,84 @@
                     <h3 class="text-2xl font-bold text-gray-900">Booking Spa Service</h3>
                     <button onclick="closeSpaBookingModal()" class="text-gray-400 hover:text-gray-600">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
                 </div>
 
                 <!-- Booking Form -->
                 <form id="spaBookingForm" class="space-y-6">
+                    <!-- Booking Type Selection -->
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <h4 class="font-semibold text-gray-900 mb-3">Pilih Jenis Booking</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <label
+                                class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                                <input type="radio" name="booking_type" value="venue"
+                                    class="mr-3 text-blue-600 focus:ring-blue-500" checked>
+                                <div>
+                                    <div class="font-medium text-gray-900">Booking Tempat</div>
+                                    <div class="text-sm text-gray-600">Datang ke lokasi spa</div>
+                                </div>
+                            </label>
+                            <label
+                                class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                                <input type="radio" name="booking_type" value="terapis"
+                                    class="mr-3 text-blue-600 focus:ring-blue-500">
+                                <div>
+                                    <div class="font-medium text-gray-900">Booking Terapis</div>
+                                    <div class="text-sm text-gray-600">Terapis datang ke alamat Anda</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap *</label>
-                            <input type="text" name="customer_name" required 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <input type="text" name="customer_name" required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Email *</label>
-                            <input type="email" name="customer_email" required 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <input type="email" name="customer_email" required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">No. HP *</label>
-                            <input type="tel" name="customer_phone" required 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <input type="tel" name="customer_phone" required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Layanan *</label>
-                            <select name="service_type" required 
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <select name="service_type" required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                 <option value="">Pilih Layanan</option>
                                 @php
                                     // Get bookable services from spa-services management
                                     $bookableServices = [];
-                                    
-                                    if (isset($spa->spaServices) && $spa->spaServices->count() > 0) {
-                                        foreach($spa->spaServices->where('is_active', true) as $service) {
+
+                                    if (
+                                        isset($spa->spaServices) &&
+                                        $spa->spaServices &&
+                                        method_exists($spa->spaServices, 'count') &&
+                                        $spa->spaServices->count() > 0
+                                    ) {
+                                        foreach ($spa->spaServices->where('is_active', true) as $service) {
                                             $bookableServices[] = [
                                                 'id' => $service->id,
                                                 'title' => $service->name,
                                                 'price' => $service->price,
                                                 'duration' => $service->duration ?? 60,
-                                                'category' => $service->category ?? 'Spa Service'
+                                                'category' => $service->category ?? 'Spa Service',
                                             ];
                                         }
                                     }
-                                    
+
                                     // Fallback to default bookable services if empty
                                     if (empty($bookableServices)) {
                                         $bookableServices = [
@@ -437,35 +525,36 @@
                                                 'title' => 'Traditional Massage',
                                                 'price' => 150000,
                                                 'duration' => 60,
-                                                'category' => 'Traditional'
+                                                'category' => 'Traditional',
                                             ],
                                             [
                                                 'id' => null,
                                                 'title' => 'Deep Tissue Massage',
                                                 'price' => 200000,
                                                 'duration' => 90,
-                                                'category' => 'Therapeutic'
+                                                'category' => 'Therapeutic',
                                             ],
                                             [
                                                 'id' => null,
                                                 'title' => 'Hot Stone Massage',
                                                 'price' => 250000,
                                                 'duration' => 90,
-                                                'category' => 'Premium'
+                                                'category' => 'Premium',
                                             ],
                                             [
                                                 'id' => null,
                                                 'title' => 'Aromatherapy Massage',
                                                 'price' => 180000,
                                                 'duration' => 75,
-                                                'category' => 'Relaxation'
-                                            ]
+                                                'category' => 'Relaxation',
+                                            ],
                                         ];
                                     }
                                 @endphp
-                                @foreach($bookableServices as $service)
+                                @foreach ($bookableServices as $service)
                                     <option value="{{ $service['title'] }}" data-price="{{ $service['price'] }}">
-                                        {{ $service['title'] }} - Rp {{ number_format($service['price'], 0, ',', '.') }}
+                                        {{ $service['title'] }} - Rp
+                                        {{ number_format($service['price'], 0, ',', '.') }}
                                     </option>
                                 @endforeach
                             </select>
@@ -475,28 +564,40 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Booking *</label>
-                            <input type="date" name="booking_date" id="booking_date" required 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <input type="date" name="booking_date" id="booking_date" required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Waktu *</label>
-                            <input type="time" name="booking_time" required 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <input type="time" name="booking_time" required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         </div>
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Alamat Layanan *</label>
-                        <textarea name="service_address" required rows="3" 
-                                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                  placeholder="Masukkan alamat lengkap untuk layanan spa..."></textarea>
+                    <div id="serviceAddressField" style="display: none;">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Alamat Layanan *
+                            <span class="text-sm text-gray-500">(Untuk booking terapis)</span>
+                        </label>
+                        <textarea name="service_address" rows="3"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="Masukkan alamat lengkap untuk layanan spa di tempat Anda..."></textarea>
+                    </div>
+
+                    <div id="venueAddressField">
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                            <h4 class="font-semibold text-gray-900 mb-2">📍 Lokasi Spa</h4>
+                            <p class="text-gray-700">{{ $spa->alamat ?? 'Alamat spa akan ditampilkan di sini' }}</p>
+                            <p class="text-sm text-gray-600 mt-2">Anda akan datang ke lokasi spa sesuai jadwal yang
+                                dipilih.</p>
+                        </div>
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Catatan Tambahan</label>
-                        <textarea name="notes" rows="2" 
-                                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                  placeholder="Catatan khusus untuk terapis (opsional)..."></textarea>
+                        <textarea name="notes" rows="2"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="Catatan khusus untuk terapis (opsional)..."></textarea>
                     </div>
 
                     <!-- Price Summary -->
@@ -520,8 +621,8 @@
                     </div>
 
                     <!-- Submit Button -->
-                    <button type="submit" 
-                            class="w-full bg-blue-600 text-white font-semibold py-4 px-6 rounded-lg hover:bg-blue-700 transition duration-300 transform hover:scale-105">
+                    <button type="submit"
+                        class="w-full bg-blue-600 text-white font-semibold py-4 px-6 rounded-lg hover:bg-blue-700 transition duration-300 transform hover:scale-105">
                         Lanjutkan Pembayaran
                     </button>
                 </form>
@@ -532,21 +633,19 @@
     @include('layouts.footer')
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script type="text/javascript"
-            src="{{ config('services.midtrans.snap_url') }}"
-            data-client-key="{{ config('services.midtrans.client_key') }}">
-    </script>
-    
+    <script type="text/javascript" src="{{ config('services.midtrans.snap_url') }}"
+        data-client-key="{{ config('services.midtrans.client_key') }}"></script>
+
     <script>
         // Global variables
         const bookableServices = @json($bookableServices ?? []);
         const spaData = @json($spa);
-        
+
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM loaded, initializing booking system...');
             console.log('Spa Data:', spaData);
             console.log('Bookable Services:', bookableServices);
-            
+
             // Image gallery functionality - IMPROVED TO MATCH GYM-DETAIL
             const thumbnails = document.querySelectorAll('.thumbnail');
             const mainImage = document.getElementById('mainImage');
@@ -558,11 +657,11 @@
                         thumb.classList.remove('border-blue-500', 'opacity-100');
                         thumb.classList.add('border-gray-200', 'opacity-70');
                     });
-                    
+
                     // Add active state to clicked thumbnail
                     this.classList.remove('border-gray-200', 'opacity-70');
                     this.classList.add('border-blue-500', 'opacity-100');
-                    
+
                     // Update main image with smooth transition
                     mainImage.style.opacity = '0.5';
                     setTimeout(() => {
@@ -580,7 +679,31 @@
             const servicePriceEl = document.getElementById('servicePrice');
             const totalPriceEl = document.getElementById('totalPrice');
 
+            // Booking type handling
+            const bookingTypeRadios = document.querySelectorAll('input[name="booking_type"]');
+            const serviceAddressField = document.getElementById('serviceAddressField');
+            const venueAddressField = document.getElementById('venueAddressField');
+            const serviceAddressInput = document.querySelector('textarea[name="service_address"]');
+
             console.log('Booking button found:', bookingBtn);
+
+            // Handle booking type change
+            bookingTypeRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.value === 'terapis') {
+                        // Show address field for terapis booking
+                        serviceAddressField.style.display = 'block';
+                        venueAddressField.style.display = 'none';
+                        serviceAddressInput.setAttribute('required', 'required');
+                    } else {
+                        // Hide address field for venue booking
+                        serviceAddressField.style.display = 'none';
+                        venueAddressField.style.display = 'block';
+                        serviceAddressInput.removeAttribute('required');
+                        serviceAddressInput.value = ''; // Clear the field
+                    }
+                });
+            });
 
             if (bookingBtn) {
                 bookingBtn.addEventListener('click', function() {
@@ -596,7 +719,7 @@
                     const price = selectedOption.dataset.price || 0;
                     const adminFee = 5000;
                     const total = parseInt(price) + adminFee;
-                    
+
                     servicePriceEl.textContent = 'Rp ' + formatNumber(price);
                     totalPriceEl.textContent = 'Rp ' + formatNumber(total);
                 });
@@ -630,16 +753,18 @@
                 spaBookingForm.addEventListener('submit', function(e) {
                     e.preventDefault();
                     console.log('Form submitted');
-                    
+
                     // Validate form
                     if (!validateForm()) {
                         console.log('Form validation failed');
                         return;
                     }
-                    
+
                     const formData = new FormData(spaBookingForm);
                     const data = {};
-                    formData.forEach((value, key) => { data[key] = value; });
+                    formData.forEach((value, key) => {
+                        data[key] = value;
+                    });
                     console.log('Form data:', data);
 
                     // Show loading state
@@ -656,13 +781,22 @@
                                 closeSpaBookingModal();
                                 // Langsung ke Midtrans Snap
                                 if (window.snap) {
-                                    console.log('Opening Midtrans Snap with token:', response.payment_token);
+                                    console.log('Opening Midtrans Snap with token:', response
+                                        .payment_token);
                                     window.snap.pay(response.payment_token, {
-                                        onSuccess: function(result){
+                                        onSuccess: function(result) {
                                             console.log('Payment success:', result);
+                                            const bookingType = document.querySelector(
+                                                    'input[name="booking_type"]:checked')
+                                                .value;
+                                            const successMessage = bookingType ===
+                                                'terapis' ?
+                                                'Booking layanan spa Anda telah berhasil dibayar. Terapis akan segera menghubungi Anda untuk mengatur jadwal kunjungan.' :
+                                                'Booking layanan spa Anda telah berhasil dibayar. Silakan datang ke lokasi spa sesuai jadwal yang telah dipilih.';
+
                                             Swal.fire({
                                                 title: 'Pembayaran Berhasil!',
-                                                text: 'Booking layanan spa Anda telah berhasil dibayar. Terapis akan segera menghubungi Anda.',
+                                                text: successMessage,
                                                 icon: 'success',
                                                 confirmButtonText: 'OK',
                                                 confirmButtonColor: '#10B981'
@@ -670,7 +804,7 @@
                                                 window.location.reload();
                                             });
                                         },
-                                        onPending: function(result){
+                                        onPending: function(result) {
                                             console.log('Payment pending:', result);
                                             Swal.fire({
                                                 title: 'Pembayaran Pending',
@@ -680,7 +814,7 @@
                                                 confirmButtonColor: '#3B82F6'
                                             });
                                         },
-                                        onError: function(result){
+                                        onError: function(result) {
                                             console.log('Payment error:', result);
                                             Swal.fire({
                                                 title: 'Pembayaran Gagal',
@@ -690,7 +824,7 @@
                                                 confirmButtonColor: '#EF4444'
                                             });
                                         },
-                                        onClose: function(){
+                                        onClose: function() {
                                             console.log('Payment closed');
                                             Swal.fire({
                                                 title: 'Pembayaran Dibatalkan',
@@ -713,13 +847,17 @@
                                 }
                             } else {
                                 console.error('Payment creation failed:', response);
-                                Swal.fire({
-                                    title: 'Booking Gagal',
-                                    text: response.message || 'Gagal memproses booking. Silakan coba lagi.',
-                                    icon: 'error',
-                                    confirmButtonText: 'OK',
-                                    confirmButtonColor: '#EF4444'
-                                });
+                                // Only show error message if it's not an authentication error (already handled in processDirectPayment)
+                                if (response.message && !response.message.includes('logged in')) {
+                                    Swal.fire({
+                                        title: 'Booking Gagal',
+                                        text: response.message ||
+                                            'Gagal memproses booking. Silakan coba lagi.',
+                                        icon: 'error',
+                                        confirmButtonText: 'OK',
+                                        confirmButtonColor: '#EF4444'
+                                    });
+                                }
                             }
                         })
                         .catch(error => {
@@ -745,34 +883,36 @@
         async function processDirectPayment(bookingData) {
             try {
                 console.log('Processing payment with data:', bookingData);
-                
+
                 // Generate unique order ID
                 const timestamp = Date.now();
                 const random = Math.random().toString(36).substr(2, 9);
                 const orderId = `SPA-${timestamp}-${random}`;
-                
+
                 // Get service price
                 const serviceSelect = document.querySelector('select[name="service_type"]');
                 const selectedOption = serviceSelect.options[serviceSelect.selectedIndex];
                 const serviceFee = parseInt(selectedOption.dataset.price) || 100000;
                 const adminFee = 5000;
                 const totalAmount = serviceFee + adminFee;
-                
-                // Prepare data for backend
+
+                // Get booking type
+                const bookingType = document.querySelector('input[name="booking_type"]:checked').value;
+
+                // Prepare data for backend using new universal booking format
                 const paymentData = {
-                    order_id: orderId,
                     spa_id: spaData.id_spa,
                     customer_name: bookingData.customer_name,
                     customer_email: bookingData.customer_email,
                     customer_phone: bookingData.customer_phone,
-                    service_type: bookingData.service_type,
-                    service_price: serviceFee,
-                    admin_fee: adminFee,
-                    total_amount: totalAmount,
                     booking_date: bookingData.booking_date,
                     booking_time: bookingData.booking_time,
-                    service_address: bookingData.service_address,
-                    notes: bookingData.notes
+                    service_type: bookingData.service_type,
+                    booking_type: bookingType, // venue or terapis
+                    service_address: bookingType === 'terapis' ? bookingData.service_address :
+                        'Venue booking - customer comes to spa location',
+                    notes: bookingData.notes,
+                    total_amount: totalAmount
                 };
 
                 console.log('Sending payment data:', paymentData);
@@ -783,7 +923,7 @@
                     throw new Error('CSRF token not found');
                 }
 
-                // Call backend API to create payment
+                // Call backend API to create payment using new universal booking controller
                 const response = await fetch('/api/create-spa-payment', {
                     method: 'POST',
                     headers: {
@@ -796,6 +936,35 @@
 
                 console.log('API response status:', response.status);
 
+                // Handle authentication error (401)
+                if (response.status === 401) {
+                    const errorData = await response.json();
+                    console.log('Authentication required:', errorData);
+
+                    // Show login prompt and redirect to login
+                    Swal.fire({
+                        title: 'Login Required',
+                        text: errorData.message ||
+                            'You must be logged in to make a booking. Please login first.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Login Now',
+                        cancelButtonText: 'Cancel',
+                        confirmButtonColor: '#3B82F6',
+                        cancelButtonColor: '#6B7280'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Redirect to login page
+                            window.location.href = '/login';
+                        }
+                    });
+
+                    return {
+                        success: false,
+                        message: errorData.message || 'Authentication required'
+                    };
+                }
+
                 if (!response.ok) {
                     const errorData = await response.json();
                     console.error('API error:', errorData);
@@ -804,7 +973,7 @@
 
                 const result = await response.json();
                 console.log('API result:', result);
-                
+
                 if (result.success && result.payment_token) {
                     return {
                         success: true,
@@ -828,9 +997,23 @@
         // Fungsi validasi form
         function validateForm() {
             const form = document.getElementById('spaBookingForm');
-            const requiredFields = form.querySelectorAll('input[required], select[required], textarea[required]');
+            const bookingType = document.querySelector('input[name="booking_type"]:checked').value;
             let isValid = true;
-            
+
+            // Get required fields based on booking type
+            let requiredFields;
+            if (bookingType === 'terapis') {
+                requiredFields = form.querySelectorAll('input[required], select[required], textarea[required]');
+            } else {
+                // For venue booking, exclude service_address from required validation
+                requiredFields = form.querySelectorAll('input[required], select[required]');
+                // Add notes if it has required attribute
+                const notesField = form.querySelector('textarea[name="notes"]');
+                if (notesField && notesField.hasAttribute('required')) {
+                    requiredFields = [...requiredFields, notesField];
+                }
+            }
+
             requiredFields.forEach(field => {
                 if (!field.value.trim()) {
                     field.classList.add('border-red-500');
@@ -880,7 +1063,7 @@
                 const selectedDate = new Date(bookingDate.value);
                 const today = new Date();
                 today.setHours(0, 0, 0, 0);
-                
+
                 if (selectedDate < today) {
                     bookingDate.classList.add('border-red-500');
                     isValid = false;
@@ -905,7 +1088,7 @@
             }
 
             return isValid;
-        }   
+        }
 
         // Fungsi helper untuk format angka
         function formatNumber(num) {

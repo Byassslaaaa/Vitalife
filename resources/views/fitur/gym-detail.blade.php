@@ -1,4 +1,7 @@
 <x-app-layout>
+    <!-- Add CSRF token meta tag -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <!-- Custom CSS -->
     <style>
         .thumbnail {
@@ -193,10 +196,11 @@
                 <!-- Right Side - Contact & Booking Card -->
                 <div class="lg:col-span-1">
                     <div class="sticky top-24 space-y-6">
-                        <!-- Booking Button -->
+                        <!-- Booking Policy Card -->
                         <div class="bg-white rounded-2xl shadow-lg p-6">
+                            <!-- Policy Header -->
                             <div class="text-center mb-6">
-                                <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 mb-6">
+                                <div class="bg-blue-50 rounded-2xl p-6 mb-6">
                                     <div class="flex items-center justify-center mb-4">
                                         <div class="bg-white p-3 rounded-xl shadow-sm">
                                             <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor"
@@ -207,76 +211,135 @@
                                             </svg>
                                         </div>
                                     </div>
-                                    <h3 class="font-bold text-gray-800 text-xl mb-2">BOOKING ONLINE</h3>
-                                    <p class="text-sm text-gray-600">PILIH LAYANAN YANG TERSEDIA</p>
-                                </div>
-                                <div class="space-y-3">
-                                    <button
-                                        class="bookingBtn w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-4 px-6 rounded-xl transition duration-300 transform hover:scale-105 text-lg shadow-lg"
-                                        data-gym-id="{{ $gym->id_gym }}">
-                                        Booking Online
-                                    </button>
+                                    <h3 class="font-bold text-gray-800 text-xl mb-2">BOOKING POLICY</h3>
+                                    <p class="text-sm text-gray-600">ACHIEVE YOUR FITNESS GOALS</p>
                                 </div>
                             </div>
+
+                            <!-- Booking Button -->
+                            <button
+                                class="bookingBtn w-full bg-gray-800 hover:bg-gray-900 text-white font-bold py-4 px-6 rounded-xl transition duration-300 transform hover:scale-105 text-lg"
+                                data-gym-id="{{ $gym->id_gym }}">
+                                Booking Online
+                            </button>
                         </div>
 
                         <!-- Modal Booking -->
                         <div id="gymBookingModal"
                             class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
                             <div
-                                class="relative top-20 mx-auto p-5 border w-11/12 max-w-md shadow-lg rounded-md bg-white">
-                                <button class="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
-                                    onclick="closeGymBookingModal()">
-                                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </button>
-                                <div class="mt-3 text-center">
-                                    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Booking Online</h3>
-                                    <form id="gymBookingForm" class="space-y-4">
-                                        <input type="hidden" id="modal-gym-id" name="gym_id"
-                                            value="{{ $gym->id_gym }}">
-                                        <div>
-                                            <label for="customer_name"
-                                                class="block text-sm font-medium text-gray-700">Nama</label>
-                                            <input type="text" id="customer_name" name="customer_name" required
-                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                                        </div>
-                                        <div>
-                                            <label for="customer_email"
-                                                class="block text-sm font-medium text-gray-700">Email</label>
-                                            <input type="email" id="customer_email" name="customer_email" required
-                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                                        </div>
-                                        <div>
-                                            <label for="customer_phone"
-                                                class="block text-sm font-medium text-gray-700">No. HP</label>
-                                            <input type="text" id="customer_phone" name="customer_phone" required
-                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                                        </div>
-                                        <div>
-                                            <label for="service"
-                                                class="block text-sm font-medium text-gray-700">Pilih Layanan</label>
-                                            <select id="service" name="service_id" required
-                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                                                <option value="">Pilih Layanan</option>
+                                class="relative top-20 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-2xl bg-white">
+                                <div class="mt-3">
+                                    <!-- Modal Header -->
+                                    <div class="flex items-center justify-between mb-6">
+                                        <h3 class="text-2xl font-bold text-gray-900">Booking Gym Service</h3>
+                                        <button onclick="closeGymBookingModal()"
+                                            class="text-gray-400 hover:text-gray-600">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M6 18L18 6M6 6l12 12"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
 
+                                    <!-- Booking Form -->
+                                    <form id="gymBookingForm" class="space-y-6">
+                                        <input type="hidden" name="gym_id" value="{{ $gym->id_gym }}">
+
+                                        <!-- Service Selection -->
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Choose
+                                                Service</label>
+                                            <select name="service_id" id="serviceSelect" required
+                                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                                <option value="">Select a service...</option>
                                             </select>
                                         </div>
-                                        <div id="service-details" class="hidden bg-blue-50 p-3 rounded-lg">
+
+                                        <!-- Service Details Display -->
+                                        <div id="service-details" class="hidden bg-blue-50 p-4 rounded-lg">
                                             <div class="text-sm">
-                                                <div class="font-medium text-gray-900" id="selected-service-name">
+                                                <div class="font-medium text-gray-900 mb-2"
+                                                    id="selected-service-name"></div>
+                                                <div class="text-gray-600 mb-2" id="selected-service-description">
                                                 </div>
-                                                <div class="text-gray-600" id="selected-service-description"></div>
-                                                <div class="font-bold text-blue-600 mt-1" id="selected-service-price">
+                                                <div class="flex justify-between items-center">
+                                                    <span class="text-gray-500" id="selected-service-duration"></span>
+                                                    <span class="font-bold text-blue-600"
+                                                        id="selected-service-price"></span>
                                                 </div>
                                             </div>
                                         </div>
-                                        <button type="submit"
-                                            class="w-full bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition duration-300">
-                                            Booking & Lanjut Bayar
-                                        </button>
+
+                                        <!-- Date and Time -->
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <label
+                                                    class="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                                                <input type="date" name="booking_date" required
+                                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                            </div>
+                                            <div>
+                                                <label
+                                                    class="block text-sm font-medium text-gray-700 mb-2">Time</label>
+                                                <input type="time" name="booking_time" required
+                                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                            </div>
+                                        </div>
+
+                                        <!-- Customer Information -->
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-2">Full
+                                                    Name</label>
+                                                <input type="text" name="customer_name" required
+                                                    placeholder="Enter your full name"
+                                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-2">Phone
+                                                    Number</label>
+                                                <input type="tel" name="customer_phone" required
+                                                    placeholder="Enter your phone number"
+                                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Email
+                                                Address</label>
+                                            <input type="email" name="customer_email" required
+                                                placeholder="Enter your email address"
+                                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        </div>
+
+                                        <!-- Special Notes -->
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Special Notes
+                                                (Optional)</label>
+                                            <textarea name="notes" rows="3" placeholder="Any special requests or notes..."
+                                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                                        </div>
+
+                                        <!-- Submit Button -->
+                                        <div class="flex justify-end space-x-3 pt-4">
+                                            <button type="button" onclick="closeGymBookingModal()"
+                                                class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-200">
+                                                Cancel
+                                            </button>
+                                            <button type="submit"
+                                                class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition duration-200 flex items-center">
+                                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
+                                                    </path>
+                                                </svg>
+                                                Book & Pay Now
+                                            </button>
+                                        </div>
                                     </form>
                                 </div>
                             </div>
@@ -365,100 +428,159 @@
             // Image gallery functionality
             const thumbnails = document.querySelectorAll('.thumbnail');
             const mainImage = document.getElementById('mainImage');
+
             thumbnails.forEach(thumbnail => {
                 thumbnail.addEventListener('click', function() {
+                    // Remove active state from all thumbnails
                     thumbnails.forEach(thumb => {
                         thumb.classList.remove('border-blue-500', 'opacity-100');
                         thumb.classList.add('border-gray-200', 'opacity-70');
                     });
+
+                    // Add active state to clicked thumbnail
                     this.classList.remove('border-gray-200', 'opacity-70');
                     this.classList.add('border-blue-500', 'opacity-100');
-                    mainImage.style.opacity = '0.5';
-                    setTimeout(() => {
-                        mainImage.src = this.src;
-                        mainImage.style.opacity = '1';
-                    }, 150);
+
+                    // Update main image
+                    mainImage.src = this.src;
                 });
             });
 
-            // Modal Booking
+            // Booking modal functionality
             const bookingBtn = document.querySelector('.bookingBtn');
             const gymBookingModal = document.getElementById('gymBookingModal');
             const gymBookingForm = document.getElementById('gymBookingForm');
-            const serviceSelect = document.getElementById('service');
+            const serviceSelect = document.getElementById('serviceSelect');
             const serviceDetails = document.getElementById('service-details');
 
             let gymServices = [];
 
             if (bookingBtn) {
                 bookingBtn.addEventListener('click', function() {
+                    // Allow users to access booking modal without authentication
+                    // Authentication check moved to payment processing stage
                     const gymId = this.getAttribute('data-gym-id');
                     loadGymServices(gymId);
-                    gymBookingModal.classList.remove('hidden');
+                    openGymBookingModal();
                 });
             }
 
-            // Load gym services
-            function loadGymServices(gymId) {
-                fetch(`/gym/${gymId}/services`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            gymServices = data.services;
-                            populateServiceSelect(data.services);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error loading services:', error);
-                    });
-            }
-
-            // Populate service select
-            function populateServiceSelect(services) {
-                serviceSelect.innerHTML = '<option value="">Pilih Layanan</option>';
-                services.forEach(service => {
-                    const option = document.createElement('option');
-                    option.value = service.id;
-                    option.textContent =
-                        `${service.name} - Rp ${new Intl.NumberFormat('id-ID').format(service.price)}`;
-                    option.dataset.service = JSON.stringify(service);
-                    serviceSelect.appendChild(option);
-                });
-            }
-
-            // Service selection change
-            serviceSelect.addEventListener('change', function() {
-                if (this.value) {
-                    const selectedOption = this.options[this.selectedIndex];
-                    const service = JSON.parse(selectedOption.dataset.service);
-
-                    document.getElementById('selected-service-name').textContent = service.name;
-                    document.getElementById('selected-service-description').textContent = service
-                        .description;
-                    document.getElementById('selected-service-price').textContent =
-                        `Rp ${new Intl.NumberFormat('id-ID').format(service.price)}`;
-
-                    serviceDetails.classList.remove('hidden');
-                } else {
-                    serviceDetails.classList.add('hidden');
+            function openGymBookingModal() {
+                gymBookingModal.classList.remove('hidden');
+                // Set minimum date to today
+                const dateInput = gymBookingForm.querySelector('input[name="booking_date"]');
+                if (dateInput) {
+                    const today = new Date().toISOString().split('T')[0];
+                    dateInput.setAttribute('min', today);
                 }
-            });
+            }
 
             window.closeGymBookingModal = function() {
                 gymBookingModal.classList.add('hidden');
                 gymBookingForm.reset();
                 serviceDetails.classList.add('hidden');
-            };
+            }
 
+            // Load gym services
+            function loadGymServices(gymId) {
+                fetch(`/gym/${gymId}/services`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success && data.services) {
+                            gymServices = data.services;
+                            populateServiceSelect(data.services);
+                        } else {
+                            showServiceError('Failed to load services: ' + (data.message || 'Unknown error'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error loading services:', error);
+                        showServiceError('Network error: ' + error.message);
+                    });
+            }
+
+            // Show service loading error
+            function showServiceError(message) {
+                serviceSelect.innerHTML = '<option value="">' + message + '</option>';
+                serviceDetails.classList.add('hidden');
+            }
+
+            // Populate service select
+            function populateServiceSelect(services) {
+                serviceSelect.innerHTML = '<option value="">Select a service...</option>';
+                if (services && services.length > 0) {
+                    services.forEach(service => {
+                        const option = document.createElement('option');
+                        option.value = service.id;
+                        option.textContent =
+                            `${service.name} - Rp ${new Intl.NumberFormat('id-ID').format(service.price)}`;
+                        option.dataset.service = JSON.stringify(service);
+                        serviceSelect.appendChild(option);
+                    });
+                } else {
+                    showServiceError('No services available');
+                }
+            }
+
+            // Service selection change
+            if (serviceSelect) {
+                serviceSelect.addEventListener('change', function() {
+                    if (this.value) {
+                        const selectedOption = this.options[this.selectedIndex];
+                        const service = JSON.parse(selectedOption.dataset.service);
+
+                        document.getElementById('selected-service-name').textContent = service.name;
+                        document.getElementById('selected-service-description').textContent = service
+                            .description;
+                        document.getElementById('selected-service-price').textContent =
+                            `Rp ${new Intl.NumberFormat('id-ID').format(service.price)}`;
+
+                        const durationElement = document.getElementById('selected-service-duration');
+                        if (durationElement) {
+                            durationElement.textContent = service.duration || '';
+                        }
+
+                        serviceDetails.classList.remove('hidden');
+                    } else {
+                        serviceDetails.classList.add('hidden');
+                    }
+                });
+            }
+
+            // Form submission
             if (gymBookingForm) {
                 gymBookingForm.addEventListener('submit', function(e) {
                     e.preventDefault();
+
+                    // Validate service selection
+                    if (!serviceSelect.value) {
+                        Swal.fire('Error', 'Please select a gym service.', 'error');
+                        return;
+                    }
+
+                    // Prepare form data
                     const formData = new FormData(gymBookingForm);
                     const data = {};
                     formData.forEach((value, key) => {
                         data[key] = value;
                     });
 
+                    // Add booking type for gym bookings
+                    data.booking_type = 'gym';
+
+                    // Show loading state
+                    const submitBtn = gymBookingForm.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.innerHTML =
+                        '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Processing...';
+                    submitBtn.disabled = true;
+
+                    // Submit booking request
                     fetch('/gym/booking', {
                             method: 'POST',
                             headers: {
@@ -468,41 +590,84 @@
                             },
                             body: JSON.stringify(data)
                         })
-                        .then(res => res.json())
                         .then(response => {
-                            if (response.success && response.payment_token && response.booking_id) {
+                            // Handle authentication error (401)
+                            if (response.status === 401) {
+                                response.json().then(errorData => {
+                                    console.log('Authentication required:', errorData);
+
+                                    // Show login prompt and redirect to login
+                                    Swal.fire({
+                                        title: 'Login Required',
+                                        text: errorData.message ||
+                                            'You must be logged in to make a booking. Please login first.',
+                                        icon: 'warning',
+                                        showCancelButton: true,
+                                        confirmButtonText: 'Login Now',
+                                        cancelButtonText: 'Cancel',
+                                        confirmButtonColor: '#3B82F6',
+                                        cancelButtonColor: '#6B7280'
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            // Redirect to login page
+                                            window.location.href = '/login';
+                                        }
+                                    });
+                                });
+
+                                submitBtn.innerHTML = originalText;
+                                submitBtn.disabled = false;
+                                return;
+                            }
+
+                            return response.json();
+                        })
+                        .then(result => {
+                            if (!result) return; // Skip if we already handled auth error
+
+                            submitBtn.innerHTML = originalText;
+                            submitBtn.disabled = false;
+
+                            if (result.success && result.payment_token && result.booking_id) {
                                 closeGymBookingModal();
-                                loadMidtransSnap(response.payment_token, response.booking_id);
+                                // Show payment processing with Midtrans
+                                loadMidtransSnap(result.payment_token, result.booking_id);
                             } else {
-                                Swal.fire('Error', response.message ||
-                                    'Gagal booking. Silakan coba lagi.', 'error');
+                                // Only show error message if it's not an authentication error
+                                if (result.message && !result.message.includes('logged in')) {
+                                    Swal.fire('Error', result.message ||
+                                        'Booking failed. Please try again.', 'error');
+                                }
                             }
                         })
                         .catch(error => {
-                            Swal.fire('Error', 'Terjadi kesalahan pada server.', 'error');
+                            console.error('Booking error:', error);
+                            submitBtn.innerHTML = originalText;
+                            submitBtn.disabled = false;
+                            Swal.fire('Error', 'A server error occurred. Please try again.', 'error');
                         });
                 });
             }
 
             function loadMidtransSnap(token, bookingId) {
                 if (!window.snap) {
-                    Swal.fire('Error', 'Midtrans Snap belum termuat. Coba refresh halaman.', 'error');
+                    Swal.fire('Error', 'Midtrans Snap is not loaded. Please refresh the page.', 'error');
                     return;
                 }
+
                 window.snap.pay(token, {
                     onSuccess: function(result) {
-                        Swal.fire('Pembayaran Berhasil', 'Booking layanan gym Anda telah dibayar!',
-                                'success')
+                        Swal.fire('Payment Successful', 'Your gym booking has been paid!', 'success')
                             .then(() => window.location.reload());
                     },
                     onPending: function(result) {
-                        Swal.fire('Pembayaran Pending', 'Pembayaran Anda sedang diproses.', 'info');
+                        Swal.fire('Payment Pending', 'Your payment is being processed.', 'info');
                     },
                     onError: function(result) {
-                        Swal.fire('Error', 'Pembayaran gagal. Silakan coba lagi.', 'error');
+                        Swal.fire('Error', 'Payment failed. Please try again.', 'error');
                     },
                     onClose: function() {
-                        Swal.fire('Dibatalkan', 'Anda menutup pembayaran tanpa menyelesaikan.',
+                        Swal.fire('Cancelled', 'You closed the payment without completing it.',
                             'warning');
                     }
                 });
