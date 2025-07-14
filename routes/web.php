@@ -35,6 +35,13 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\Admin\YogaDetailController;
 use App\Http\Controllers\Admin\YogaServiceController;
 use App\Http\Controllers\Admin\GymServiceController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
+use App\Mail\WelcomeEmail;
+use App\Mail\SpaBookingSuccessMail;
+use App\Mail\YogaBookingSuccessMail;
+use App\Mail\GymBookingSuccessMail;
 
 /*
 |--------------------------------------------------------------------------
@@ -339,7 +346,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     // Chat management for admins
     Route::get('/chat', function () {
-        if (!auth()->check() || auth()->user()->role !== 'admin') {
+        if (!Auth::check() || Auth::user()->role !== 'admin') {
             return redirect()->route('dashboard')->with('error', 'Unauthorized access. Admin privileges required.');
         }
         return view('admin.chat.index');
@@ -357,6 +364,102 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     // Chat notifications
     Route::get('/chat/notifications/unread', [ChatNotificationController::class, 'getUnreadCount']);
+
+    // VPS Email Testing Routes
+    Route::get('/email-test', function () {
+        return view('admin.email-test');
+    })->name('email.test.form');
+
+    Route::post('/email-test/send', function (Request $request) {
+        try {
+            $type = $request->input('type');
+            $email = $request->input('email');
+
+            switch ($type) {
+                case 'welcome':
+                    $data = [
+                        'userName' => 'VPS Test User',
+                        'userEmail' => $email,
+                        'userPhone' => '+62 812-3456-7890',
+                        'supportEmail' => env('MAIL_FROM_ADDRESS', 'support@vitalife.web.id')
+                    ];
+                    Mail::to($email)->send(new App\Mail\WelcomeEmail($data));
+                    break;
+
+                case 'spa':
+                    $data = [
+                        'bookingCode' => 'SPA-VPS-' . strtoupper(uniqid()),
+                        'customerName' => 'VPS Test Customer',
+                        'customerEmail' => $email,
+                        'bookingDate' => now()->addDays(1)->format('Y-m-d'),
+                        'bookingTime' => '14:00',
+                        'duration' => 90,
+                        'therapistPreference' => 'Female Therapist',
+                        'totalAmount' => '350.000',
+                        'status' => 'confirmed',
+                        'paymentStatus' => 'paid',
+                        'paymentMethod' => 'Bank Transfer',
+                        'notes' => 'VPS Email Test - Spa Booking',
+                        'supportEmail' => env('MAIL_FROM_ADDRESS', 'support@vitalife.web.id')
+                    ];
+                    Mail::to($email)->send(new App\Mail\SpaBookingSuccessMail($data));
+                    break;
+
+                case 'yoga':
+                    $data = [
+                        'bookingCode' => 'YOGA-VPS-' . strtoupper(uniqid()),
+                        'customerName' => 'VPS Test Customer',
+                        'customerEmail' => $email,
+                        'bookingDate' => now()->addDays(1)->format('Y-m-d'),
+                        'bookingTime' => '07:00',
+                        'classType' => 'Hatha Yoga',
+                        'participants' => 1,
+                        'totalAmount' => '100.000',
+                        'status' => 'confirmed',
+                        'paymentStatus' => 'paid',
+                        'paymentMethod' => 'Bank Transfer',
+                        'specialRequests' => 'VPS Email Test - Yoga Booking',
+                        'supportEmail' => env('MAIL_FROM_ADDRESS', 'support@vitalife.web.id')
+                    ];
+                    Mail::to($email)->send(new App\Mail\YogaBookingSuccessMail($data));
+                    break;
+
+                case 'gym':
+                    $data = [
+                        'bookingCode' => 'GYM-VPS-' . strtoupper(uniqid()),
+                        'customerName' => 'VPS Test Customer',
+                        'customerEmail' => $email,
+                        'bookingDate' => now()->addDays(1)->format('Y-m-d'),
+                        'bookingTime' => '18:00',
+                        'duration' => 2,
+                        'totalAmount' => '75.000',
+                        'status' => 'confirmed',
+                        'paymentStatus' => 'paid',
+                        'paymentMethod' => 'E-Wallet',
+                        'notes' => 'VPS Email Test - Gym Booking',
+                        'supportEmail' => env('MAIL_FROM_ADDRESS', 'support@vitalife.web.id')
+                    ];
+                    Mail::to($email)->send(new App\Mail\GymBookingSuccessMail($data));
+                    break;
+
+                default:
+                    return response()->json(['success' => false, 'message' => 'Invalid email type']);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => "✅ {$type} email berhasil dikirim ke {$email}!",
+                'smtp_host' => env('MAIL_HOST'),
+                'from_address' => env('MAIL_FROM_ADDRESS')
+            ]);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => "❌ Gagal mengirim email: " . $e->getMessage()
+            ]);
+        }
+    })->name('email.test.send');
 });
 
 // ============================================================================
