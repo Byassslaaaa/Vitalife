@@ -30,8 +30,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('events');
-        Schema::table('event', function (Blueprint $table) {
-            $table->dropColumn('gambar');
-        });
     }
 };
