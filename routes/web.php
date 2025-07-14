@@ -104,6 +104,10 @@ Route::get('auth/{provider}/callback', [SocialAuthController::class, 'handleProv
 Route::get('auth/google', [SocialAuthController::class, 'redirectToProvider'])->name('auth.google')->middleware('guest');
 Route::get('auth/google/callback', [SocialAuthController::class, 'handleProviderCallback'])->middleware('guest');
 
+// Socialite authentication routes
+Route::get('/auth/{provider}', [\App\Http\Controllers\Auth\SocialiteController::class, 'redirectToProvider']);
+Route::get('/auth/{provider}/callback', [\App\Http\Controllers\Auth\SocialiteController::class, 'handleProviderCallback']);
+
 // Language change
 Route::post('/change-language', [LanguageController::class, 'changeLanguage']);
 
