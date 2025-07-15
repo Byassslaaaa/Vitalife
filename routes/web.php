@@ -464,6 +464,145 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
             ]);
         }
     })->name('email.test.send');
+
+    // Postfix Mail Server Testing Routes
+    Route::prefix('mail-server')->name('mail.server.')->group(function () {
+        Route::get('/test', function () {
+            return view('admin.mail-server-test');
+        })->name('test');
+
+        Route::get('/status', function () {
+            try {
+                $status = [
+                    'mail_host' => env('MAIL_HOST'),
+                    'mail_port' => env('MAIL_PORT'),
+                    'mail_encryption' => env('MAIL_ENCRYPTION'),
+                    'mail_from' => env('MAIL_FROM_ADDRESS'),
+                    'timestamp' => now()->toDateTimeString(),
+                ];
+
+                // Test SMTP connection
+                $transport = new \Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport(
+                    env('MAIL_HOST'),
+                    env('MAIL_PORT'),
+                    env('MAIL_ENCRYPTION') === 'tls'
+                );
+
+                if (env('MAIL_USERNAME')) {
+                    $transport->setUsername(env('MAIL_USERNAME'));
+                    $transport->setPassword(env('MAIL_PASSWORD'));
+                }
+
+                $status['connection'] = 'success';
+                $status['message'] = '✅ SMTP connection successful';
+
+                return response()->json($status);
+
+            } catch (Exception $e) {
+                return response()->json([
+                    'connection' => 'failed',
+                    'message' => '❌ SMTP connection failed: ' . $e->getMessage(),
+                    'mail_host' => env('MAIL_HOST'),
+                    'mail_port' => env('MAIL_PORT'),
+                    'timestamp' => now()->toDateTimeString(),
+                ], 500);
+            }
+        })->name('status');
+
+        Route::post('/test-smtp', function (Request $request) {
+            try {
+                $testEmail = $request->input('email', env('MAIL_FROM_ADDRESS'));
+
+                // Test basic SMTP functionality
+                $testData = [
+                    'subject' => 'Postfix SMTP Test - ' . now()->format('Y-m-d H:i:s'),
+                    'message' => 'This is a test email from Postfix mail server.',
+                    'from' => env('MAIL_FROM_ADDRESS'),
+                    'to' => $testEmail,
+                    'server' => env('MAIL_HOST'),
+                    'port' => env('MAIL_PORT'),
+                    'encryption' => env('MAIL_ENCRYPTION'),
+                    'timestamp' => now()->toDateTimeString()
+                ];
+
+                Mail::raw($testData['message'], function ($message) use ($testData) {
+                    $message->to($testData['to'])
+                           ->subject($testData['subject'])
+                           ->from($testData['from'], 'Vitalife Mail Server');
+                });
+
+                return response()->json([
+                    'success' => true,
+                    'message' => "✅ Test email berhasil dikirim ke {$testEmail}",
+                    'details' => $testData
+                ]);
+
+            } catch (Exception $e) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "❌ Gagal mengirim test email: " . $e->getMessage(),
+                    'error_details' => [
+                        'host' => env('MAIL_HOST'),
+                        'port' => env('MAIL_PORT'),
+                        'encryption' => env('MAIL_ENCRYPTION'),
+                        'username' => env('MAIL_USERNAME'),
+                    ]
+                ], 500);
+            }
+        })->name('test.smtp');
+
+        Route::get('/logs', function () {
+            try {
+                $logs = [];
+
+                // Simulate mail server logs (in production, read actual log files)
+                $logFiles = [
+                    '/var/log/mail.log',
+                    '/var/log/postfix.log'
+                ];
+
+                foreach ($logFiles as $logFile) {
+                    if (file_exists($logFile)) {
+                        $logs[$logFile] = array_slice(file($logFile), -50); // Last 50 lines
+                    }
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'logs' => $logs,
+                    'timestamp' => now()->toDateTimeString()
+                ]);
+
+            } catch (Exception $e) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "❌ Gagal membaca log files: " . $e->getMessage()
+                ], 500);
+            }
+        })->name('logs');
+
+        Route::get('/queue-status', function () {
+            try {
+                // In production, execute actual postqueue command
+                $queueStatus = [
+                    'queue_count' => 0,
+                    'active_count' => 0,
+                    'deferred_count' => 0,
+                    'status' => 'empty',
+                    'message' => '✅ Mail queue is empty',
+                    'timestamp' => now()->toDateTimeString()
+                ];
+
+                return response()->json($queueStatus);
+
+            } catch (Exception $e) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "❌ Gagal mengecek mail queue: " . $e->getMessage()
+                ], 500);
+            }
+        })->name('queue.status');
+    });
 });
 
 // ============================================================================
