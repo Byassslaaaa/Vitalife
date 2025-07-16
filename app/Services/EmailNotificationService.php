@@ -25,11 +25,14 @@ class EmailNotificationService
                 'supportEmail' => env('MAIL_FROM_ADDRESS')
             ];
 
+            // Send email immediately (sync) instead of queuing
             Mail::to($user->email)->send(new WelcomeEmail($emailData));
 
             Log::info('Welcome email sent successfully', [
                 'user_id' => $user->id,
-                'email' => $user->email
+                'email' => $user->email,
+                'smtp_host' => env('MAIL_HOST'),
+                'from_address' => env('MAIL_FROM_ADDRESS')
             ]);
 
             return true;
@@ -38,7 +41,10 @@ class EmailNotificationService
             Log::error('Failed to send welcome email', [
                 'user_id' => $user->id ?? null,
                 'email' => $user->email ?? null,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'smtp_host' => env('MAIL_HOST'),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
             ]);
 
             return false;
@@ -65,8 +71,8 @@ class EmailNotificationService
                     throw new Exception("Unknown booking type: {$type}");
             }
 
-            $email = is_array($booking) ? $booking['customerEmail'] : $booking->customer_email;
-            $bookingCode = is_array($booking) ? $booking['bookingCode'] : $booking->booking_code;
+            $email = is_array($booking) ? $booking['customer_email'] : $booking->customer_email;
+            $bookingCode = is_array($booking) ? $booking['booking_code'] : $booking->booking_code;
 
             Mail::to($email)->send($mailable);
 
