@@ -10,10 +10,12 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 use App\Mail\WelcomeEmail;
 use Illuminate\Support\Facades\Mail;
+use App\Services\EmailNotificationService;
 
 class RegisteredUserController extends Controller
 {
@@ -47,13 +49,15 @@ class RegisteredUserController extends Controller
                 $admin->notify(new NewUserRegistered($user));
             }
 
-\Log::info('Email user baru: ' . $user->email);
-// Kirim email selamat datang ke pengguna yang baru mendaftar
-try {
-    Mail::to($user->email)->send(new WelcomeEmail($user));
-} catch (\Exception $e) {
-    \Log::error('Gagal mengirim email: ' . $e->getMessage());
-}
+            // Kirim email selamat datang menggunakan EmailNotificationService
+            $emailService = new EmailNotificationService();
+            $emailSent = $emailService->sendWelcomeEmail($user);
+
+            Log::info('Registration completed', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'welcome_email_sent' => $emailSent
+            ]);
 
             Auth::login($user);
 

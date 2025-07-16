@@ -14,6 +14,7 @@ use App\Models\YogaBooking;
 use App\Models\GymBooking;
 use App\Mail\BookingSuccessMail;
 use App\Mail\YogaBookingSuccessMail;
+use App\Services\EmailNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -75,11 +76,24 @@ class BookingController extends Controller
 
             DB::commit();
 
+            // Send booking confirmation email
+            $emailService = new EmailNotificationService();
+            $emailSent = $emailService->sendBookingConfirmation($result['booking'], $bookingType);
+
+            Log::info('Booking created and email notification sent', [
+                'booking_id' => $result['booking']->id,
+                'booking_type' => $bookingType,
+                'booking_code' => $result['booking']->booking_code,
+                'customer_email' => $result['booking']->customer_email,
+                'email_sent' => $emailSent
+            ]);
+
             return response()->json([
                 'success' => true,
                 'booking_id' => $result['booking']->id,
                 'payment_token' => $result['snap_token'],
-                'booking_type' => $bookingType
+                'booking_type' => $bookingType,
+                'email_sent' => $emailSent
             ]);
 
         } catch (\Exception $e) {
@@ -634,17 +648,28 @@ class BookingController extends Controller
             if ($transaction == 'capture' || $transaction == 'settlement') {
                 $booking->status = 'confirmed';
                 $booking->payment_status = 'paid';
+                $booking->save();
 
-                // Send success email
-                if ($booking->customer_email && $emailClass) {
-                    Mail::to($booking->customer_email)->send(new $emailClass($booking));
+                // Send success email using EmailNotificationService
+                if ($booking->customer_email) {
+                    $emailService = new EmailNotificationService();
+                    $emailSent = $emailService->sendPaymentSuccessNotification($booking, $bookingType);
+
+                    Log::info('Payment success email notification', [
+                        'booking_code' => $booking->booking_code,
+                        'booking_type' => $bookingType,
+                        'email' => $booking->customer_email,
+                        'email_sent' => $emailSent
+                    ]);
                 }
             } elseif ($transaction == 'pending') {
                 $booking->status = 'pending';
                 $booking->payment_status = 'pending';
+                $booking->save();
             } else { // failed, cancel, expire, deny
                 $booking->status = 'cancelled';
                 $booking->payment_status = 'failed';
+                $booking->save();
             }
 
             $booking->payment_details = json_encode($notif);

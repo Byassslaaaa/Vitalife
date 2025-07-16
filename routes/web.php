@@ -465,6 +465,105 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         }
     })->name('email.test.send');
 
+    // Brevo Email Testing Routes (Enhanced)
+    Route::get('/brevo-email-test', function () {
+        return view('admin.brevo-email-test');
+    })->name('brevo.email.test');
+
+    Route::post('/brevo-email-test/send', function (Request $request) {
+        try {
+            $emailService = new App\Services\EmailNotificationService();
+            $type = $request->input('type');
+            $email = $request->input('email');
+
+            switch ($type) {
+                case 'welcome':
+                    // Create test user object
+                    $testUser = (object) [
+                        'id' => 999,
+                        'name' => 'Test User - ' . now()->format('H:i:s'),
+                        'email' => $email,
+                        'phone' => '+62812345678'
+                    ];
+                    $sent = $emailService->sendWelcomeEmail($testUser);
+                    break;
+
+                case 'spa':
+                    $testBooking = [
+                        'booking_code' => 'SPA-BREVO-' . time(),
+                        'customer_name' => 'Test Customer',
+                        'customer_email' => $email,
+                        'booking_date' => now()->addDays(1)->format('Y-m-d'),
+                        'booking_time' => '14:00',
+                        'duration' => 90,
+                        'therapist_preference' => 'Female',
+                        'total_amount' => 350000,
+                        'status' => 'confirmed',
+                        'payment_status' => 'paid',
+                        'payment_method' => 'Bank Transfer',
+                        'notes' => 'Test booking via Brevo',
+                        'supportEmail' => env('MAIL_FROM_ADDRESS')
+                    ];
+                    $sent = $emailService->sendBookingConfirmation($testBooking, 'spa');
+                    break;
+
+                case 'gym':
+                    $testBooking = [
+                        'booking_code' => 'GYM-BREVO-' . time(),
+                        'customer_name' => 'Test Customer',
+                        'customer_email' => $email,
+                        'booking_date' => now()->addDays(1)->format('Y-m-d'),
+                        'booking_time' => '18:00',
+                        'duration' => 2,
+                        'total_amount' => 75000,
+                        'status' => 'confirmed',
+                        'payment_status' => 'paid',
+                        'payment_method' => 'E-Wallet',
+                        'notes' => 'Test booking via Brevo',
+                        'supportEmail' => env('MAIL_FROM_ADDRESS')
+                    ];
+                    $sent = $emailService->sendBookingConfirmation($testBooking, 'gym');
+                    break;
+
+                case 'yoga':
+                    $testBooking = [
+                        'booking_code' => 'YOGA-BREVO-' . time(),
+                        'customer_name' => 'Test Customer',
+                        'customer_email' => $email,
+                        'booking_date' => now()->addDays(1)->format('Y-m-d'),
+                        'booking_time' => '07:00',
+                        'class_type' => 'Hatha Yoga',
+                        'participants' => 1,
+                        'total_amount' => 100000,
+                        'status' => 'confirmed',
+                        'payment_status' => 'paid',
+                        'payment_method' => 'Bank Transfer',
+                        'special_requests' => 'Test booking via Brevo',
+                        'supportEmail' => env('MAIL_FROM_ADDRESS')
+                    ];
+                    $sent = $emailService->sendBookingConfirmation($testBooking, 'yoga');
+                    break;
+
+                default:
+                    return response()->json(['success' => false, 'message' => 'Invalid email type']);
+            }
+
+            return response()->json([
+                'success' => $sent,
+                'message' => $sent ? "✅ {$type} email berhasil dikirim ke {$email} via Brevo!" : "❌ Gagal mengirim {$type} email",
+                'smtp_host' => env('MAIL_HOST'),
+                'from_address' => env('MAIL_FROM_ADDRESS'),
+                'service' => 'EmailNotificationService'
+            ]);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => "❌ Error: " . $e->getMessage()
+            ]);
+        }
+    })->name('brevo.email.test.send');
+
     // Postfix Mail Server Testing Routes
     Route::prefix('mail-server')->name('mail.server.')->group(function () {
         Route::get('/test', function () {

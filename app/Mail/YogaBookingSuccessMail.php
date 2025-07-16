@@ -26,9 +26,11 @@ class YogaBookingSuccessMail extends Mailable
      */
     public function envelope(): Envelope
     {
+        $bookingCode = is_array($this->booking) ? $this->booking['booking_code'] : $this->booking->booking_code;
+
         return new Envelope(
             from: new Address(env('MAIL_FROM_ADDRESS', 'yoga@vitalife.com'), env('MAIL_FROM_NAME', 'Vitalife Yoga')),
-            subject: '🧘‍♀️ Konfirmasi Booking Yoga - ' . $this->booking->booking_code
+            subject: '🧘‍♀️ Konfirmasi Booking Yoga - ' . $bookingCode
         );
     }
 
@@ -47,7 +49,9 @@ class YogaBookingSuccessMail extends Mailable
                 'bookingTime' => $this->booking->booking_time,
                 'classType' => $this->booking->class_type,
                 'participants' => $this->booking->participants,
-                'totalAmount' => number_format($this->booking->total_amount, 0, ',', '.'),
+                'totalAmount' => is_numeric($this->booking->total_amount) ?
+                    number_format($this->booking->total_amount, 0, ',', '.') :
+                    $this->booking->total_amount,
                 'status' => $this->booking->status,
                 'paymentStatus' => $this->booking->payment_status,
                 'paymentMethod' => $this->booking->payment_method,
