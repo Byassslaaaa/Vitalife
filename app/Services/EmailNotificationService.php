@@ -123,29 +123,7 @@ class EmailNotificationService
         }
     }
 
-    /**
-     * Test email functionality
-     */
-    public function testEmailConnection()
-    {
-        try {
-            $testData = [
-                'userName' => 'Test User',
-                'userEmail' => env('MAIL_FROM_ADDRESS'),
-                'userPhone' => '+62812345678',
-                'supportEmail' => env('MAIL_FROM_ADDRESS')
-            ];
 
-            Mail::to(env('MAIL_FROM_ADDRESS'))->send(new WelcomeEmail($testData));
-
-            Log::info('Email test successful');
-            return true;
-
-        } catch (Exception $e) {
-            Log::error('Email test failed', ['error' => $e->getMessage()]);
-            return false;
-        }
-    }
 
     /**
      * Get email configuration status

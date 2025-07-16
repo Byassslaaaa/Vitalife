@@ -23,11 +23,11 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // Create test user
-        if (User::where('email', 'test@test.com')->doesntExist()) {
+        // Create demo user
+        if (User::where('email', 'demo@vitalife.web.id')->doesntExist()) {
             User::factory()->create([
-                'name' => 'Test User',
-                'email' => 'test@test.com',
+                'name' => 'Demo User',
+                'email' => 'demo@vitalife.web.id',
                 'password' => bcrypt('password'),
                 'role' => 'user',
             ]);
