@@ -361,8 +361,8 @@ class BookingController extends Controller
      */
     private function generateMidtransToken($orderId, $amount, $customerName, $customerEmail, $customerPhone, $itemDetails)
     {
-        \Midtrans\Config::$serverKey = config('services.midtrans.server_key');
-        \Midtrans\Config::$isProduction = config('services.midtrans.is_production');
+        \Midtrans\Config::$serverKey = config('midtrans.server_key');
+        \Midtrans\Config::$isProduction = config('midtrans.is_production');
 
         $params = [
             'transaction_details' => [
@@ -605,8 +605,8 @@ class BookingController extends Controller
     // MIDTRANS CALLBACK / NOTIFICATION HANDLER
     public function handleMidtransCallback(Request $request)
     {
-        \Midtrans\Config::$serverKey = config('services.midtrans.server_key');
-        \Midtrans\Config::$isProduction = config('services.midtrans.is_production');
+        \Midtrans\Config::$serverKey = config('midtrans.server_key');
+        \Midtrans\Config::$isProduction = config('midtrans.is_production');
         \Midtrans\Config::$isSanitized = true;
         \Midtrans\Config::$is3ds = true;
 

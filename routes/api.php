@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Booking;
 use App\Models\SpaService;
@@ -46,7 +47,7 @@ Route::post('/create-yoga-payment', [BookingController::class, 'createYogaPaymen
 // Webhook endpoint for Midtrans payment notifications
 Route::post('/midtrans-webhook', function (Request $request) {
     try {
-        $serverKey = config('services.midtrans.server_key');
+        $serverKey = config('midtrans.server_key');
 
         if (!$serverKey) {
             return response()->json(['message' => 'Server key not configured'], 500);
@@ -88,9 +89,39 @@ Route::post('/midtrans-webhook', function (Request $request) {
                 $booking->update(['payment_status' => 'pending', 'status' => 'pending']);
             } elseif ($fraudStatus === 'accept') {
                 $booking->update(['payment_status' => 'paid', 'status' => 'confirmed']);
+
+                // Send email notification on successful payment
+                try {
+                    if ($booking->service_type === 'spa') {
+                        Mail::to($booking->user_email)->send(new \App\Mail\SpaBookingSuccessMail($booking));
+                    } elseif ($booking->service_type === 'yoga') {
+                        Mail::to($booking->user_email)->send(new \App\Mail\YogaBookingSuccessMail($booking));
+                    } elseif ($booking->service_type === 'gym') {
+                        Mail::to($booking->user_email)->send(new \App\Mail\GymBookingSuccessMail($booking));
+                    }
+
+                    Log::info('Email notification sent for successful payment', ['order_id' => $orderId]);
+                } catch (\Exception $e) {
+                    Log::error('Failed to send email notification', ['error' => $e->getMessage(), 'order_id' => $orderId]);
+                }
             }
         } elseif ($transactionStatus === 'settlement') {
             $booking->update(['payment_status' => 'paid', 'status' => 'confirmed']);
+
+            // Send email notification on successful payment
+            try {
+                if ($booking->service_type === 'spa') {
+                    Mail::to($booking->user_email)->send(new \App\Mail\SpaBookingSuccessMail($booking));
+                } elseif ($booking->service_type === 'yoga') {
+                    Mail::to($booking->user_email)->send(new \App\Mail\YogaBookingSuccessMail($booking));
+                } elseif ($booking->service_type === 'gym') {
+                    Mail::to($booking->user_email)->send(new \App\Mail\GymBookingSuccessMail($booking));
+                }
+
+                Log::info('Email notification sent for successful payment', ['order_id' => $orderId]);
+            } catch (\Exception $e) {
+                Log::error('Failed to send email notification', ['error' => $e->getMessage(), 'order_id' => $orderId]);
+            }
         } elseif (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
             $booking->update(['payment_status' => 'failed', 'status' => 'cancelled']);
         } elseif ($transactionStatus === 'pending') {

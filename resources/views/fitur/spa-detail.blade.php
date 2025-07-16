@@ -633,8 +633,8 @@
     @include('layouts.footer')
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script type="text/javascript" src="{{ config('services.midtrans.snap_url') }}"
-        data-client-key="{{ config('services.midtrans.client_key') }}"></script>
+    <script type="text/javascript" src="{{ config('midtrans.snap_url') }}"
+        data-client-key="{{ config('midtrans.client_key') }}"></script>
 
     <script>
         // Global variables

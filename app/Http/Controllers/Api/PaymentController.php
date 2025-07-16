@@ -45,9 +45,9 @@ class PaymentController extends Controller
             $validated = $validator->validated();
 
             // Get Midtrans configuration
-            $serverKey = config('services.midtrans.server_key');
-            $isProduction = config('services.midtrans.is_production');
-            
+            $serverKey = config('midtrans.server_key');
+            $isProduction = config('midtrans.is_production');
+
             if (!$serverKey) {
                 Log::error('Midtrans server key not configured');
                 return response()->json([
@@ -58,7 +58,7 @@ class PaymentController extends Controller
 
             // Create booking record first
             Log::info('Creating booking record', $validated);
-            
+
             $booking = Booking::create([
                 'order_id' => $validated['order_id'],
                 'spa_id' => $validated['spa_id'],
@@ -120,7 +120,7 @@ class PaymentController extends Controller
             ];
 
             // Determine Midtrans URL
-            $midtransUrl = $isProduction 
+            $midtransUrl = $isProduction
                 ? 'https://app.midtrans.com/snap/v1/transactions'
                 : 'https://app.sandbox.midtrans.com/snap/v1/transactions';
 
@@ -162,12 +162,12 @@ class PaymentController extends Controller
             } else {
                 // Delete the booking if payment creation failed
                 $booking->delete();
-                
+
                 Log::error('Midtrans Error', $result);
                 return response()->json([
                     'success' => false,
-                    'message' => isset($result['error_messages']) 
-                        ? implode(', ', $result['error_messages']) 
+                    'message' => isset($result['error_messages'])
+                        ? implode(', ', $result['error_messages'])
                         : 'Gagal membuat token pembayaran'
                 ], 400);
             }
@@ -178,7 +178,7 @@ class PaymentController extends Controller
                 'file' => $e->getFile(),
                 'line' => $e->getLine()
             ]);
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Terjadi kesalahan internal server: ' . $e->getMessage()

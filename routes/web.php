@@ -6,16 +6,12 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\YogaController;
 use App\Http\Controllers\GymController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\AccountUserController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\SpaAdminController;
 use App\Http\Controllers\GymAdminController;
 use App\Http\Controllers\YogaAdminController;
-use App\Http\Controllers\Admin\YogasController;
-use App\Http\Controllers\Admin\GymsController;
 use App\Http\Controllers\Admin\GymsDetailController;
 use App\Http\Controllers\Admin\SpaServicesController;
 use App\Http\Controllers\Admin\SpaDetailController;
@@ -30,18 +26,12 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\VouchersController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ChatController;
-use App\Http\Controllers\ChatNotificationController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\Admin\YogaDetailController;
 use App\Http\Controllers\Admin\YogaServiceController;
 use App\Http\Controllers\Admin\GymServiceController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use App\Mail\WelcomeEmail;
-use App\Mail\SpaBookingSuccessMail;
-use App\Mail\YogaBookingSuccessMail;
-use App\Mail\GymBookingSuccessMail;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,7 +45,7 @@ use App\Mail\GymBookingSuccessMail;
 
 // Dashboard - accessible to everyone
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index']);
 
 // Public pages
 Route::get('/contact', function () {
@@ -108,12 +98,6 @@ Route::get('auth/{provider}', [SocialAuthController::class, 'redirectToProvider'
     ->name('social.login')->middleware('guest');
 Route::get('auth/{provider}/callback', [SocialAuthController::class, 'handleProviderCallback'])
     ->name('social.callback')->middleware('guest');
-Route::get('auth/google', [SocialAuthController::class, 'redirectToProvider'])->name('auth.google')->middleware('guest');
-Route::get('auth/google/callback', [SocialAuthController::class, 'handleProviderCallback'])->middleware('guest');
-
-// Socialite authentication routes
-Route::get('/auth/{provider}', [\App\Http\Controllers\Auth\SocialiteController::class, 'redirectToProvider']);
-Route::get('/auth/{provider}/callback', [\App\Http\Controllers\Auth\SocialiteController::class, 'handleProviderCallback']);
 
 // Language change
 Route::post('/change-language', [LanguageController::class, 'changeLanguage']);
@@ -154,9 +138,6 @@ Route::middleware(['auth'])->group(function () {
 
     // BOOKING ROUTES (REQUIRES AUTH)
     Route::post('/yoga/booking', [BookingController::class, 'book']);
-    Route::post('/yoga', [YogaController::class, 'store'])->name('yoga.store');
-    Route::post('/gym', [GymController::class, 'store'])->name('gym.store');
-    Route::patch('/admin/gyms/{id_gym}/toggle-status', [GymAdminController::class, 'toggleStatus'])->name('admin.gyms.toggle-status');
     Route::post('/gym/booking', [BookingController::class, 'book'])->name('gym.booking.process');
 
     // Profile routes
@@ -371,14 +352,6 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 // ============================================================================
 // MISC ROUTES
 // ============================================================================
-
-// Legacy route
-Route::get('/spaadmin', function () {
-    return view('spaadmin');
-});
-
-// Public API endpoints (no authentication required)
-Route::get('/gym/{gymId}/services', [BookingController::class, 'getGymServices'])->name('gym.services');
 
 // Include auth routes
 require __DIR__ . '/auth.php';

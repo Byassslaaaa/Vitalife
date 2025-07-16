@@ -84,7 +84,7 @@ return [
 
     'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
 
-    'available_locales' => explode(',', env('APP_AVAILABLE_LOCALES', 'en,id')),
+    'available_locales' => array_filter(explode(',', env('APP_AVAILABLE_LOCALES', 'en,id'))),
 
     /*
     |--------------------------------------------------------------------------
@@ -101,11 +101,9 @@ return [
 
     'key' => env('APP_KEY'),
 
-    'previous_keys' => [
-        ...array_filter(
-            explode(',', env('APP_PREVIOUS_KEYS', ''))
-        ),
-    ],
+    'previous_keys' => array_filter(
+        explode(',', env('APP_PREVIOUS_KEYS', ''))
+    ),
 
     /*
     |--------------------------------------------------------------------------
@@ -160,7 +158,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-        
+
 
         // Package Service Providers...
         Laravel\Socialite\SocialiteServiceProvider::class,
@@ -171,6 +169,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\OpenAIServiceProvider::class,
+        App\Providers\MidtransServiceProvider::class,
     ],
 
     /*
