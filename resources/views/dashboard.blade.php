@@ -19,7 +19,7 @@
                             </p>
                             <h1 class="text-5xl lg:text-7xl xl:text-8xl font-black text-gray-900 leading-tight">
                                 WELCOME<br>
-                                <span class="text-blue-400 font-bold">VITALIFE</span>
+                                <span class="text-blue-400 font-bold">VITA LIFE</span>
                             </h1>
                             <p class="text-xl lg:text-2xl text-gray-700 max-w-lg leading-relaxed">
                                 We are the solution for travelling in a healthy condition and we provide health
