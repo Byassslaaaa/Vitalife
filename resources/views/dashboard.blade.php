@@ -3,6 +3,20 @@
         .unified-gradient {
             background: linear-gradient(to bottom, #FFFFFF 0%, #BED9FE 100%);
         }
+
+        .voucher-card-simple {
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .voucher-card-simple:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .voucher-header-simple {
+            background: linear-gradient(135deg, #374151 0%, #1F2937 100%);
+        }
     </style>
 
     {{-- Unified Dashboard Section --}}
@@ -211,23 +225,35 @@
                                 :style="{ transform: `translateX(-${currentIndex * (100/3)}%)` }">
                                 @foreach ($vouchers as $voucher)
                                     <div class="w-1/3 flex-shrink-0 px-4">
-                                        <div class="bg-white rounded-xl p-6 text-gray-900 cursor-pointer transform hover:scale-105 transition-transform duration-300 shadow-lg"
-                                            onclick="openPopup('{{ asset($voucher->image) }}', '{{ $voucher->description }}', '{{ $voucher->code }}'); showVoucherLogin('{{ asset($voucher->image) }}', '{{ $voucher->description }}', '{{ $voucher->code }}')">
-                                            <img class="w-full h-32 object-cover rounded-lg mb-4"
-                                                src="{{ asset($voucher->image) }}"
-                                                alt="{{ $voucher->description }}" />
-                                            <h3 class="font-bold text-lg mb-2">Discount
-                                                {{ $voucher->discount_percentage ?? 50 }}%</h3>
+                                        <div class="bg-white rounded-xl p-6 text-gray-900 cursor-pointer transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border border-gray-100"
+                                            onclick="@auth openPopup('{{ $voucher->description }}', '{{ $voucher->code }}') @else showVoucherForGuest('{{ $voucher->description }}', '{{ $voucher->code }}') @endauth">
+
+                                            <!-- Simple voucher header -->
+                                            <div
+                                                class="voucher-header-simple w-full h-32 rounded-lg mb-4 flex items-center justify-center">
+                                                <div class="text-white text-center">
+                                                    <div class="text-3xl font-bold mb-1">
+                                                        {{ $voucher->discount_percentage ?? 50 }}%
+                                                    </div>
+                                                    <div class="text-white/90 font-medium text-sm">DISCOUNT</div>
+                                                </div>
+                                            </div>
+
+                                            <h3 class="font-bold text-lg mb-2 text-gray-900">
+                                                {{ $voucher->discount_percentage ?? 50 }}% Off
+                                            </h3>
                                             <p class="text-sm text-gray-600 mb-4">{{ $voucher->description }}</p>
-                                            <button
-                                                class="w-full bg-gray-900 text-white py-2 px-4 rounded-lg font-semibold hover:bg-gray-800 transition-colors">
-                                                Copy Code
-                                            </button>
-                                            <button
-                                                class="w-full text-white py-2 px-4 rounded-lg font-semibold hover:bg-gray-600 transition-colors"
-                                                style="background-color: #374151;">
-                                                Login to Get Code
-                                            </button>
+                                            @auth
+                                                <button
+                                                    class="w-full bg-gray-900 text-white py-2 px-4 rounded-lg font-semibold hover:bg-gray-800 transition-colors">
+                                                    Get Voucher Code
+                                                </button>
+                                            @else
+                                                <button
+                                                    class="w-full bg-gray-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-gray-700 transition-colors">
+                                                    Login to Get Code
+                                                </button>
+                                            @endauth
                                         </div>
                                     </div>
                                 @endforeach
@@ -242,11 +268,11 @@
             </div>
         </div>
 
-        <!-- Voucher Popup -->
+        <!-- Simple Voucher Popup -->
         <div id="popup"
-            class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm hidden flex items-center justify-center z-50">
-            <div class="bg-white p-6 rounded-xl max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto relative">
-                <button onclick="closePopup()" class="absolute top-2 right-2 text-gray-600 hover:text-gray-800">
+            class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm hidden items-center justify-center z-50">
+            <div class="bg-white p-6 rounded-xl max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto relative shadow-lg">
+                <button onclick="closePopup()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600">
                     <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                         height="24" fill="currentColor" viewBox="0 0 24 24">
                         <path fill-rule="evenodd"
@@ -254,26 +280,43 @@
                             clip-rule="evenodd" />
                     </svg>
                 </button>
-                <img id="popupImage" src="/placeholder.svg" alt="" class="w-full rounded-xl mb-4">
+                <div id="popupImage" class="w-full h-32 rounded-lg mb-4"></div>
+                <h3 class="text-xl font-bold mb-3 text-gray-900">Voucher Details</h3>
                 <p id="popupDescription" class="text-gray-700 mb-4"></p>
-                <div class="border border-gray-300 rounded-md p-3 mb-4 inline-block">
-                    <p class="font-bold text-lg" id="voucherCode"></p>
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                    <p class="text-sm text-gray-600 mb-1">Voucher Code</p>
+                    <p class="font-mono font-bold text-lg text-gray-800" id="voucherCode"></p>
                 </div>
-                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
-                    <p class="text-blue-800 text-sm mb-2">
+                @auth
+                    <button onclick="copyVoucherCode()"
+                        class="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors mb-3">
+                        Copy Voucher Code
+                    </button>
+                    <p class="text-green-700 text-sm text-center">
                         <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
-                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                 clip-rule="evenodd"></path>
                         </svg>
-                        To use this voucher, please login or create an account
+                        You can use this voucher for your bookings!
                     </p>
-                    <a href="{{ route('login') }}"
-                        class="text-white px-4 py-2 rounded text-sm hover:bg-gray-600 transition-colors"
-                        style="background-color: #374151;">
-                        Login to Use Voucher
-                    </a>
-                </div>
+                @else
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
+                        <p class="text-blue-800 text-sm mb-2">
+                            <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            To use this voucher, please login or create an account
+                        </p>
+                        <a href="{{ route('login') }}"
+                            class="text-white px-4 py-2 rounded text-sm hover:bg-gray-600 transition-colors"
+                            style="background-color: #374151;">
+                            Login to Use Voucher
+                        </a>
+                    </div>
+                @endauth
             </div>
         </div>
 
@@ -402,8 +445,7 @@
         </button>
 
         <!-- Chat Window -->
-        <div id="chat-window"
-            class="hidden bg-white rounded-lg shadow-xl w-80 sm:w-96 h-96 flex flex-col overflow-hidden">
+        <div id="chat-window" class="hidden bg-white rounded-lg shadow-xl w-80 sm:w-96 h-96 flex-col overflow-hidden">
             <!-- Chat Header -->
             <div class="text-white p-4 flex justify-between items-center" style="background-color: #374151;">
                 <div class="flex-1">
@@ -803,18 +845,73 @@
             }
         }
 
+        // Function to show voucher for guest users with option to copy code or login
+        function showVoucherForGuest(description, voucherCode) {
+            Swal.fire({
+                title: 'Voucher Available!',
+                html: `
+            <div class="text-center">
+                <div class="w-full max-w-xs mx-auto rounded-lg mb-4 bg-gray-900 h-32 flex items-center justify-center">
+                    <div class="text-white text-center">
+                        <div class="text-3xl font-bold mb-1">
+                            ${voucherCode.match(/(\d+)/) ? voucherCode.match(/(\d+)/)[0] : '50'}%
+                        </div>
+                        <div class="text-white/90 font-medium text-sm">DISCOUNT</div>
+                    </div>
+                </div>
+                <h3 class="font-bold text-lg mb-2">${description}</h3>
+                <p class="text-gray-600 mb-4">You can copy this voucher code and use it for bookings!</p>
+                <div class="bg-gray-50 p-3 rounded-lg mb-4">
+                    <span class="text-sm text-gray-500">Voucher Code: </span>
+                    <span class="font-mono font-bold text-lg text-gray-800">${voucherCode}</span>
+                </div>
+            </div>
+        `,
+                showCancelButton: true,
+                showDenyButton: true,
+                confirmButtonText: 'Copy Code',
+                denyButtonText: 'Login Now',
+                cancelButtonText: 'Close',
+                confirmButtonColor: '#10b981',
+                denyButtonColor: '#3b82f6',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Copy voucher code to clipboard
+                    navigator.clipboard.writeText(voucherCode).then(() => {
+                        Swal.fire({
+                            title: 'Copied!',
+                            text: 'Voucher code copied to clipboard',
+                            icon: 'success',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    });
+                } else if (result.isDenied) {
+                    window.location.href = '{{ route('login') }}';
+                }
+            });
+        }
+
         // Function to show voucher login for guest users
-        function showVoucherLogin(imageSrc, description, voucherCode) {
+        function showVoucherLogin(description, voucherCode) {
             Swal.fire({
                 title: 'Login Required',
                 html: `
             <div class="text-center">
-                <img src="${imageSrc}" alt="Voucher" class="w-full max-w-xs mx-auto rounded-lg mb-4">
-                <h3 class="font-bold text-lg mb-2">${description}</h3>
+                <div class="w-full max-w-xs mx-auto rounded-xl mb-4 bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 h-32 flex items-center justify-center relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 animate-pulse"></div>
+                    <div class="text-white text-center relative z-10">
+                        <div class="text-4xl font-black drop-shadow-2xl mb-1">
+                            ${voucherCode.match(/(\d+)/) ? voucherCode.match(/(\d+)/)[0] : '50'}%
+                        </div>
+                        <div class="text-white/90 font-semibold text-sm drop-shadow-lg">DISCOUNT</div>
+                    </div>
+                </div>
+                <h3 class="font-bold text-xl mb-2 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">${description}</h3>
                 <p class="text-gray-600 mb-4">Login to get your voucher code and use it for bookings!</p>
-                <div class="bg-gray-100 p-3 rounded-lg">
+                <div class="bg-gradient-to-r from-gray-50 to-blue-50 p-4 rounded-xl border border-gray-100">
                     <span class="text-sm text-gray-500">Voucher Code: </span>
-                    <span class="font-mono font-bold blur-sm">${voucherCode}</span>
+                    <span class="font-mono font-bold blur-sm text-gray-800">${voucherCode}</span>
                 </div>
             </div>
         `,
@@ -830,21 +927,62 @@
         }
 
         // Voucher popup functions - Accessible for all users
-        function openPopup(imageSrc, description, voucherCode) {
+        function openPopup(description, voucherCode) {
             const popup = document.getElementById('popup');
             const popupImage = document.getElementById('popupImage');
             const popupDescription = document.getElementById('popupDescription');
             const voucherCodeElement = document.getElementById('voucherCode');
 
-            popupImage.src = imageSrc;
+            // Create simple background
+            popupImage.innerHTML = `
+                <div class="w-full h-full bg-gray-900 flex items-center justify-center rounded-lg">
+                    <div class="text-white text-center">
+                        <div class="text-3xl font-bold mb-1">
+                            ${voucherCode.match(/(\d+)/) ? voucherCode.match(/(\d+)/)[0] : '50'}%
+                        </div>
+                        <div class="text-white/90 font-medium text-sm">DISCOUNT</div>
+                    </div>
+                </div>
+            `;
             popupDescription.textContent = description;
             voucherCodeElement.textContent = voucherCode;
             popup.classList.remove('hidden');
+            popup.classList.add('flex');
         }
 
         function closePopup() {
             const popup = document.getElementById('popup');
             popup.classList.add('hidden');
+            popup.classList.remove('flex');
+        }
+
+        function copyVoucherCode() {
+            const voucherCode = document.getElementById('voucherCode').textContent;
+            navigator.clipboard.writeText(voucherCode).then(() => {
+                Swal.fire({
+                    title: 'Copied!',
+                    text: 'Voucher code copied to clipboard',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            }).catch(err => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = voucherCode;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+
+                Swal.fire({
+                    title: 'Copied!',
+                    text: 'Voucher code copied to clipboard',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            });
         }
 
         function imageSlider() {

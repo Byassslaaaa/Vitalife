@@ -23,15 +23,9 @@ class AuthenticatedSessionController extends Controller
             $request->authenticate();
             $request->session()->regenerate();
 
-            // Check user role and redirect accordingly
-            \Log::info('User authenticated', [
-                'user_id' => Auth::id(),
-                'role' => Auth::user()->role ?? 'unknown',
-                'email' => Auth::user()->email
-            ]);
             $user = Auth::user();
-            $redirectRoute = $user && $user->role === 'admin' 
-                ? route('admin.dashboard', absolute: false) 
+            $redirectRoute = $user && $user->role === 'admin'
+                ? route('admin.dashboard', absolute: false)
                 : route('dashboard', absolute: false);
 
             if ($request->wantsJson()) {
@@ -42,7 +36,7 @@ class AuthenticatedSessionController extends Controller
                 ]);
             }
 
-            return redirect()->intended($redirectRoute)->with('status', 'Logged in successfully!');
+            return redirect()->intended($redirectRoute);
         } catch (\Throwable $e) {
             if ($request->wantsJson()) {
                 return new JsonResponse([

@@ -54,8 +54,8 @@
                     <!-- Password -->
                     <div class="mt-4 relative">
                         <x-input-label for="password" :value="__('Password')" />
-                        <x-text-inputPW id="password" class="block mt-1 w-full" type="password" name="password" required
-                            autocomplete="current-password" />
+                        <x-text-inputPW id="password" class="block mt-1 w-full" type="password" name="password"
+                            required autocomplete="current-password" />
                         <x-input-error :messages="$errors->get('password')" class="mt-2" />
                     </div>
 
@@ -68,9 +68,9 @@
                             <span class="ms-2 text-sm text-gray-900 dark:text-gray-600">{{ __('Remember me') }}</span>
                         </label>
                         @if (Route::has('password.request'))
-                        <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ route('password.request') }}">
-                            {{ __('Forgot password?') }}
-                        </a>
+                            <a class="text-sm text-gray-600 hover:text-gray-900" href="{{ route('password.request') }}">
+                                {{ __('Forgot password?') }}
+                            </a>
                         @endif
                     </div>
 
@@ -84,11 +84,11 @@
                         </div>
                     </div>
                 </form>
-                
+
                 <!-- Tambahan: Link untuk registrasi -->
                 <div class="mt-6 text-center">
                     <p class="text-sm text-gray-600">
-                        do you have an account? 
+                        do you have an account?
                         <a href="{{ route('register') }}" class="text-blue-500 hover:text-blue-700 font-medium">
                             sign up now
                         </a>

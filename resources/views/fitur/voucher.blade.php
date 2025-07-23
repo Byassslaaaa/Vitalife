@@ -3,6 +3,30 @@
         .unified-gradient {
             background: linear-gradient(to bottom, #FFFFFF 0%, #BED9FE 100%);
         }
+
+        .voucher-card {
+            background: white;
+            border: 1px solid #E5E7EB;
+            transition: all 0.3s ease;
+        }
+
+        .voucher-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .voucher-header {
+            background: linear-gradient(135deg, #374151 0%, #1F2937 100%);
+        }
+
+        .copy-btn {
+            background: #374151;
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            background: #1F2937;
+        }
     </style>
 
     {{-- Unified Voucher Section --}}
@@ -30,21 +54,21 @@
                 @endif
 
                 <!-- Featured promotion banner -->
-                <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-8 text-white text-center mb-12">
+                <div class="bg-gray-900 rounded-xl p-8 text-white text-center mb-12 shadow-lg">
                     <h2 class="text-2xl lg:text-3xl font-bold mb-4">🎉 Special Offer!</h2>
-                    <p class="text-lg mb-6 opacity-90">Get exclusive vouchers and save up to 50% on wellness
-                        services</p>
+                    <p class="text-lg mb-6 opacity-90">Get exclusive vouchers and save up to 50% on wellness services
+                    </p>
                     <div class="flex flex-wrap justify-center gap-4">
                         <a href="{{ route('spa.index') }}"
-                            class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                            class="bg-white text-gray-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
                             Explore SPA
                         </a>
                         <a href="{{ route('yoga.index') }}"
-                            class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                            class="bg-white text-gray-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
                             Try YOGA
                         </a>
                         <a href="{{ route('gym.index') }}"
-                            class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                            class="bg-white text-gray-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
                             Visit GYM
                         </a>
                     </div>
@@ -53,49 +77,45 @@
                 <!-- Voucher display section -->
                 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                     @forelse ($vouchers as $voucher)
-                        <div
-                            class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                        <div class="voucher-card rounded-xl overflow-hidden shadow-lg">
                             <div class="relative">
-                                <!-- Voucher image -->
-                                @if ($voucher->image)
-                                    <img src="{{ asset($voucher->image) }}" alt="Voucher {{ $voucher->code }}"
-                                        class="w-full h-48 object-cover">
-                                @else
-                                    <!-- Default voucher image if none exists -->
-                                    <div
-                                        class="w-full h-48 bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
-                                        <span class="text-4xl font-bold text-white">{{ $voucher->discount_percentage }}%
-                                            OFF</span>
+                                <!-- Simple voucher header -->
+                                <div class="voucher-header w-full h-40 flex items-center justify-center">
+                                    <div class="text-white text-center">
+                                        <div class="text-4xl font-bold mb-2">
+                                            {{ $voucher->discount_percentage }}%
+                                        </div>
+                                        <div class="text-white/90 font-medium">OFF</div>
                                     </div>
-                                @endif
+                                </div>
 
-                                <!-- Discount badge -->
+                                <!-- Simple discount badge -->
                                 <div
-                                    class="absolute top-4 right-4 bg-red-500 text-white font-bold py-2 px-4 rounded-full shadow-lg">
-                                    {{ $voucher->discount_percentage }}% OFF
+                                    class="absolute top-3 right-3 bg-red-500 text-white font-bold py-1 px-3 rounded-full text-sm">
+                                    -{{ $voucher->discount_percentage }}%
                                 </div>
                             </div>
 
                             <div class="p-6">
                                 <!-- Voucher title -->
-                                <h3 class="text-xl font-bold text-gray-900 mb-2">
-                                    Discount {{ $voucher->discount_percentage }}%
+                                <h3 class="text-xl font-bold text-gray-900 mb-3">
+                                    {{ $voucher->discount_percentage }}% Discount
                                 </h3>
 
                                 <!-- Voucher description -->
                                 <p class="text-gray-600 mb-6">{{ $voucher->description }}</p>
 
-                                <!-- Voucher code section with copy functionality -->
+                                <!-- Voucher code section -->
                                 <div class="bg-gray-50 rounded-lg p-4 mb-6">
                                     <div class="flex items-center justify-between">
-                                        <div>
-                                            <p class="text-sm text-gray-500 mb-1">Voucher Code</p>
+                                        <div class="flex-1">
+                                            <p class="text-sm font-medium text-gray-500 mb-1">Voucher Code</p>
                                             <p class="font-mono font-bold text-gray-800 text-lg">
-                                                {{ $voucher->code }}</p>
+                                                {{ $voucher->code }}
+                                            </p>
                                         </div>
                                         <button onclick="copyToClipboard('{{ $voucher->code }}')"
-                                            class="text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 hover:bg-gray-600"
-                                            style="background-color: #374151;">
+                                            class="copy-btn text-white px-4 py-2 rounded-lg text-sm font-semibold">
                                             Copy
                                         </button>
                                     </div>
@@ -106,8 +126,8 @@
                                     <!-- Expiration date -->
                                     @if ($voucher->expired_at)
                                         <div class="flex items-center">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none"
-                                                viewBox="0 0 24 24" stroke="currentColor">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-red-500"
+                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
@@ -116,10 +136,10 @@
                                         </div>
                                     @else
                                         <div class="flex items-center">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none"
-                                                viewBox="0 0 24 24" stroke="currentColor">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-green-500"
+                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    d="M5 13l4 4L19 7" />
                                             </svg>
                                             <span>No expiration date</span>
                                         </div>
@@ -128,14 +148,13 @@
                                     <!-- Usage limit -->
                                     @if ($voucher->usage_limit)
                                         <div class="flex items-center">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none"
-                                                viewBox="0 0 24 24" stroke="currentColor">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-blue-500"
+                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                                             </svg>
-                                            <span>Remaining:
-                                                {{ max(0, $voucher->usage_limit - $voucher->usage_count) }}
-                                                uses</span>
+                                            <span>{{ max(0, $voucher->usage_limit - $voucher->usage_count) }} uses
+                                                remaining</span>
                                         </div>
                                     @endif
                                 </div>
@@ -156,7 +175,7 @@
                 </div>
 
                 <!-- How to use vouchers section -->
-                <div class="mt-20 bg-white shadow-lg rounded-xl p-8 border border-gray-100">
+                <div class="mt-20 bg-white rounded-xl p-8 shadow-lg border border-gray-200">
                     <div class="text-center mb-8">
                         <h2 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-4">How to Use Vouchers</h2>
                         <p class="text-gray-600">Follow these simple steps to apply your voucher and save money</p>
@@ -165,8 +184,8 @@
                     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div class="text-center">
                             <div
-                                class="bg-blue-50 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                                <span class="text-2xl font-bold text-blue-600">1</span>
+                                class="bg-gray-900 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                                <span class="text-2xl font-bold text-white">1</span>
                             </div>
                             <h3 class="font-semibold text-gray-900 mb-2">Copy Code</h3>
                             <p class="text-sm text-gray-600">Click the copy button to get your voucher code</p>
@@ -174,8 +193,8 @@
 
                         <div class="text-center">
                             <div
-                                class="bg-green-50 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                                <span class="text-2xl font-bold text-green-600">2</span>
+                                class="bg-gray-900 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                                <span class="text-2xl font-bold text-white">2</span>
                             </div>
                             <h3 class="font-semibold text-gray-900 mb-2">Shop Services</h3>
                             <p class="text-sm text-gray-600">Browse and select your desired wellness services</p>
@@ -183,8 +202,8 @@
 
                         <div class="text-center">
                             <div
-                                class="bg-yellow-50 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                                <span class="text-2xl font-bold text-yellow-600">3</span>
+                                class="bg-gray-900 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                                <span class="text-2xl font-bold text-white">3</span>
                             </div>
                             <h3 class="font-semibold text-gray-900 mb-2">Apply at Checkout</h3>
                             <p class="text-sm text-gray-600">Paste the code in the "Apply Voucher" field</p>
@@ -192,8 +211,8 @@
 
                         <div class="text-center">
                             <div
-                                class="bg-purple-50 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                                <span class="text-2xl font-bold text-purple-600">4</span>
+                                class="bg-gray-900 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                                <span class="text-2xl font-bold text-white">4</span>
                             </div>
                             <h3 class="font-semibold text-gray-900 mb-2">Enjoy Savings</h3>
                             <p class="text-sm text-gray-600">Your discount will be automatically applied</p>
@@ -240,29 +259,36 @@
     <script>
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
-                // Create a temporary success message
-                const button = event.target;
+                const button = event.target.closest('button');
                 const originalText = button.textContent;
 
                 button.textContent = 'Copied!';
-                button.classList.add('bg-green-500');
-                button.classList.remove('hover:bg-gray-600');
+                button.style.background = '#10b981';
 
                 setTimeout(() => {
                     button.textContent = originalText;
-                    button.classList.remove('bg-green-500');
-                    button.classList.add('hover:bg-gray-600');
+                    button.style.background = '#374151';
                 }, 2000);
             }).catch(() => {
-                // Fallback for older browsers
                 const textArea = document.createElement('textarea');
                 textArea.value = text;
+                textArea.style.position = 'fixed';
+                textArea.style.opacity = '0';
                 document.body.appendChild(textArea);
                 textArea.select();
                 document.execCommand('copy');
                 document.body.removeChild(textArea);
 
-                alert('Voucher code copied!');
+                const button = event.target.closest('button');
+                const originalText = button.textContent;
+
+                button.textContent = 'Copied!';
+                button.style.background = '#10b981';
+
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '#374151';
+                }, 2000);
             });
         }
     </script>

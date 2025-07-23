@@ -7,6 +7,7 @@ use App\Models\Spa;
 use App\Models\Yoga;
 use App\Models\Gym;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -27,24 +28,21 @@ class DashboardController extends Controller
 
     public function index()
     {
-        // Get active vouchers for authenticated users
-        $vouchers = collect();
-        if (auth()->check()) {
-            $vouchers = Voucher::where(function($query) {
-                    // Check if voucher is not expired
-                    $query->whereNull('expired_at')
-                        ->orWhere('expired_at', '>', Carbon::now());
-                })
-                ->where(function($query) {
-                    // Check if voucher hasn't reached usage limit
-                    $query->whereNull('usage_limit')
-                        ->orWhere('usage_count', '<', \DB::raw('usage_limit'));
-                })
-                ->where('is_used', false) // Only get unused vouchers
-                ->orderBy('expired_at', 'asc')
-                ->take(4) // Limit to 4 vouchers for display
-                ->get();
-        }
+        // Get active vouchers for all users (guest and authenticated)
+        $vouchers = Voucher::where(function($query) {
+                // Check if voucher is not expired
+                $query->whereNull('expired_at')
+                    ->orWhere('expired_at', '>', Carbon::now());
+            })
+            ->where(function($query) {
+                // Check if voucher hasn't reached usage limit
+                $query->whereNull('usage_limit')
+                    ->orWhere('usage_count', '<', DB::raw('usage_limit'));
+            })
+            ->where('is_used', false) // Only get unused vouchers
+            ->orderBy('expired_at', 'asc')
+            ->take(4) // Limit to 4 vouchers for display
+            ->get();
 
         // Get trending data from each category with proper relationships
         $trendingSpas = Spa::with(['spaDetail', 'spaServices'])->take(2)->get();

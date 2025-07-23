@@ -97,9 +97,6 @@ Route::get('auth/{provider}/callback', [SocialAuthController::class, 'handleProv
 // Language change
 Route::post('/change-language', [LanguageController::class, 'changeLanguage']);
 
-// Logout
-Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
-
 // ============================================================================
 // AUTHENTICATED USER ROUTES
 // ============================================================================
@@ -355,6 +352,8 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
 });
 
+// ============================================================================
+// MISC ROUTES
 // ============================================================================
 // MISC ROUTES
 // ============================================================================

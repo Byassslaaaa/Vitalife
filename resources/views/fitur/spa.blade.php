@@ -53,7 +53,7 @@
 
                             <!-- Content -->
                             <div class="p-6">
-                                <!-- Services Section with Circular Images -->
+                                <!-- Services Section -->
                                 <section class="mb-6" aria-labelledby="services-{{ $spa->id_spa }}">
                                     <div class="flex justify-between items-center mb-4">
                                         <h3 id="services-{{ $spa->id_spa }}" class="text-lg font-bold text-gray-900">
@@ -62,130 +62,74 @@
                                             all</span>
                                     </div>
 
-                                    @if ($spa->services && is_array($spa->services) && count($spa->services) >= 3)
-                                        <div class="grid grid-cols-3 gap-4">
-                                            @foreach (array_slice($spa->services, 0, 3) as $index => $service)
-                                                <div class="text-center">
-                                                    <!-- Circular Image -->
-                                                    <div
-                                                        class="w-16 h-16 mx-auto mb-3 rounded-full overflow-hidden bg-gray-100 shadow-md">
-                                                        @if (isset($service['image']) && $service['image'])
-                                                            <img src="{{ asset($service['image']) }}"
-                                                                alt="{{ $service['name'] ?? 'Service ' . ($index + 1) }}"
-                                                                class="w-full h-full object-cover hover:scale-110 transition-transform duration-200">
-                                                        @else
-                                                            <div
-                                                                class="w-full h-full bg-gradient-to-br from-pink-100 to-rose-100 flex items-center justify-center">
-                                                                <svg class="w-6 h-6 text-pink-600" fill="none"
-                                                                    stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                                        stroke-width="2"
-                                                                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
-                                                                    </path>
-                                                                </svg>
-                                                            </div>
-                                                        @endif
-                                                    </div>
+                                    @php
+                                        // Get services data - prioritize spaServices over spa.services
+                                        $servicesToShow = [];
 
-                                                    <!-- Service Title -->
-                                                    <h4 class="text-sm font-semibold text-gray-900 mb-1 leading-tight">
+                                        if ($spa->spaServices && $spa->spaServices->count() > 0) {
+                                            // Use spa services from database
+                                            $servicesToShow = $spa->spaServices
+                                                ->take(3)
+                                                ->map(function ($service) {
+                                                    return [
+                                                        'name' => $service->name,
+                                                        'description' => $service->description,
+                                                        'image' => $service->image ?? 'image/default-massage.jpg',
+                                                    ];
+                                                })
+                                                ->toArray();
+                                        } elseif (
+                                            $spa->services &&
+                                            is_array($spa->services) &&
+                                            count($spa->services) >= 3
+                                        ) {
+                                            // Use services from spa model
+                                            $servicesToShow = array_slice($spa->services, 0, 3);
+                                        } else {
+                                            // Default services
+                                            $servicesToShow = [
+                                                [
+                                                    'name' => 'Body Massage',
+                                                    'description' => 'Traditional massage to relieve tension',
+                                                    'image' => 'image/massage1.jpg',
+                                                ],
+                                                [
+                                                    'name' => 'Facial Treatment',
+                                                    'description' => 'Rejuvenating facial care treatment',
+                                                    'image' => 'image/facial1.jpg',
+                                                ],
+                                                [
+                                                    'name' => 'Body Scrub',
+                                                    'description' => 'Exfoliating body treatment',
+                                                    'image' => 'image/scrub1.jpg',
+                                                ],
+                                            ];
+                                        }
+                                    @endphp
+
+                                    <div class="space-y-2">
+                                        @foreach ($servicesToShow as $index => $service)
+                                            <div
+                                                class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                                                <div class="flex-shrink-0">
+                                                    <img src="{{ asset($service['image'] ?? 'image/default-massage.jpg') }}"
+                                                        alt="{{ $service['name'] ?? 'Service ' . ($index + 1) }}"
+                                                        class="w-8 h-8 rounded-full object-cover">
+                                                </div>
+                                                <div class="flex-1 min-w-0">
+                                                    <h4 class="text-xs font-semibold text-gray-900 truncate">
                                                         {{ $service['name'] ?? 'Service ' . ($index + 1) }}
                                                     </h4>
-
-                                                    <!-- Service Description -->
-                                                    <p class="text-xs text-gray-600 leading-relaxed">
-                                                        {{ Str::limit($service['description'] ?? 'Professional spa service', 40) }}
+                                                    <p class="text-xs text-gray-600 truncate">
+                                                        {{ Str::limit($service['description'] ?? 'Professional spa service', 35) }}
                                                     </p>
                                                 </div>
-                                            @endforeach
-                                        </div>
-                                    @elseif($spa->spaServices && $spa->spaServices->count() >= 3)
-                                        <div class="grid grid-cols-3 gap-4">
-                                            @foreach ($spa->spaServices->take(3) as $index => $service)
-                                                <div class="text-center">
-                                                    <!-- Circular Image -->
-                                                    <div
-                                                        class="w-16 h-16 mx-auto mb-3 rounded-full overflow-hidden bg-gray-100 shadow-md">
-                                                        @if ($service->image)
-                                                            <img src="{{ asset($service->image) }}"
-                                                                alt="{{ $service->name }}"
-                                                                class="w-full h-full object-cover hover:scale-110 transition-transform duration-200">
-                                                        @else
-                                                            <div
-                                                                class="w-full h-full bg-gradient-to-br from-pink-100 to-rose-100 flex items-center justify-center">
-                                                                <svg class="w-6 h-6 text-pink-600" fill="none"
-                                                                    stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                                        stroke-width="2"
-                                                                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
-                                                                    </path>
-                                                                </svg>
-                                                            </div>
-                                                        @endif
-                                                    </div>
-
-                                                    <!-- Service Title -->
-                                                    <h4 class="text-sm font-semibold text-gray-900 mb-1 leading-tight">
-                                                        {{ $service->name }}
-                                                    </h4>
-
-                                                    <!-- Service Description -->
-                                                    <p class="text-xs text-gray-600 leading-relaxed">
-                                                        {{ Str::limit($service->description ?? 'Professional spa service', 40) }}
-                                                    </p>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    @else
-                                        <!-- Default Services Display if no services data -->
-                                        <div class="grid grid-cols-3 gap-4">
-                                            <div class="text-center">
-                                                <div
-                                                    class="w-16 h-16 mx-auto mb-3 rounded-full bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center shadow-md">
-                                                    <svg class="w-6 h-6 text-orange-600" fill="none"
-                                                        stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
-                                                        </path>
-                                                    </svg>
-                                                </div>
-                                                <h4 class="text-sm font-semibold text-gray-900 mb-1">Body Massage</h4>
-                                                <p class="text-xs text-gray-600">Traditional massage to relieve tension
-                                                </p>
                                             </div>
-                                            <div class="text-center">
-                                                <div
-                                                    class="w-16 h-16 mx-auto mb-3 rounded-full bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center shadow-md">
-                                                    <svg class="w-6 h-6 text-purple-600" fill="none"
-                                                        stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
-                                                        </path>
-                                                    </svg>
-                                                </div>
-                                                <h4 class="text-sm font-semibold text-gray-900 mb-1">Facial Treatment
-                                                </h4>
-                                                <p class="text-xs text-gray-600">Rejuvenating facial care treatment</p>
-                                            </div>
-                                            <div class="text-center">
-                                                <div
-                                                    class="w-16 h-16 mx-auto mb-3 rounded-full bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center shadow-md">
-                                                    <svg class="w-6 h-6 text-green-600" fill="none"
-                                                        stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                                                    </svg>
-                                                </div>
-                                                <h4 class="text-sm font-semibold text-gray-900 mb-1">Body Scrub</h4>
-                                                <p class="text-xs text-gray-600">Exfoliating body treatment</p>
-                                            </div>
-                                        </div>
-                                    @endif
+                                        @endforeach
+                                    </div>
 
                                     <!-- Divider Line -->
-                                    <div class="border-t border-gray-200 mt-6 mb-4"></div>
+                                    <div class="border-t border-gray-200 mt-4 mb-4"></div>
                                 </section>
 
                                 <!-- Opening Hours Section -->

@@ -7,7 +7,7 @@
                 <div class="flex-1 max-w-md pr-18 pl-10">
                     <!-- Logo -->
                     <div class="flex items-center mb-6 mt-2 ">
-                        <img src="../image/LOGO_1.png" alt="Vitalife Logo" class="w-38 h-12 mr-3">
+                        <img src="{{ asset('image/LOGO_1.png') }}" alt="Vitalife Logo" class="w-38 h-12 mr-3">
                     </div>
 
                     <!-- Description -->

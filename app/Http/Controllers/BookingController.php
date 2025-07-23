@@ -6,6 +6,7 @@ use App\Models\Spa;
 use App\Models\Yoga;
 use App\Models\Gym;
 use App\Models\Booking;
+use App\Models\Voucher;
 use App\Models\SpaService;
 use App\Models\GymService;
 use App\Models\YogaService;
@@ -751,19 +752,72 @@ class BookingController extends Controller
                 'service_address' => 'required|string',
                 'total_amount' => 'required|numeric',
                 'notes' => 'nullable|string',
+                'voucher_code' => 'nullable|string',
+                'voucher_discount' => 'nullable|numeric',
             ]);
 
             DB::beginTransaction();
 
             $bookingCode = 'SPA-' . strtoupper(Str::random(8));
-            $totalAmount = $request->total_amount;
             $adminFee = 5000;
-            $servicePrice = $totalAmount - $adminFee;
+
+            // Extract service price and voucher info from request
+            $serviceFee = $request->service_fee ?? 0;
+            $voucherDiscount = $request->voucher_discount ?? 0;
+            $totalAmount = $request->total_amount;
+
+            // Validate amounts to prevent manipulation
+            $expectedTotal = $serviceFee + $adminFee - $voucherDiscount;
+            if (abs($expectedTotal - $totalAmount) > 1) { // Allow 1 rupiah difference for rounding
+                throw new \Exception('Invalid amount calculation');
+            }
+
+            // Handle voucher if provided
+            $voucherInfo = null;
+            if ($request->voucher_code && $voucherDiscount > 0) {
+                $voucher = Voucher::where('code', $request->voucher_code)
+                    ->where('is_used', false)
+                    ->where(function($query) {
+                        $query->whereNull('expired_at')
+                            ->orWhere('expired_at', '>', now());
+                    })
+                    ->first();
+
+                if ($voucher) {
+                    // Validate voucher discount amount
+                    $expectedDiscount = 0;
+                    if ($voucher->discount_type === 'percentage') {
+                        $expectedDiscount = floor(($serviceFee * $voucher->discount_percentage) / 100);
+                    } else {
+                        $expectedDiscount = $voucher->discount_amount;
+                    }
+                    $expectedDiscount = min($expectedDiscount, $serviceFee); // Don't exceed service fee
+
+                    if (abs($expectedDiscount - $voucherDiscount) > 1) { // Allow 1 rupiah difference
+                        throw new \Exception('Invalid voucher discount amount');
+                    }
+
+                    $voucherInfo = [
+                        'id' => $voucher->id,
+                        'code' => $voucher->code,
+                        'discount_type' => $voucher->discount_type,
+                        'discount_amount' => $voucherDiscount,
+                        'original_amount' => $totalAmount + $voucherDiscount
+                    ];
+
+                    // Update voucher usage
+                    $voucher->increment('usage_count');
+                    if ($voucher->usage_limit && $voucher->usage_count >= $voucher->usage_limit) {
+                        $voucher->update(['is_used' => true]);
+                    }
+                }
+            }
 
             // Create legacy booking record with all required fields
             // Note: booking_type info is stored in notes for now until migration is added
             $bookingTypeNote = $request->booking_type === 'terapis' ? '[TERAPIS BOOKING] ' : '[VENUE BOOKING] ';
-            $notesWithBookingType = $bookingTypeNote . ($request->notes ?? '');
+            $voucherNote = $voucherInfo ? '[VOUCHER: ' . $voucherInfo['code'] . ' - Discount: Rp ' . number_format($voucherDiscount, 0, ',', '.') . '] ' : '';
+            $notesWithBookingType = $bookingTypeNote . $voucherNote . ($request->notes ?? '');
 
             $booking = Booking::create([
                 'booking_code' => $bookingCode,
@@ -774,7 +828,7 @@ class BookingController extends Controller
                 'booking_date' => $request->booking_date,
                 'booking_time' => $request->booking_time,
                 'service_type' => $request->service_type,
-                'service_price' => $servicePrice,
+                'service_price' => $serviceFee,
                 'admin_fee' => $adminFee,
                 'total_amount' => $totalAmount,
                 'service_address' => $request->service_address,
@@ -787,7 +841,7 @@ class BookingController extends Controller
             $itemDetails = [
                 [
                     'id' => 'spa-service',
-                    'price' => (int) $servicePrice,
+                    'price' => (int) $serviceFee,
                     'quantity' => 1,
                     'name' => $request->service_type,
                 ],
@@ -798,6 +852,16 @@ class BookingController extends Controller
                     'name' => 'Biaya Admin',
                 ]
             ];
+
+            // Add voucher discount as negative item if applied
+            if ($voucherDiscount > 0 && $voucherInfo) {
+                $itemDetails[] = [
+                    'id' => 'voucher-discount',
+                    'price' => -(int) $voucherDiscount,
+                    'quantity' => 1,
+                    'name' => 'Diskon Voucher (' . $voucherInfo['code'] . ')',
+                ];
+            }
 
             $snapToken = $this->generateMidtransToken(
                 $bookingCode,
@@ -817,7 +881,10 @@ class BookingController extends Controller
                 'booking_id' => $booking->id,
                 'payment_token' => $snapToken,
                 'order_id' => $bookingCode,
-                'total_amount' => $totalAmount
+                'total_amount' => $totalAmount,
+                'voucher_applied' => $voucherInfo,
+                'original_amount' => $totalAmount + $voucherDiscount,
+                'discount_amount' => $voucherDiscount
             ]);
 
         } catch (\Exception $e) {

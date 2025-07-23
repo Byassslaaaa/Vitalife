@@ -604,6 +604,22 @@
                     <!-- Price Summary -->
                     <div class="bg-gray-50 rounded-lg p-4">
                         <h4 class="font-semibold text-gray-900 mb-3">Ringkasan Pembayaran</h4>
+
+                        <!-- Voucher Section -->
+                        <div class="mb-4 p-3 bg-white rounded-lg border border-dashed border-gray-300">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Kode Voucher (Opsional)</label>
+                            <div class="flex gap-2">
+                                <input type="text" name="voucher_code" id="voucherCode"
+                                    class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                    placeholder="Masukkan kode voucher">
+                                <button type="button" id="applyVoucherBtn"
+                                    class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                                    Terapkan
+                                </button>
+                            </div>
+                            <div id="voucherMessage" class="mt-2 text-sm"></div>
+                        </div>
+
                         <div class="space-y-2 text-sm">
                             <div class="flex justify-between">
                                 <span>Harga Layanan:</span>
@@ -611,7 +627,12 @@
                             </div>
                             <div class="flex justify-between">
                                 <span>Biaya Admin:</span>
-                                <span>Rp 5.000</span>
+                                <span id="adminFee">Rp 5.000</span>
+                            </div>
+                            <div id="voucherDiscount" class="flex justify-between text-green-600"
+                                style="display: none;">
+                                <span>Diskon Voucher:</span>
+                                <span id="discountAmount">- Rp 0</span>
                             </div>
                             <hr class="my-2">
                             <div class="flex justify-between font-semibold text-lg">
@@ -641,6 +662,9 @@
         // Global variables
         const bookableServices = @json($bookableServices ?? []);
         const spaData = @json($spa);
+        let appliedVoucher = null;
+        let currentServicePrice = 0;
+        const adminFee = 5000;
 
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM loaded, initializing booking system...');
@@ -679,6 +703,11 @@
             const serviceSelect = document.querySelector('select[name="service_type"]');
             const servicePriceEl = document.getElementById('servicePrice');
             const totalPriceEl = document.getElementById('totalPrice');
+            const applyVoucherBtn = document.getElementById('applyVoucherBtn');
+            const voucherCodeInput = document.getElementById('voucherCode');
+            const voucherMessage = document.getElementById('voucherMessage');
+            const voucherDiscountEl = document.getElementById('voucherDiscount');
+            const discountAmountEl = document.getElementById('discountAmount');
 
             // Booking type handling
             const bookingTypeRadios = document.querySelectorAll('input[name="booking_type"]');
@@ -717,13 +746,171 @@
             if (serviceSelect) {
                 serviceSelect.addEventListener('change', function() {
                     const selectedOption = this.options[this.selectedIndex];
-                    const price = selectedOption.dataset.price || 0;
-                    const adminFee = 5000;
-                    const total = parseInt(price) + adminFee;
-
-                    servicePriceEl.textContent = 'Rp ' + formatNumber(price);
-                    totalPriceEl.textContent = 'Rp ' + formatNumber(total);
+                    currentServicePrice = parseInt(selectedOption.dataset.price) || 0;
+                    updatePriceDisplay();
                 });
+            }
+
+            // Voucher functionality
+            if (applyVoucherBtn && voucherCodeInput) {
+                applyVoucherBtn.addEventListener('click', function() {
+                    applyVoucher();
+                });
+
+                voucherCodeInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        applyVoucher();
+                    }
+                });
+            }
+
+            function updatePriceDisplay() {
+                console.log('Updating price display, currentServicePrice:', currentServicePrice);
+                console.log('Applied voucher:', appliedVoucher);
+
+                servicePriceEl.textContent = 'Rp ' + formatNumber(currentServicePrice);
+                adminFeeEl.textContent = 'Rp ' + formatNumber(adminFee);
+
+                let total = currentServicePrice + adminFee;
+                let discountAmount = 0;
+
+                if (appliedVoucher) {
+                    if (appliedVoucher.discount_type === 'percentage') {
+                        discountAmount = Math.floor((currentServicePrice * appliedVoucher.discount_percentage) /
+                            100);
+                    } else if (appliedVoucher.discount_type === 'fixed') {
+                        discountAmount = appliedVoucher.discount_amount;
+                    }
+
+                    // Ensure discount doesn't exceed service price
+                    discountAmount = Math.min(discountAmount, currentServicePrice);
+                    total -= discountAmount;
+
+                    console.log('Discount amount calculated:', discountAmount);
+                    console.log('Total after discount:', total);
+
+                    voucherDiscountEl.style.display = 'flex';
+                    discountAmountEl.textContent = '- Rp ' + formatNumber(discountAmount);
+
+                    // Update discount text to include voucher code
+                    voucherDiscountEl.querySelector('span:first-child').textContent =
+                        `Diskon ${appliedVoucher.code}:`;
+                } else {
+                    voucherDiscountEl.style.display = 'none';
+                }
+
+                // Update total price with special styling if discounted
+                const finalTotal = Math.max(total, 0);
+                totalPriceEl.textContent = 'Rp ' + formatNumber(finalTotal);
+
+                if (appliedVoucher && discountAmount > 0) {
+                    totalPriceEl.classList.add('text-green-600', 'font-bold');
+                    totalPriceEl.parentElement.classList.add('bg-green-50', 'px-2', 'py-1', 'rounded');
+                } else {
+                    totalPriceEl.classList.remove('text-green-600', 'font-bold');
+                    totalPriceEl.parentElement.classList.remove('bg-green-50', 'px-2', 'py-1', 'rounded');
+                }
+            }
+
+            async function applyVoucher() {
+                const voucherCode = voucherCodeInput.value.trim();
+
+                if (!voucherCode) {
+                    showVoucherMessage('Masukkan kode voucher terlebih dahulu.', 'error');
+                    return;
+                }
+
+                if (currentServicePrice === 0) {
+                    showVoucherMessage('Pilih layanan terlebih dahulu.', 'error');
+                    return;
+                }
+
+                try {
+                    applyVoucherBtn.textContent = 'Memproses...';
+                    applyVoucherBtn.disabled = true;
+
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]');
+                    const response = await fetch('/voucher/apply', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken.getAttribute('content')
+                        },
+                        body: JSON.stringify({
+                            voucher_code: voucherCode,
+                            service_amount: currentServicePrice,
+                            service_type: 'spa'
+                        })
+                    });
+
+                    const result = await response.json();
+                    console.log('Voucher apply response:', result);
+
+                    if (result.success) {
+                        appliedVoucher = result.voucher;
+                        console.log('Voucher applied successfully:', appliedVoucher);
+
+                        // Calculate discount amount for display
+                        let discountAmount = 0;
+                        if (appliedVoucher.discount_type === 'percentage') {
+                            discountAmount = Math.floor((currentServicePrice * appliedVoucher
+                                .discount_percentage) / 100);
+                        } else {
+                            discountAmount = appliedVoucher.discount_amount;
+                        }
+
+                        const discountText = appliedVoucher.discount_type === 'percentage' ?
+                            `${appliedVoucher.discount_percentage}%` :
+                            `Rp ${formatNumber(appliedVoucher.discount_amount)}`;
+
+                        showVoucherMessage(
+                            `✅ Voucher ${appliedVoucher.code} berhasil diterapkan! Hemat ${discountText} (Rp ${formatNumber(discountAmount)})`,
+                            'success');
+                        voucherCodeInput.disabled = true;
+                        applyVoucherBtn.textContent = '✅ Berhasil';
+                        applyVoucherBtn.classList.add('bg-green-500', 'text-white');
+                        applyVoucherBtn.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+
+                        updatePriceDisplay();
+                    } else {
+                        showVoucherMessage(result.message || 'Kode voucher tidak valid.', 'error');
+                        resetVoucher();
+                    }
+                } catch (error) {
+                    console.error('Error applying voucher:', error);
+                    showVoucherMessage('Terjadi kesalahan saat memproses voucher.', 'error');
+                    resetVoucher();
+                } finally {
+                    applyVoucherBtn.disabled = false;
+                    if (applyVoucherBtn.textContent !== 'Berhasil') {
+                        applyVoucherBtn.textContent = 'Terapkan';
+                    }
+                }
+            }
+
+            function showVoucherMessage(message, type) {
+                voucherMessage.innerHTML = message;
+                if (type === 'success') {
+                    voucherMessage.className =
+                        'mt-2 text-sm text-green-600 font-semibold bg-green-50 p-2 rounded-md border border-green-200';
+                } else {
+                    voucherMessage.className =
+                        'mt-2 text-sm text-red-600 font-semibold bg-red-50 p-2 rounded-md border border-red-200';
+                }
+            }
+
+            function resetVoucher() {
+                appliedVoucher = null;
+                voucherCodeInput.disabled = false;
+                voucherCodeInput.value = '';
+                voucherMessage.innerHTML = '';
+                voucherMessage.className = '';
+                applyVoucherBtn.textContent = 'Terapkan';
+                applyVoucherBtn.classList.remove('bg-green-500', 'text-white');
+                applyVoucherBtn.classList.add('bg-blue-500', 'hover:bg-blue-600');
+                updatePriceDisplay();
             }
 
             function openSpaBookingModal() {
@@ -732,14 +919,25 @@
                 // Set minimum date to today
                 const today = new Date().toISOString().split('T')[0];
                 document.getElementById('booking_date').setAttribute('min', today);
+
+                // Reset form and voucher
+                resetVoucher();
+                currentServicePrice = 0;
+                updatePriceDisplay();
             }
 
             window.closeSpaBookingModal = function() {
                 console.log('Closing booking modal');
                 spaBookingModal.classList.add('hidden');
                 spaBookingForm.reset();
-                servicePriceEl.textContent = 'Rp 0';
-                totalPriceEl.textContent = 'Rp 5.000';
+                resetVoucher();
+                currentServicePrice = 0;
+                updatePriceDisplay();
+
+                // Reset booking type fields
+                serviceAddressField.style.display = 'none';
+                venueAddressField.style.display = 'block';
+                serviceAddressInput.removeAttribute('required');
             }
 
             // Close modal when clicking outside
@@ -890,12 +1088,26 @@
                 const random = Math.random().toString(36).substr(2, 9);
                 const orderId = `SPA-${timestamp}-${random}`;
 
-                // Get service price
-                const serviceSelect = document.querySelector('select[name="service_type"]');
-                const selectedOption = serviceSelect.options[serviceSelect.selectedIndex];
-                const serviceFee = parseInt(selectedOption.dataset.price) || 100000;
-                const adminFee = 5000;
-                const totalAmount = serviceFee + adminFee;
+                // Calculate total amount with voucher
+                let serviceFee = currentServicePrice;
+                const adminFeeAmount = adminFee;
+                let discountAmount = 0;
+                let totalAmount = serviceFee + adminFeeAmount;
+
+                // Apply voucher discount if available
+                if (appliedVoucher) {
+                    console.log('Applying voucher discount:', appliedVoucher);
+                    if (appliedVoucher.discount_type === 'percentage') {
+                        discountAmount = Math.floor((serviceFee * appliedVoucher.discount_percentage) / 100);
+                    } else if (appliedVoucher.discount_type === 'fixed') {
+                        discountAmount = appliedVoucher.discount_amount;
+                    }
+                    // Ensure discount doesn't exceed service price
+                    discountAmount = Math.min(discountAmount, serviceFee);
+                    totalAmount -= discountAmount;
+                    totalAmount = Math.max(totalAmount, adminFeeAmount); // Ensure total is not less than admin fee
+                    console.log('Final total after voucher:', totalAmount, 'Discount applied:', discountAmount);
+                }
 
                 // Get booking type
                 const bookingType = document.querySelector('input[name="booking_type"]:checked').value;
@@ -913,7 +1125,12 @@
                     service_address: bookingType === 'terapis' ? bookingData.service_address :
                         'Venue booking - customer comes to spa location',
                     notes: bookingData.notes,
-                    total_amount: totalAmount
+                    total_amount: totalAmount,
+                    service_fee: serviceFee,
+                    admin_fee: adminFeeAmount,
+                    voucher_discount: discountAmount,
+                    voucher_code: appliedVoucher ? appliedVoucher.code : null,
+                    voucher_id: appliedVoucher ? appliedVoucher.id : null
                 };
 
                 console.log('Sending payment data:', paymentData);
