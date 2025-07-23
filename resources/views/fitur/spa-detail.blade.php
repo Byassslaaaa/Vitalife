@@ -2,17 +2,11 @@
     <!-- Add CSRF token meta tag -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <link rel="stylesheet" href="{{ asset('css/spa-booking.css') }}">
-
-    <!-- Custom CSS from Admin -->
-    @if (isset($spa->detailConfig) && $spa->detailConfig && $spa->detailConfig->custom_css)
-        <style>
-            {!! $spa->detailConfig->custom_css !!}
-        </style>
-    @endif
-
-    <!-- Custom CSS for Image Gallery -->
     <style>
+        .unified-gradient {
+            background: linear-gradient(to bottom, #FFFFFF 0%, #BED9FE 100%);
+        }
+
         .thumbnail {
             transition: all 0.2s ease-in-out;
         }
@@ -22,9 +16,16 @@
         }
     </style>
 
-    <!-- Main Container with Light Blue Background -->
-    <div class="min-h-screen bg-gradient-to-br from-blue-100 to-blue-50 pt-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Custom CSS from Admin -->
+    @if (isset($spa->detailConfig) && $spa->detailConfig && $spa->detailConfig->custom_css)
+        <style>
+            {!! $spa->detailConfig->custom_css !!}
+        </style>
+    @endif
+
+    {{-- Unified SPA Detail Section --}}
+    <div class="unified-gradient min-h-screen pt-20">
+        <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-8">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
                 <!-- Left Side - Main Content -->
@@ -1095,4 +1096,5 @@
             return new Intl.NumberFormat('id-ID').format(num);
         }
     </script>
+    </div>
 </x-app-layout>

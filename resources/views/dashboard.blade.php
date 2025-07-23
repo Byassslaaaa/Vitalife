@@ -8,27 +8,29 @@
     {{-- Unified Dashboard Section --}}
     <div class="unified-gradient min-h-screen">
         {{-- Hero Section --}}
-        <div class="pt-40 pb-28">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-                <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div class="pt-32 pb-20">
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 w-full">
+                <div class="grid lg:grid-cols-2 gap-12 items-center min-h-[500px]">
                     <!-- Left Content -->
-                    <div class="space-y-8">
+                    <div class="space-y-8 lg:pl-12 lg:pr-8">
                         <div class="space-y-6">
                             <p class="text-base lg:text-lg font-bold text-gray-700 uppercase tracking-wider">
                                 SKIP THE TRAVEL! TAKE ONLINE
                             </p>
-                            <h1 class="text-5xl lg:text-7xl xl:text-8xl font-black text-gray-900 leading-tight">
+                            <h1
+                                class="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black text-gray-900 leading-tight">
                                 WELCOME<br>
-                                <span class="text-blue-400 font-bold">VITA LIFE</span>
+                                <span class="text-blue-500 font-bold">VITALIFE</span>
                             </h1>
-                            <p class="text-xl lg:text-2xl text-gray-700 max-w-lg leading-relaxed">
+                            <p class="text-lg lg:text-xl text-gray-700 max-w-2xl leading-relaxed">
                                 We are the solution for travelling in a healthy condition and we provide health
-                                specialists
+                                specialists for your wellness journey
                             </p>
                         </div>
 
                         <button
-                            class="inline-flex items-center px-10 py-5 bg-gray-900 text-white font-bold text-lg rounded-full hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 shadow-xl">
+                            class="inline-flex items-center px-8 py-4 text-white font-bold text-lg rounded-full hover:bg-gray-600 transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl"
+                            style="background-color: #374151;">
                             <span class="mr-3">Explore now</span>
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -38,16 +40,26 @@
                     </div>
 
                     <!-- Right Content - Image with Frame Effect -->
-                    <div class="relative flex justify-center lg:justify-end">
-                        <div class="relative w-96 lg:w-[450px]">
+                    <div class="relative flex justify-center lg:justify-start lg:pl-8">
+                        <div class="relative w-80 sm:w-96 lg:w-[420px]">
                             <!-- Background Frame -->
-                            <div class="absolute top-6 left-6 w-full h-full border-4 border-gray-900 z-0"></div>
+                            <div
+                                class="absolute top-4 left-4 w-full h-full border-4 border-blue-600 rounded-lg z-0 opacity-20">
+                            </div>
 
                             <!-- Main Image Container -->
-                            <div class="relative z-10 shadow-2xl">
+                            <div class="relative z-10 shadow-2xl rounded-lg overflow-hidden">
                                 <img src="{{ asset('image/bgdash.png') }}" alt="Yoga Woman in Mountains"
-                                    class="w-96 h-98 lg:h-[450px] object-cover object-center" />
+                                    class="w-full h-80 sm:h-96 lg:h-[420px] object-cover object-center rounded-lg" />
                             </div>
+
+                            <!-- Floating Elements for Visual Interest -->
+                            {{-- <div
+                                class="absolute -top-4 -right-4 w-20 h-20 bg-blue-500 rounded-full opacity-20 animate-pulse">
+                            </div>
+                            <div
+                                class="absolute -bottom-6 -left-6 w-16 h-16 bg-blue-400 rounded-full opacity-30 animate-bounce">
+                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -55,33 +67,34 @@
         </div>
 
         {{-- Wellness Support Section --}}
-        <div class="py-20">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="py-16">
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
                 <div class="mb-16">
                     <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Wellness Support</h2>
                     <p class="text-lg text-gray-600">Find The Wellness</p>
                 </div>
-                <div class="grid md:grid-cols-3 gap-12 max-w-5xl mx-auto">
+                <div class="grid md:grid-cols-3 gap-12 max-w-4xl mx-auto">
                     <a href="{{ route('spa.index') }}" class="group">
                         <div
-                            class="bg-blue-50 rounded-full w-32 h-32 mx-auto mb-6 flex items-center justify-center group-hover:bg-blue-100 group-hover:scale-110 transition-all duration-300 shadow-lg">
-                            <img src="{{ asset('image/spa.png') }}" alt="SPA" class="h-16 w-16" />
+                            class="bg-blue-50 rounded-full w-28 h-28 lg:w-32 lg:h-32 mx-auto mb-6 flex items-center justify-center group-hover:bg-blue-100 group-hover:scale-110 transition-all duration-300 shadow-lg">
+                            <img src="{{ asset('image/spa.png') }}" alt="SPA" class="h-14 w-14 lg:h-16 lg:w-16" />
                         </div>
                         <h3 class="text-xl font-bold text-gray-900">SPA</h3>
                     </a>
 
                     <a href="{{ route('yoga.index') }}" class="group">
                         <div
-                            class="bg-blue-50 rounded-full w-32 h-32 mx-auto mb-6 flex items-center justify-center group-hover:bg-blue-100 group-hover:scale-110 transition-all duration-300 shadow-lg">
-                            <img src="{{ asset('image/meditation.png') }}" alt="YOGA" class="h-16 w-16" />
+                            class="bg-blue-50 rounded-full w-28 h-28 lg:w-32 lg:h-32 mx-auto mb-6 flex items-center justify-center group-hover:bg-blue-100 group-hover:scale-110 transition-all duration-300 shadow-lg">
+                            <img src="{{ asset('image/meditation.png') }}" alt="YOGA"
+                                class="h-14 w-14 lg:h-16 lg:w-16" />
                         </div>
                         <h3 class="text-xl font-bold text-gray-900">YOGA</h3>
                     </a>
 
                     <a href="{{ route('gym.index') }}" class="group">
                         <div
-                            class="bg-blue-50 rounded-full w-32 h-32 mx-auto mb-6 flex items-center justify-center group-hover:bg-blue-100 group-hover:scale-110 transition-all duration-300 shadow-lg">
-                            <img src="{{ asset('image/run.png') }}" alt="GYM" class="h-16 w-16" />
+                            class="bg-blue-50 rounded-full w-28 h-28 lg:w-32 lg:h-32 mx-auto mb-6 flex items-center justify-center group-hover:bg-blue-100 group-hover:scale-110 transition-all duration-300 shadow-lg">
+                            <img src="{{ asset('image/run.png') }}" alt="GYM" class="h-14 w-14 lg:h-16 lg:w-16" />
                         </div>
                         <h3 class="text-xl font-bold text-gray-900">GYM</h3>
                     </a>
@@ -90,8 +103,8 @@
         </div>
 
         {{-- Trending Now Section --}}
-        <div class="py-20">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="py-16">
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
                 <div class="text-center mb-16">
                     <h2 class="text-3xl lg:text-4xl font-bold text-gray-900">Trending Now</h2>
                 </div>
@@ -188,8 +201,8 @@
         </div>
 
         {{-- Voucher Section - Accessible untuk semua user --}}
-        <div id="voucher" class="py-20">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div id="voucher" class="py-16">
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
                 <h2 class="text-3xl lg:text-4xl font-bold text-center mb-16 text-gray-900">Voucher</h2>
                 @if ($vouchers->count() > 0)
                     <div class="relative" x-data="imageSlider()">
@@ -211,7 +224,8 @@
                                                 Copy Code
                                             </button>
                                             <button
-                                                class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-600 transition-colors">
+                                                class="w-full text-white py-2 px-4 rounded-lg font-semibold hover:bg-gray-600 transition-colors"
+                                                style="background-color: #374151;">
                                                 Login to Get Code
                                             </button>
                                         </div>
@@ -255,7 +269,8 @@
                         To use this voucher, please login or create an account
                     </p>
                     <a href="{{ route('login') }}"
-                        class="bg-blue-500 text-white px-4 py-2 rounded text-sm hover:bg-blue-600 transition-colors">
+                        class="text-white px-4 py-2 rounded text-sm hover:bg-gray-600 transition-colors"
+                        style="background-color: #374151;">
                         Login to Use Voucher
                     </a>
                 </div>
@@ -263,8 +278,8 @@
         </div>
 
         {{-- FAQ Section --}}
-        <div class="py-20 pb-32">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="py-16 pb-28">
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
                 <div class="grid lg:grid-cols-2 gap-16 items-center">
                     <!-- Left - Image -->
                     <div class="relative max-w-md mx-auto lg:mx-0">
@@ -377,7 +392,8 @@
     <div id="chatbot-widget" class="fixed bottom-4 right-4 z-50">
         <!-- Chat Button -->
         <button id="chat-button"
-            class="bg-blue-500 hover:bg-blue-600 text-white rounded-full p-4 shadow-lg flex items-center justify-center transition-all duration-300 transform hover:scale-105">
+            class="text-white rounded-full p-4 shadow-lg flex items-center justify-center transition-all duration-300 transform hover:scale-105 hover:bg-gray-600"
+            style="background-color: #374151;">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -389,15 +405,15 @@
         <div id="chat-window"
             class="hidden bg-white rounded-lg shadow-xl w-80 sm:w-96 h-96 flex flex-col overflow-hidden">
             <!-- Chat Header -->
-            <div class="bg-blue-500 text-white p-4 flex justify-between items-center">
+            <div class="text-white p-4 flex justify-between items-center" style="background-color: #374151;">
                 <div class="flex-1">
                     <h3 class="font-bold">Vitalife Support</h3>
-                    <div id="session-timer" class="text-xs text-blue-200 hidden">
+                    <div id="session-timer" class="text-xs text-gray-300 hidden">
                         Session expires in: <span id="timer-display">15:00</span>
                     </div>
                 </div>
                 <div class="flex space-x-2">
-                    <button id="minimize-chat" class="hover:bg-blue-600 rounded p-1">
+                    <button id="minimize-chat" class="hover:bg-gray-600 rounded p-1">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 12H6" />
@@ -419,8 +435,8 @@
                     </svg>
                     Guest Mode: Basic support available
                 </p>
-                <button onclick="showLoginPrompt()"
-                    class="text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">
+                <button onclick="showLoginPrompt()" class="text-xs text-white px-2 py-1 rounded hover:bg-gray-600"
+                    style="background-color: #374151;">
                     Login for Full Support
                 </button>
             </div>
@@ -448,10 +464,10 @@
             <div id="chat-input-container" class="p-4 border-t hidden">
                 <form id="chat-form" class="flex space-x-2">
                     <input type="text" id="chat-input"
-                        class="flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        class="flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
                         placeholder="Type your message...">
-                    <button type="submit"
-                        class="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 transition-colors">
+                    <button type="submit" class="text-white rounded-lg px-4 py-2 hover:bg-gray-600 transition-colors"
+                        style="background-color: #374151;">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -514,427 +530,261 @@
 
             // Toggle chat window
             chatButton.addEventListener('click', function() {
-                    chatWindow.classList.toggle('hidden');
-                    chatButton.classList.toggle('hidden');
+                chatWindow.classList.toggle('hidden');
+                chatButton.classList.toggle('hidden');
 
-                    if (!chatWindow.classList.contains('hidden')) {
-                        if (currentConversation === null) {
-                            // Check if user is authenticated
-                            // Authenticated user: full chat experience
-                            fetchConversation();
-                            checkAdminStatus();
-                            startSessionTimer();
-                            // Guest user: basic chat with predefined responses
-                            addSystemMessage(
-                                'Welcome to Vitalife Support! I can help you with general information about our services.'
+                if (!chatWindow.classList.contains('hidden')) {
+                    if (currentConversation === null) {
+                        // Guest user: basic chat with predefined responses
+                        addSystemMessage(
+                            'Welcome to Vitalife Support! I can help you with general information about our services.'
+                        );
+                    }
+                }
+            });
+
+            // Minimize chat
+            minimizeChat.addEventListener('click', function() {
+                chatWindow.classList.add('hidden');
+                chatButton.classList.remove('hidden');
+                pauseSessionTimer();
+            });
+
+            // Category selection
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    selectedCategory = this.dataset.category;
+                    categorySelection.classList.add('hidden');
+                    chatInputContainer.classList.remove('hidden');
+
+                    // Add system message based on category
+                    addSystemMessage(
+                        `You've selected: ${selectedCategory}. How can I help you today?`);
+
+                    // For guest users, add some helpful info
+                    setTimeout(() => {
+                        if (selectedCategory === 'General Information') {
+                            addBotMessage(
+                                'I can help you with information about our spa, yoga, and gym services. What would you like to know?'
+                            );
+                        } else if (selectedCategory === 'Services & Pricing') {
+                            addBotMessage(
+                                'You can browse all our services and pricing on our website. For booking, you\'ll need to create an account first.'
+                            );
+                        } else if (selectedCategory === 'Facilities & Accommodations') {
+                            addBotMessage(
+                                'We offer spa treatments, yoga classes, and gym facilities. Visit our service pages to see detailed information about each location.'
+                            );
+                        } else {
+                            addBotMessage(
+                                'For detailed assistance with this topic, please consider creating an account for personalized support.'
                             );
                         }
-                    } else {
-                        startSessionTimer();
-                    }
-                } else {
-                    pauseSessionTimer();
-                }
+                    }, 500);
+                });
             });
 
-        // Minimize chat
-        minimizeChat.addEventListener('click', function() {
-            chatWindow.classList.add('hidden');
-            chatButton.classList.remove('hidden');
-            pauseSessionTimer();
-        });
+            // Send message
+            chatForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const message = chatInput.value.trim();
+                if (!message) return;
 
-        // Category selection
-        categoryButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                selectedCategory = this.dataset.category;
-                categorySelection.classList.add('hidden');
-                chatInputContainer.classList.remove('hidden');
+                // Add user message to UI
+                addUserMessage(message);
+                chatInput.value = '';
 
-                sessionTimer.classList.remove('hidden');
-                resetSessionTimer();
+                // Guest user: simple bot responses
+                handleGuestMessage(message);
+            });
 
-                // Add system message based on category
-                addSystemMessage(`You've selected: ${selectedCategory}. How can I help you today?`);
+            // Extend session (only for authenticated users)
+            if (extendSessionBtn) {
+                extendSessionBtn.addEventListener('click', function() {
+                    // For guest users, just restart the timer
+                    addSystemMessage('Session extended for guest mode.');
+                });
+            }
 
-                // For guest users, add some helpful info
+            // Guest message handler
+            function handleGuestMessage(message) {
                 setTimeout(() => {
-                    if (selectedCategory === 'General Information') {
-                        addBotMessage(
-                            'I can help you with information about our spa, yoga, and gym services. What would you like to know?'
-                        );
-                    } else if (selectedCategory === 'Services & Pricing') {
-                        addBotMessage(
-                            'You can browse all our services and pricing on our website. For booking, you\'ll need to create an account first.'
-                        );
-                    } else if (selectedCategory === 'Facilities & Accommodations') {
-                        addBotMessage(
-                            'We offer spa treatments, yoga classes, and gym facilities. Visit our service pages to see detailed information about each location.'
-                        );
+                    const lowerMessage = message.toLowerCase();
+                    let response = '';
+
+                    if (lowerMessage.includes('spa') || lowerMessage.includes('massage')) {
+                        response =
+                            'Our spa services include various massage therapies, facial treatments, and body treatments. You can browse all spa locations and services on our spa page.';
+                    } else if (lowerMessage.includes('yoga')) {
+                        response =
+                            'We offer yoga classes for all skill levels. Visit our yoga page to see available studios, class schedules, and pricing information.';
+                    } else if (lowerMessage.includes('gym') || lowerMessage.includes('fitness')) {
+                        response =
+                            'Our gym facilities feature modern equipment and professional trainers. Check out our gym page for locations and membership options.';
+                    } else if (lowerMessage.includes('booking') || lowerMessage.includes('reserve')) {
+                        response =
+                            'To book any of our services, you\'ll need to create an account first. This ensures you get the best personalized experience and can manage your bookings easily.';
+                    } else if (lowerMessage.includes('price') || lowerMessage.includes('cost')) {
+                        response =
+                            'Pricing varies by location and service type. You can view detailed pricing on each service\'s page. All prices are transparently displayed before booking.';
+                    } else if (lowerMessage.includes('location') || lowerMessage.includes('address')) {
+                        response =
+                            'We have multiple locations for spa, yoga, and gym services. Each service page shows the exact addresses and contact information for all available locations.';
+                    } else if (lowerMessage.includes('hours') || lowerMessage.includes('open')) {
+                        response =
+                            'Operating hours vary by location. You can find specific hours for each facility on their detail pages, including any special holiday schedules.';
                     } else {
-                        addBotMessage(
-                            'For detailed assistance with this topic, please consider creating an account for personalized support.'
-                        );
+                        response =
+                            'Thank you for your question! For detailed assistance, I recommend browsing our service pages or creating an account for personalized support from our team.';
                     }
-                }, 500);
 
-                // Update conversation with category if needed
-                if (currentConversation) {
-                    updateConversationCategory(currentConversation.id, selectedCategory);
-                }
-            });
-        });
+                    addBotMessage(response);
+                }, 1000);
+            }
 
-        // Send message
-        chatForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const message = chatInput.value.trim();
-            if (!message) return;
+            // Session Timer Functions - Simplified for guest users
+            function startSessionTimer() {
+                // Simple timer for guest mode - no server calls needed
+                console.log('Guest chat session started');
+            }
+
+            function pauseSessionTimer() {
+                console.log('Guest chat session paused');
+            }
+
+            function resetSessionTimer() {
+                console.log('Guest chat session reset');
+            }
+
+            function updateTimerDisplay() {
+                // Not needed for guest mode
+            }
+
+            function showTimeoutWarning() {
+                // Simplified for guest mode
+                addSystemMessage('Chat has been idle for a while.');
+            }
+
+            function hideTimeoutWarning() {
+                // Not needed for guest mode
+            }
+
+            function handleSessionTimeout() {
+                // Simplified for guest mode
+                addSystemMessage('Chat session timed out. You can continue chatting anytime!');
+            }
+
+            function resetChatToInitialState() {
+                // Reset state
+                selectedCategory = null;
+
+                // Clear messages
+                chatMessages.innerHTML = '';
+
+                // Show category selection
+                categorySelection.classList.remove('hidden');
+                chatInputContainer.classList.add('hidden');
+
+                // Clear input
+                if (chatInput) chatInput.value = '';
+
+                // Add welcome message
+                addSystemMessage('Welcome back! Please select a category to continue our conversation.');
+            }
+
+            // Fetch or create conversation - Not needed for guest mode
+            function fetchConversation() {
+                console.log('Guest mode - no server conversation needed');
+            }
+
+            // Check admin status - Not needed for guest mode
+            function checkAdminStatus() {
+                console.log('Guest mode - no admin status check needed');
+            }
+
+            // Update conversation category - Not needed for guest mode
+            function updateConversationCategory(conversationId, category) {
+                console.log('Guest mode - no server category update needed');
+            }
+
+            // Send message to server - Not needed for guest mode
+            function sendMessage(message) {
+                console.log('Guest mode - no server message sending needed');
+            }
 
             // Add user message to UI
-            addUserMessage(message);
-            chatInput.value = '';
-
-            // Authenticated user: send to server
-            sendMessage(message);
-            resetSessionTimer();
-            // Guest user: simple bot responses
-            handleGuestMessage(message);
-        });
-
-        // Extend session (only for authenticated users)
-        extendSessionBtn.addEventListener('click', function() {
-            resetSessionTimer();
-            hideTimeoutWarning();
-        });
-
-        // Guest message handler
-        function handleGuestMessage(message) {
-            setTimeout(() => {
-                const lowerMessage = message.toLowerCase();
-                let response = '';
-
-                if (lowerMessage.includes('spa') || lowerMessage.includes('massage')) {
-                    response =
-                        'Our spa services include various massage therapies, facial treatments, and body treatments. You can browse all spa locations and services on our spa page.';
-                } else if (lowerMessage.includes('yoga')) {
-                    response =
-                        'We offer yoga classes for all skill levels. Visit our yoga page to see available studios, class schedules, and pricing information.';
-                } else if (lowerMessage.includes('gym') || lowerMessage.includes('fitness')) {
-                    response =
-                        'Our gym facilities feature modern equipment and professional trainers. Check out our gym page for locations and membership options.';
-                } else if (lowerMessage.includes('booking') || lowerMessage.includes('reserve')) {
-                    response =
-                        'To book any of our services, you\'ll need to create an account first. This ensures you get the best personalized experience and can manage your bookings easily.';
-                } else if (lowerMessage.includes('price') || lowerMessage.includes('cost')) {
-                    response =
-                        'Pricing varies by location and service type. You can view detailed pricing on each service\'s page. All prices are transparently displayed before booking.';
-                } else if (lowerMessage.includes('location') || lowerMessage.includes('address')) {
-                    response =
-                        'We have multiple locations for spa, yoga, and gym services. Each service page shows the exact addresses and contact information for all available locations.';
-                } else if (lowerMessage.includes('hours') || lowerMessage.includes('open')) {
-                    response =
-                        'Operating hours vary by location. You can find specific hours for each facility on their detail pages, including any special holiday schedules.';
-                } else {
-                    response =
-                        'Thank you for your question! For detailed assistance, I recommend browsing our service pages or creating an account for personalized support from our team.';
-                }
-
-                addBotMessage(response);
-            }, 1000);
-        }
-
-        // Session Timer Functions
-        function startSessionTimer() {
-            if (!sessionStartTime) {
-                sessionStartTime = Date.now();
-            }
-
-            // Clear existing timers
-            clearTimeout(sessionTimeout);
-            clearTimeout(warningTimeout);
-            clearInterval(timerInterval);
-
-            // Set warning timeout (13 minutes)
-            warningTimeout = setTimeout(showTimeoutWarning, sessionDuration - warningTime);
-
-            // Set session timeout (15 minutes)
-            sessionTimeout = setTimeout(handleSessionTimeout, sessionDuration);
-
-            // Update timer display every second
-            timerInterval = setInterval(updateTimerDisplay, 1000);
-        }
-
-        function pauseSessionTimer() {
-            clearInterval(timerInterval);
-        }
-
-        function resetSessionTimer() {
-            sessionStartTime = Date.now();
-            hideTimeoutWarning();
-            startSessionTimer();
-        }
-
-        function updateTimerDisplay() {
-            if (!sessionStartTime) return;
-
-            const elapsed = Date.now() - sessionStartTime;
-            const remaining = Math.max(0, sessionDuration - elapsed);
-
-            const minutes = Math.floor(remaining / 60000);
-            const seconds = Math.floor((remaining % 60000) / 1000);
-
-            timerDisplay.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-
-            // Update warning timer if warning is shown
-            if (!timeoutWarning.classList.contains('hidden')) {
-                const warningRemaining = Math.max(0, warningTime - (elapsed - (sessionDuration - warningTime)));
-                const warningMinutes = Math.floor(warningRemaining / 60000);
-                const warningSeconds = Math.floor((warningRemaining % 60000) / 1000);
-                warningTimer.textContent = `${warningMinutes}:${warningSeconds.toString().padStart(2, '0')}`;
-            }
-
-            if (remaining <= 0) {
-                handleSessionTimeout();
-            }
-        }
-
-        function showTimeoutWarning() {
-            timeoutWarning.classList.remove('hidden');
-            addSystemMessage(
-                '⚠️ Your session will expire in 2 minutes due to inactivity. Click "Continue" to extend your session.'
-            );
-        }
-
-        function hideTimeoutWarning() {
-            timeoutWarning.classList.add('hidden');
-        }
-
-        function handleSessionTimeout() {
-            // Clear all timers
-            clearTimeout(sessionTimeout);
-            clearTimeout(warningTimeout);
-            clearInterval(timerInterval);
-
-            // Reset chat to initial state
-            resetChatToInitialState();
-
-            // Show timeout message
-            addSystemMessage(
-                '🕐 Your session has expired due to inactivity. Please select a category to start a new session.'
-            );
-        }
-
-        function resetChatToInitialState() {
-            // Reset state
-            selectedCategory = null;
-            sessionStartTime = null;
-
-            // Clear messages
-            chatMessages.innerHTML = '';
-
-            // Show category selection
-            categorySelection.classList.remove('hidden');
-            chatInputContainer.classList.add('hidden');
-            sessionTimer.classList.add('hidden');
-
-            // Hide warning
-            hideTimeoutWarning();
-
-            // Clear input
-            chatInput.value = '';
-
-            // Add welcome message
-            addSystemMessage('Welcome back! Please select a category to continue our conversation.');
-        }
-
-        // Fetch or create conversation
-        function fetchConversation() {
-            fetch('/chat/conversation', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                            'content')
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    currentConversation = data.conversation;
-
-                    // If conversation has messages, display them
-                    if (data.messages && data.messages.length > 0) {
-                        chatMessages.innerHTML = '';
-                        data.messages.forEach(message => {
-                            if (message.sender_type === 'user') {
-                                addUserMessage(message.message, false);
-                            } else if (message.sender_type === 'ai') {
-                                addBotMessage(message.message, false);
-                            } else if (message.sender_type === 'admin') {
-                                addAdminMessage(message.message, false);
-                            }
-                        });
-
-                        // If conversation has a category, skip category selection
-                        if (currentConversation.category) {
-                            selectedCategory = currentConversation.category;
-                            categorySelection.classList.add('hidden');
-                            chatInputContainer.classList.remove('hidden');
-                            sessionTimer.classList.remove('hidden');
-                            startSessionTimer();
-                        }
-                    }
-
-                    // Scroll to bottom
-                    scrollToBottom();
-                })
-                .catch(error => {
-                    console.error('Error fetching conversation:', error);
-                    addSystemMessage(
-                        'There was an error connecting to the chat service. Please try again later.');
-                });
-        }
-
-        // Check admin status
-        function checkAdminStatus() {
-            fetch('/chat/check-admin-status', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                            'content')
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    adminActive = data.admin_active;
-
-                    if (adminActive) {
-                        addSystemMessage('An admin is currently online and will respond to your messages.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error checking admin status:', error);
-                });
-
-            // Check admin status every 30 seconds
-            setTimeout(checkAdminStatus, 30000);
-        }
-
-        // Update conversation category
-        function updateConversationCategory(conversationId, category) {
-            // This is handled when sending the first message
-        }
-
-        // Send message to server
-        function sendMessage(message) {
-            fetch('/chat/send', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                            'content')
-                    },
-                    body: JSON.stringify({
-                        conversation_id: currentConversation.id,
-                        message: message,
-                        category: selectedCategory
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    // Update admin status
-                    if (data.admin_active !== undefined) {
-                        adminActive = data.admin_active;
-                    }
-
-                    // If AI responded, add the response
-                    if (data.ai_response) {
-                        addBotMessage(data.ai_response.message);
-                    } else if (adminActive) {
-                        // Add a waiting message if admin is active
-                        addSystemMessage('An admin will respond to your message soon.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error sending message:', error);
-                    addSystemMessage('There was an error sending your message. Please try again.');
-                });
-        }
-
-        // Add user message to UI
-        function addUserMessage(message, scroll = true) {
-            const messageElement = document.createElement('div');
-            messageElement.className = 'flex justify-end';
-            messageElement.innerHTML = `
-                <div class="bg-blue-500 text-white rounded-lg py-2 px-4 max-w-[80%]">
+            function addUserMessage(message, scroll = true) {
+                const messageElement = document.createElement('div');
+                messageElement.className = 'flex justify-end';
+                messageElement.innerHTML = `
+                <div class="text-white rounded-lg py-2 px-4 max-w-[80%]" style="background-color: #374151;">
                     <p>${escapeHtml(message)}</p>
                 </div>
             `;
-            chatMessages.appendChild(messageElement);
-            if (scroll) scrollToBottom();
-        }
+                chatMessages.appendChild(messageElement);
+                if (scroll) scrollToBottom();
+            }
 
-        // Add bot message to UI
-        function addBotMessage(message, scroll = true) {
-            const messageElement = document.createElement('div');
-            messageElement.className = 'flex justify-start';
-            messageElement.innerHTML = `
+            // Add bot message to UI
+            function addBotMessage(message, scroll = true) {
+                const messageElement = document.createElement('div');
+                messageElement.className = 'flex justify-start';
+                messageElement.innerHTML = `
                 <div class="bg-gray-200 rounded-lg py-2 px-4 max-w-[80%]">
                     <p class="text-gray-800">${escapeHtml(message)}</p>
                 </div>
             `;
-            chatMessages.appendChild(messageElement);
-            if (scroll) scrollToBottom();
-        }
+                chatMessages.appendChild(messageElement);
+                if (scroll) scrollToBottom();
+            }
 
-        // Add admin message to UI
-        function addAdminMessage(message, scroll = true) {
-            const messageElement = document.createElement('div');
-            messageElement.className = 'flex justify-start';
-            messageElement.innerHTML = `
+            // Add admin message to UI
+            function addAdminMessage(message, scroll = true) {
+                const messageElement = document.createElement('div');
+                messageElement.className = 'flex justify-start';
+                messageElement.innerHTML = `
                 <div class="bg-green-100 rounded-lg py-2 px-4 max-w-[80%]">
                     <p class="text-gray-800"><span class="font-bold text-green-600">Admin:</span> ${escapeHtml(message)}</p>
                 </div>
             `;
-            chatMessages.appendChild(messageElement);
-            if (scroll) scrollToBottom();
-        }
+                chatMessages.appendChild(messageElement);
+                if (scroll) scrollToBottom();
+            }
 
-        // Add system message to UI
-        function addSystemMessage(message, scroll = true) {
-            const messageElement = document.createElement('div');
-            messageElement.className = 'flex justify-center';
-            messageElement.innerHTML = `
+            // Add system message to UI
+            function addSystemMessage(message, scroll = true) {
+                const messageElement = document.createElement('div');
+                messageElement.className = 'flex justify-center';
+                messageElement.innerHTML = `
                 <div class="bg-gray-100 text-gray-600 rounded-lg py-2 px-4 text-sm max-w-[90%] text-center">
                     <p>${escapeHtml(message)}</p>
                 </div>
             `;
-            chatMessages.appendChild(messageElement);
-            if (scroll) scrollToBottom();
-        }
+                chatMessages.appendChild(messageElement);
+                if (scroll) scrollToBottom();
+            }
 
-        // Scroll chat to bottom
-        function scrollToBottom() {
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
+            // Scroll chat to bottom
+            function scrollToBottom() {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
 
-        // Escape HTML to prevent XSS
-        function escapeHtml(unsafe) {
-            return unsafe
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
+            // Escape HTML to prevent XSS
+            function escapeHtml(unsafe) {
+                return unsafe
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
 
-        // Cleanup on page unload
-        window.addEventListener('beforeunload', function() {
-            clearTimeout(sessionTimeout);
-            clearTimeout(warningTimeout);
-            clearInterval(timerInterval);
-        });
+            // Cleanup on page unload
+            window.addEventListener('beforeunload', function() {
+                clearTimeout(sessionTimeout);
+                clearTimeout(warningTimeout);
+                clearInterval(timerInterval);
+            });
         });
     </script>
 

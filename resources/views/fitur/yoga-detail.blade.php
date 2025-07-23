@@ -2,8 +2,11 @@
     <!-- Add CSRF token meta tag -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- Custom CSS for Image Gallery -->
     <style>
+        .unified-gradient {
+            background: linear-gradient(to bottom, #FFFFFF 0%, #BED9FE 100%);
+        }
+
         .thumbnail {
             transition: all 0.2s ease-in-out;
         }
@@ -13,9 +16,9 @@
         }
     </style>
 
-    <!-- Main Container with Light Blue Background -->
-    <div class="min-h-screen bg-gradient-to-br from-blue-100 to-blue-50 pt-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    {{-- Unified YOGA Detail Section --}}
+    <div class="unified-gradient min-h-screen pt-20">
+        <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-8">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
                 <!-- Left Side - Main Content -->
@@ -766,4 +769,5 @@
     </script>
     <script type="text/javascript" src="{{ config('services.midtrans.snap_url') }}"
         data-client-key="{{ config('services.midtrans.client_key') }}"></script>
+    </div>
 </x-app-layout>

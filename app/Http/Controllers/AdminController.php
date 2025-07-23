@@ -8,7 +8,6 @@ use App\Http\Middleware\AdminMiddleware;
 use App\Models\Spa;
 use App\Models\User;
 use App\Models\Yoga;
-use App\Models\Event;
 use App\Models\Payment;
 
 class AdminController extends Controller
@@ -17,9 +16,8 @@ class AdminController extends Controller
     {
         $spacount = Spa::count();
         $yogacount = Yoga::count();
-        $eventcount = Event::count();
         $payments = Payment::orderBy('created_at', 'desc')->take(5)->get(); // Get the 5 most recent payments
-        return view('admin.dashboard', compact('spacount', 'yogacount', 'eventcount', 'payments'));
+        return view('admin.dashboard', compact('spacount', 'yogacount', 'payments'));
     }
 
     public function create()

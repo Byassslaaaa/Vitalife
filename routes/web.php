@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SpaController;
-use App\Http\Controllers\EventController;
 use App\Http\Controllers\YogaController;
 use App\Http\Controllers\GymController;
 use App\Http\Controllers\AdminController;
@@ -74,13 +73,6 @@ Route::get('/yoga/{id_yoga}', [YogaController::class, 'detail'])->name('yoga.det
 Route::get('/gym', [GymController::class, 'index'])->name('gym.index');
 Route::get('/gym/{id_gym}', [GymController::class, 'detail'])->name('gym.detail');
 
-// Public Event Routes (for browsing without booking)
-Route::get('/event', [EventController::class, 'index'])->name('event.index');
-Route::get('/events/search', [EventController::class, 'search'])->name('search.events');
-Route::get('/detailEvent', function () {
-    return view('fitur.detailEvent');
-});
-
 // Public Voucher Route (browsing only, claiming requires auth)
 Route::get('/voucher', [VouchersController::class, 'index'])->name('voucher');
 
@@ -110,9 +102,6 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name
 // ============================================================================
 
 Route::middleware(['auth'])->group(function () {
-
-    // User-facing voucher route
-    Route::get('/voucher', [VouchersController::class, 'index'])->name('voucher');
 
     // Weather
     Route::get('/weather', [WeatherController::class, 'getWeather']);
@@ -310,16 +299,6 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     // Gym Services Management
     Route::resource('services', GymServiceController::class);
-
-    // Event management
-    Route::prefix('event')->name('event.')->group(function () {
-        Route::get('/', [EventController::class, 'adminIndex'])->name('index');
-        Route::get('/create', [EventController::class, 'create'])->name('create');
-        Route::post('/', [EventController::class, 'store'])->name('store');
-        Route::get('/{id_event}/edit', [EventController::class, 'edit'])->name('edit');
-        Route::put('/{id_event}', [EventController::class, 'update'])->name('update');
-        Route::delete('/{id_event}', [EventController::class, 'destroy'])->name('destroy');
-    });
 
     // Feedback management
     Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');

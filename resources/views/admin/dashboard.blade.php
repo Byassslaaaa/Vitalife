@@ -61,22 +61,6 @@
                 <div class="bg-blue-500 h-2 rounded-full" style="width: 65%"></div>
             </div>
         </a>
-
-        <!-- Total Clients Today Card -->
-        <a href="{{ route('admin.event.index') }}" class="bg-white rounded-lg p-4 flex-1 shadow">
-            <div class="flex justify-between items-start">
-                <div>
-                    <h2 class="text-2xl font-bold">{{ $eventcount }}</h2>
-                    <p class="text-sm text-gray-500">Total Event</p>
-                </div>
-                <div class="bg-green-100 p-2 rounded-md">
-                    <i class="fa-solid fa-person-running text-green-500"></i>
-                </div>
-            </div>
-            <div class="mt-4 bg-gray-200 rounded-full h-2">
-                <div class="bg-blue-500 h-2 rounded-full" style="width: 65%"></div>
-            </div>
-        </a>
     </div>
 
     <!-- Bagian grafik -->
