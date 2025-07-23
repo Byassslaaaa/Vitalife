@@ -21,6 +21,7 @@ class Gym extends Model
 
     protected $casts = [
         'services' => 'array',
+        'fasilitas' => 'array',
         'is_open' => 'boolean',
     ];
 

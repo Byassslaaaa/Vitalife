@@ -83,6 +83,9 @@ Route::prefix('api')->group(function () {
     // Route::get('/spa/{spaId}/details', [SpasController::class, 'getSpaDetailsJson']); // Temporary disabled
     // Public API endpoints (no authentication required)
     Route::get('/gym/{gymId}/services', [BookingController::class, 'getGymServices'])->name('gym.services');
+    Route::get('/yoga/{yogaId}/services', [BookingController::class, 'getYogaServices'])->name('yoga.services');
+    Route::get('/vouchers/public', [VouchersController::class, 'getPublicVouchers'])->name('vouchers.public');
+    Route::get('/weather', [WeatherController::class, 'getWeather'])->name('weather.api');
 });
 
 // Social Login Routes
@@ -123,11 +126,19 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/spa-booking', [BookingController::class, 'book']);
         Route::get('/spa-booking/{bookingCode}/status', [BookingController::class, 'getBooking']);
         Route::post('/create-spa-payment', [BookingController::class, 'createSpaPayment']);
+        Route::post('/create-gym-payment', [BookingController::class, 'createGymPayment']);
+        Route::post('/create-yoga-payment', [BookingController::class, 'createYogaPayment']);
+        Route::get('/booking/{bookingCode}/details', [BookingController::class, 'getBookingDetails']);
     });
 
     // BOOKING ROUTES (REQUIRES AUTH)
     Route::post('/yoga/booking', [BookingController::class, 'book']);
     Route::post('/gym/booking', [BookingController::class, 'book'])->name('gym.booking.process');
+
+    // Additional Booking Routes
+    Route::get('/booking/{bookingCode}/confirmation', [BookingController::class, 'confirmation'])->name('booking.confirmation');
+    Route::get('/my-bookings', [BookingController::class, 'myBookings'])->name('my.bookings');
+    Route::post('/booking/{bookingCode}/review', [BookingController::class, 'addReview'])->name('booking.review');
 
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -149,6 +160,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/universal-booking', function () {
         return view('universal-booking');
     })->name('universal.booking.form');
+
+    // Voucher Routes (REQUIRES AUTH for claiming)
+    Route::post('/voucher/claim', [VouchersController::class, 'claim'])->name('voucher.claim');
+    Route::get('/voucher/my-vouchers', [VouchersController::class, 'myVouchers'])->name('voucher.my');
+    Route::post('/voucher/apply', [VouchersController::class, 'apply'])->name('voucher.apply');
 
     // Universal Booking API
     Route::prefix('booking')->name('booking.')->group(function () {
@@ -232,7 +248,18 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::get('/spa/{spaId}/services', [SpaServicesController::class, 'getServicesBySpa'])->name('by-spa');
     });
 
-    // Spa Bookings Management
+    // Comprehensive Booking Management
+    Route::prefix('bookings')->name('bookings.')->group(function () {
+        Route::get('/', [BookingsController::class, 'index'])->name('index');
+        Route::get('/spa', [BookingsController::class, 'spaBookings'])->name('spa');
+        Route::get('/gym', [BookingsController::class, 'gymBookings'])->name('gym');
+        Route::get('/yoga', [BookingsController::class, 'yogaBookings'])->name('yoga');
+        Route::get('/{bookingCode}', [BookingsController::class, 'show'])->name('show');
+        Route::patch('/{bookingCode}/status', [BookingsController::class, 'updateStatus'])->name('update-status');
+        Route::delete('/{bookingCode}', [BookingsController::class, 'destroy'])->name('destroy');
+        Route::get('/export/csv', [BookingsController::class, 'exportCsv'])->name('export.csv');
+        Route::get('/export/pdf', [BookingsController::class, 'exportPdf'])->name('export.pdf');
+    });
     Route::prefix('spa-bookings')->name('spa-bookings.')->group(function () {
         Route::get('/', [BookingsController::class, 'spaBookings'])->name('index');
         Route::get('/{booking}', [BookingsController::class, 'showSpaBooking'])->name('show');

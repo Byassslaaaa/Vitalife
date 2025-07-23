@@ -37,184 +37,392 @@ class DatabaseSeeder extends Seeder
         $this->runSpaSeeder();
         $this->runGymSeeder();
         $this->runYogaSeeder();
+        $this->runVoucherSeeder();
     }
 
     private function runSpaSeeder()
     {
-        // Create single spa entry
-        $spa = \App\Models\Spa::create([
-            'nama' => 'Royal Heritage Spa Yogyakarta',
-            'alamat' => 'Jl. Prawirotaman II No.15, Mergangsan, Yogyakarta',
-            'noHP' => '0274-373511',
-            'image' => 'images/spa/royal-heritage-spa.jpg',
-            'maps' => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.9473847384738!2d110.36588347503846!3d-7.796194392226735!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a578b54a66b31%3A0xf92a735bf5b0b5e8!2sPrawirotaman%2C%20Mergangsan%2C%20Kota%20Yogyakarta!5e0!3m2!1sen!2sid!4v1620000000000!5m2!1sen!2sid',
-            'waktuBuka' => json_encode([
-                'Senin' => '09:00 - 21:00',
-                'Selasa' => '09:00 - 21:00',
-                'Rabu' => '09:00 - 21:00',
-                'Kamis' => '09:00 - 21:00',
-                'Jumat' => '09:00 - 21:00',
-                'Sabtu' => '09:00 - 22:00',
-                'Minggu' => '09:00 - 22:00',
-            ]),
-            'services' => json_encode([
-                'Traditional Javanese Massage',
-                'Royal Heritage Signature Treatment',
-                'Aromatherapy Massage',
-                'Hot Stone Therapy',
-                'Body Scrub & Wrap',
-                'Facial Treatment'
-            ]),
-            'is_open' => true,
-        ]);
+        // Create multiple spa entries for better data
+        $spas = [
+            [
+                'nama' => 'Royal Heritage Spa Yogyakarta',
+                'alamat' => 'Jl. Prawirotaman II No.15, Mergangsan, Yogyakarta',
+                'noHP' => '0274-373511',
+                'image' => 'image/spa1.jpg',
+                'maps' => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.9473847384738!2d110.36588347503846!3d-7.796194392226735!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a578b54a66b31%3A0xf92a735bf5b0b5e8!2sPrawirotaman%2C%20Mergangsan%2C%20Kota%20Yogyakarta!5e0!3m2!1sen!2sid!4v1620000000000!5m2!1sen!2sid',
+                'waktuBuka' => [
+                    'Senin' => '09:00 - 21:00',
+                    'Selasa' => '09:00 - 21:00',
+                    'Rabu' => '09:00 - 21:00',
+                    'Kamis' => '09:00 - 21:00',
+                    'Jumat' => '09:00 - 21:00',
+                    'Sabtu' => '09:00 - 22:00',
+                    'Minggu' => '09:00 - 22:00',
+                ],
+                'services' => [
+                    'Traditional Javanese Massage',
+                    'Royal Heritage Signature Treatment',
+                    'Aromatherapy Massage'
+                ],
+                'is_open' => true,
+            ],
+            [
+                'nama' => 'Zen Spa & Wellness',
+                'alamat' => 'Jl. Malioboro No.123, Yogyakarta',
+                'noHP' => '0274-555777',
+                'image' => 'image/spa2.jpg',
+                'maps' => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.5!2d110.365!3d-7.795!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a578b54a66b31%3A0xf92a735bf5b0b5e8!2sMalioboro%2C%20Yogyakarta!5e0!3m2!1sen!2sid!4v1620000000000!5m2!1sen!2sid',
+                'waktuBuka' => [
+                    'Senin' => '10:00 - 22:00',
+                    'Selasa' => '10:00 - 22:00',
+                    'Rabu' => '10:00 - 22:00',
+                    'Kamis' => '10:00 - 22:00',
+                    'Jumat' => '10:00 - 22:00',
+                    'Sabtu' => '10:00 - 23:00',
+                    'Minggu' => '10:00 - 23:00',
+                ],
+                'services' => [
+                    'Hot Stone Massage',
+                    'Balinese Massage',
+                    'Reflexology'
+                ],
+                'is_open' => true,
+            ],
+            [
+                'nama' => 'Serenity Spa Jogja',
+                'alamat' => 'Jl. Kaliurang Km 7, Sleman, Yogyakarta',
+                'noHP' => '0274-666888',
+                'image' => 'image/spa3.jpg',
+                'maps' => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.0!2d110.375!3d-7.765!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a59f7bb5a8c9d%3A0x8f4e5d6a7b8c9e0f!2sKaliurang%20Yogyakarta!5e0!3m2!1sen!2sid!4v1620000000000!5m2!1sen!2sid',
+                'waktuBuka' => [
+                    'Senin' => '08:00 - 20:00',
+                    'Selasa' => '08:00 - 20:00',
+                    'Rabu' => '08:00 - 20:00',
+                    'Kamis' => '08:00 - 20:00',
+                    'Jumat' => '08:00 - 20:00',
+                    'Sabtu' => '08:00 - 21:00',
+                    'Minggu' => '08:00 - 21:00',
+                ],
+                'services' => [
+                    'Deep Tissue Massage',
+                    'Swedish Massage',
+                    'Couples Massage'
+                ],
+                'is_open' => true,
+            ]
+        ];
 
-        // Create spa detail
-        \App\Models\SpaDetail::create([
-            'spa_id' => $spa->id_spa,
-            'about_spa' => 'Royal Heritage Spa menghadirkan pengalaman spa authentic dengan sentuhan budaya Jawa yang kental.',
-            'facilities' => json_encode([
-                'Private Treatment Rooms',
-                'Couple Room',
-                'Steam Room',
-                'Relaxation Lounge',
-                'Traditional Joglo Architecture',
-                'Garden View'
-            ]),
-            'contact_person_name' => 'Mbak Sari Dewi',
-            'contact_person_phone' => '0274-373511',
-            'gallery_images' => json_encode([
-                'images/spa/royal-heritage-spa.jpg',
-                'images/spa/treatment-room.jpg',
-                'images/spa/relaxation-area.jpg'
-            ])
-        ]);
+        foreach ($spas as $spaData) {
+            $spa = \App\Models\Spa::create($spaData);
 
-        // Create spa service
-        \App\Models\SpaService::create([
-            'spa_id' => $spa->id_spa,
-            'name' => 'Traditional Javanese Massage',
-            'description' => 'Pijat tradisional Jawa menggunakan teknik kuno dengan minyak herbal',
-            'price' => 250000,
-            'duration' => '90 menit',
-            'is_active' => true,
-        ]);
+            // Create spa detail
+            \App\Models\SpaDetail::create([
+                'spa_id' => $spa->id_spa,
+                'about_spa' => $spa->nama . ' menghadirkan pengalaman spa terbaik dengan layanan profesional dan suasana yang menenangkan.',
+                'facilities' => [
+                    'Private Treatment Rooms',
+                    'Couple Room',
+                    'Steam Room',
+                    'Relaxation Lounge',
+                    'Free Parking',
+                    'Air Conditioning'
+                ],
+                'contact_person_name' => 'Customer Service',
+                'contact_person_phone' => $spa->noHP,
+                'gallery_images' => [
+                    $spa->image,
+                    'image/spa-interior.jpg',
+                    'image/spa-room.jpg'
+                ]
+            ]);
+
+            // Create spa services
+            $services = [
+                [
+                    'name' => 'Traditional Massage',
+                    'description' => 'Pijat tradisional untuk relaksasi dan kesehatan',
+                    'price' => 200000,
+                    'duration' => '60 menit',
+                    'category' => 'massage',
+                    'is_active' => true,
+                ],
+                [
+                    'name' => 'Aromatherapy',
+                    'description' => 'Terapi aromaterapi dengan essential oil pilihan',
+                    'price' => 300000,
+                    'duration' => '90 menit',
+                    'category' => 'therapy',
+                    'is_active' => true,
+                ]
+            ];
+
+            foreach ($services as $serviceData) {
+                $serviceData['spa_id'] = $spa->id_spa;
+                \App\Models\SpaService::create($serviceData);
+            }
+        }
     }
 
     private function runGymSeeder()
     {
-        // Create single gym entry
-        $gym = \App\Models\Gym::create([
-            'nama' => 'Fitness First Jogja City Mall',
-            'alamat' => 'Jl. Magelang No.6, Yogyakarta',
-            'services' => json_encode([
-                'Cardio Equipment',
-                'Weight Training',
-                'Group Classes',
-                'Personal Training',
-                'Swimming Pool',
-                'Sauna'
-            ]),
-            'image' => 'images/gym/fitness-first-jogja.jpg',
-            'is_open' => true,
-        ]);
+        // Create multiple gym entries
+        $gyms = [
+            [
+                'nama' => 'Fitness First Jogja City Mall',
+                'alamat' => 'Jl. Magelang No.6, Yogyakarta',
+                'services' => [
+                    'Cardio Equipment',
+                    'Weight Training',
+                    'Group Classes'
+                ],
+                'fasilitas' => [
+                    'Swimming Pool',
+                    'Sauna',
+                    'Personal Training'
+                ],
+                'description' => 'Gym premium dengan fasilitas lengkap dan instruktur berpengalaman.',
+                'contact_person' => 'Mr. Andi Pratama',
+                'contact_phone' => '0274-123456',
+                'image' => 'image/gym1.jpg',
+                'maps' => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.8!2d110.367!3d-7.795!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a578b54a66b31%3A0xf92a735bf5b0b5e8!2sMagelang%20Yogyakarta!5e0!3m2!1sen!2sid!4v1620000000000!5m2!1sen!2sid',
+                'is_open' => true,
+            ],
+            [
+                'nama' => 'Gold\'s Gym Yogyakarta',
+                'alamat' => 'Jl. Solo No.47, Yogyakarta',
+                'services' => [
+                    'Strength Training',
+                    'Cardio Workout',
+                    'Functional Training'
+                ],
+                'fasilitas' => [
+                    'Modern Equipment',
+                    'Group Classes',
+                    'Nutritionist Consultation'
+                ],
+                'description' => 'Gym internasional dengan standar kelas dunia.',
+                'contact_person' => 'Ms. Sarah Gym',
+                'contact_phone' => '0274-789123',
+                'image' => 'image/gym2.jpg',
+                'maps' => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.7!2d110.370!3d-7.790!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a578b54a66b31%3A0xf92a735bf5b0b5e8!2sSolo%20Yogyakarta!5e0!3m2!1sen!2sid!4v1620000000000!5m2!1sen!2sid',
+                'is_open' => true,
+            ]
+        ];
 
-        // Create gym detail
-        \App\Models\GymDetail::create([
-            'gym_id' => $gym->id_gym,
-            'about_gym' => 'Fitness First adalah gym internasional dengan fasilitas lengkap dan kelas fitness terbaik di Yogyakarta.',
-            'facilities' => json_encode([
-                'Cardio Machines',
-                'Free Weights',
-                'Functional Training Area',
-                'Group Exercise Studio',
-                'Swimming Pool',
-                'Sauna & Steam Room'
-            ]),
-            'opening_hours' => json_encode([
-                'Senin' => '06:00 - 22:00',
-                'Selasa' => '06:00 - 22:00',
-                'Rabu' => '06:00 - 22:00',
-                'Kamis' => '06:00 - 22:00',
-                'Jumat' => '06:00 - 22:00',
-                'Sabtu' => '07:00 - 21:00',
-                'Minggu' => '07:00 - 21:00',
-            ]),
-            'contact_person_name' => 'Mr. Andi Pratama',
-            'contact_person_phone' => '0274-123456',
-            'gallery_images' => json_encode([
-                'images/gym/fitness-first-jogja.jpg',
-                'images/gym/cardio-area.jpg',
-                'images/gym/weight-training.jpg'
-            ])
-        ]);
+        foreach ($gyms as $gymData) {
+            $gym = \App\Models\Gym::create($gymData);
 
-        // Create gym service
-        \App\Models\GymService::create([
-            'gym_id' => $gym->id_gym,
-            'name' => 'Personal Training Session',
-            'description' => 'Sesi latihan personal dengan instruktur berpengalaman',
-            'price' => 350000,
-            'duration' => '60 menit',
-            'category' => 'personal_training',
-            'image' => 'images/gym/services/personal-training.jpg',
-            'is_active' => true,
-        ]);
+            // Create gym detail
+            \App\Models\GymDetail::create([
+                'gym_id' => $gym->id_gym,
+                'about_gym' => $gym->description,
+                'facilities' => array_merge($gymData['services'], $gymData['fasilitas']),
+                'opening_hours' => [
+                    'Senin' => '06:00 - 22:00',
+                    'Selasa' => '06:00 - 22:00',
+                    'Rabu' => '06:00 - 22:00',
+                    'Kamis' => '06:00 - 22:00',
+                    'Jumat' => '06:00 - 22:00',
+                    'Sabtu' => '07:00 - 21:00',
+                    'Minggu' => '07:00 - 21:00',
+                ],
+                'contact_person_name' => $gym->contact_person,
+                'contact_person_phone' => $gym->contact_phone,
+                'gallery_images' => [
+                    $gym->image,
+                    'image/gym-interior.jpg',
+                    'image/gym-equipment.jpg'
+                ]
+            ]);
+
+            // Create gym services
+            $services = [
+                [
+                    'name' => 'Personal Training Session',
+                    'description' => 'Sesi latihan personal dengan instruktur berpengalaman',
+                    'price' => 350000,
+                    'duration' => '60 menit',
+                    'category' => 'personal_training',
+                    'image' => 'image/gym-personal-training.jpg',
+                    'is_active' => true,
+                ],
+                [
+                    'name' => 'Group Class',
+                    'description' => 'Kelas kelompok dengan berbagai pilihan workout',
+                    'price' => 100000,
+                    'duration' => '45 menit',
+                    'category' => 'group_class',
+                    'image' => 'image/gym-group.jpg',
+                    'is_active' => true,
+                ]
+            ];
+
+            foreach ($services as $serviceData) {
+                $serviceData['gym_id'] = $gym->id_gym;
+                \App\Models\GymService::create($serviceData);
+            }
+        }
     }
 
     private function runYogaSeeder()
     {
-        // Create single yoga entry
-        $yoga = \App\Models\Yoga::create([
-            'nama' => 'Yoga Barn Yogyakarta',
-            'harga' => 150000,
-            'alamat' => 'Jl. Kaliurang Km 5.2, Sleman, Yogyakarta',
-            'noHP' => '0274-881234',
-            'waktuBuka' => json_encode([
-                'Senin' => '06:00 - 21:00',
-                'Selasa' => '06:00 - 21:00',
-                'Rabu' => '06:00 - 21:00',
-                'Kamis' => '06:00 - 21:00',
-                'Jumat' => '06:00 - 21:00',
-                'Sabtu' => '06:00 - 20:00',
-                'Minggu' => '07:00 - 19:00',
-            ]),
-            'image' => 'images/yoga/yoga-barn-yogyakarta.jpg',
-            'maps' => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.584738473847!2d110.39472607503795!3d-7.764839692261485!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a59f7bb5a8c9d%3A0x8f4e5d6a7b8c9e0f!2sKaliurang%20Yogyakarta!5e0!3m2!1sen!2sid!4v1620000000000!5m2!1sen!2sid',
-        ]);
+        // Create multiple yoga entries
+        $yogas = [
+            [
+                'nama' => 'Yoga Barn Yogyakarta',
+                'harga' => 150000,
+                'alamat' => 'Jl. Kaliurang Km 5.2, Sleman, Yogyakarta',
+                'noHP' => '0274-881234',
+                'waktuBuka' => [
+                    'Senin' => '06:00 - 21:00',
+                    'Selasa' => '06:00 - 21:00',
+                    'Rabu' => '06:00 - 21:00',
+                    'Kamis' => '06:00 - 21:00',
+                    'Jumat' => '06:00 - 21:00',
+                    'Sabtu' => '06:00 - 20:00',
+                    'Minggu' => '07:00 - 19:00',
+                ],
+                'image' => 'image/yoga1.jpg',
+                'maps' => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.584738473847!2d110.39472607503795!3d-7.764839692261485!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a59f7bb5a8c9d%3A0x8f4e5d6a7b8c9e0f!2sKaliurang%20Yogyakarta!5e0!3m2!1sen!2sid!4v1620000000000!5m2!1sen!2sid',
+            ],
+            [
+                'nama' => 'Zen Yoga Studio',
+                'harga' => 120000,
+                'alamat' => 'Jl. Malioboro No.89, Yogyakarta',
+                'noHP' => '0274-445566',
+                'waktuBuka' => [
+                    'Senin' => '07:00 - 20:00',
+                    'Selasa' => '07:00 - 20:00',
+                    'Rabu' => '07:00 - 20:00',
+                    'Kamis' => '07:00 - 20:00',
+                    'Jumat' => '07:00 - 20:00',
+                    'Sabtu' => '07:00 - 19:00',
+                    'Minggu' => '08:00 - 18:00',
+                ],
+                'image' => 'image/yoga2.jpg',
+                'maps' => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.5!2d110.365!3d-7.795!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a578b54a66b31%3A0xf92a735bf5b0b5e8!2sMalioboro%2C%20Yogyakarta!5e0!3m2!1sen!2sid!4v1620000000000!5m2!1sen!2sid',
+            ],
+            [
+                'nama' => 'Peaceful Yoga Center',
+                'harga' => 180000,
+                'alamat' => 'Jl. Wates Km 3, Yogyakarta',
+                'noHP' => '0274-777888',
+                'waktuBuka' => [
+                    'Senin' => '06:30 - 21:30',
+                    'Selasa' => '06:30 - 21:30',
+                    'Rabu' => '06:30 - 21:30',
+                    'Kamis' => '06:30 - 21:30',
+                    'Jumat' => '06:30 - 21:30',
+                    'Sabtu' => '07:00 - 20:00',
+                    'Minggu' => '07:00 - 20:00',
+                ],
+                'image' => 'image/yoga3.jpg',
+                'maps' => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.9!2d110.350!3d -7.800!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a578b54a66b31%3A0xf92a735bf5b0b5e8!2sWates%20Yogyakarta!5e0!3m2!1sen!2sid!4v1620000000000!5m2!1sen!2sid',
+            ]
+        ];
 
-        // Create yoga detail config
-        \App\Models\YogaDetailConfig::create([
-            'yoga_id' => $yoga->id_yoga,
-            'hero_title' => 'Welcome to Yoga Barn Yogyakarta',
-            'hero_subtitle' => 'Menggabungkan tradisi yoga kuno dengan suasana alam yang tenang di Kaliurang',
-            'facilities' => json_encode([
-                'Air Conditioned Studio',
-                'Yoga Props Available',
-                'Meditation Corner',
-                'Herbal Tea Corner',
-                'Changing Room',
-                'Free Parking'
-            ]),
-            'contact_person_name' => 'Ibu Sari Yoga Master',
-            'contact_person_phone' => '0274-881234',
-            'gallery_images' => json_encode([
-                'images/yoga/yoga-barn-yogyakarta.jpg',
-                'images/yoga/studio-interior.jpg',
-                'images/yoga/meditation-corner.jpg'
-            ]),
-            'theme_color' => '#9B59B6',
-            'layout_style' => 'default'
-        ]);
+        foreach ($yogas as $yogaData) {
+            $yoga = \App\Models\Yoga::create($yogaData);
 
-        // Create yoga service
-        \App\Models\YogaService::create([
-            'yoga_id' => $yoga->id_yoga,
-            'name' => 'Hatha Yoga Class',
-            'description' => 'Kelas yoga dasar dengan fokus pada postur dan pernapasan',
-            'price' => 150000,
-            'duration' => '75 menit',
-            'category' => 'group_class',
-            'is_active' => true,
-        ]);
+            // Create yoga detail config
+            \App\Models\YogaDetailConfig::create([
+                'yoga_id' => $yoga->id_yoga,
+                'hero_title' => 'Welcome to ' . $yoga->nama,
+                'hero_subtitle' => 'Menggabungkan tradisi yoga kuno dengan suasana yang tenang dan damai',
+                'facilities' => [
+                    'Air Conditioned Studio',
+                    'Yoga Props Available',
+                    'Meditation Corner',
+                    'Herbal Tea Corner',
+                    'Changing Room',
+                    'Free Parking'
+                ],
+                'contact_person_name' => 'Yoga Instructor',
+                'contact_person_phone' => $yoga->noHP,
+                'gallery_images' => [
+                    $yoga->image,
+                    'image/yoga-studio.jpg',
+                    'image/yoga-meditation.jpg'
+                ],
+                'theme_color' => '#9B59B6',
+                'layout_style' => 'default'
+            ]);
+
+            // Create yoga services
+            $services = [
+                [
+                    'name' => 'Hatha Yoga Class',
+                    'description' => 'Kelas yoga dasar dengan fokus pada postur dan pernapasan',
+                    'price' => $yoga->harga,
+                    'duration' => '75 menit',
+                    'category' => 'group_class',
+                    'is_active' => true,
+                ],
+                [
+                    'name' => 'Vinyasa Flow',
+                    'description' => 'Kelas yoga dinamis dengan gerakan yang mengalir',
+                    'price' => $yoga->harga + 30000,
+                    'duration' => '90 menit',
+                    'category' => 'group_class',
+                    'is_active' => true,
+                ]
+            ];
+
+            foreach ($services as $serviceData) {
+                $serviceData['yoga_id'] = $yoga->id_yoga;
+                \App\Models\YogaService::create($serviceData);
+            }
+        }
+    }
+
+    private function runVoucherSeeder()
+    {
+        // Create sample vouchers
+        $vouchers = [
+            [
+                'code' => 'WELLNESS50',
+                'description' => 'Diskon 50% untuk semua layanan spa dan yoga',
+                'discount_percentage' => 50,
+                'usage_count' => 0,
+                'usage_limit' => 100,
+                'is_used' => false,
+                'expired_at' => now()->addMonths(3),
+                'image' => 'image/voucher1.jpg',
+            ],
+            [
+                'code' => 'SPA30',
+                'description' => 'Diskon 30% khusus untuk layanan spa',
+                'discount_percentage' => 30,
+                'usage_count' => 0,
+                'usage_limit' => 50,
+                'is_used' => false,
+                'expired_at' => now()->addMonths(2),
+                'image' => 'image/voucher2.jpg',
+            ],
+            [
+                'code' => 'YOGA25',
+                'description' => 'Diskon 25% untuk kelas yoga bagi pemula',
+                'discount_percentage' => 25,
+                'usage_count' => 0,
+                'usage_limit' => 75,
+                'is_used' => false,
+                'expired_at' => now()->addMonths(1),
+                'image' => 'image/voucher3.jpg',
+            ],
+            [
+                'code' => 'GYM20',
+                'description' => 'Diskon 20% untuk membership gym',
+                'discount_percentage' => 20,
+                'usage_count' => 0,
+                'usage_limit' => 30,
+                'is_used' => false,
+                'expired_at' => now()->addMonths(2),
+                'image' => 'image/voucher4.jpg',
+            ]
+        ];
+
+        foreach ($vouchers as $voucherData) {
+            \App\Models\Voucher::create($voucherData);
+        }
     }
 }
