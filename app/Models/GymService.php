@@ -15,6 +15,7 @@ class GymService extends Model
         'description',
         'price',
         'duration',
+        'category',
         'image',
         'is_active'
     ];

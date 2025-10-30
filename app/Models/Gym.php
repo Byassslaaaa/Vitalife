@@ -15,7 +15,12 @@ class Gym extends Model
         'nama',
         'alamat',
         'services',
+        'fasilitas',
+        'description',
+        'contact_person',
+        'contact_phone',
         'image',
+        'maps',
         'is_open'
     ];
 
