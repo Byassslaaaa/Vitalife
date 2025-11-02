@@ -7,12 +7,24 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use App\Models\ChatConversation;
-use App\Models\ChatMessage;
 use App\Models\User;
+use App\Services\ChatService;
+use App\Http\Requests\ChatMessageRequest;
+use App\Http\Requests\AdminChatRequest;
 use Carbon\Carbon;
 
 class ChatController extends Controller
 {
+    protected $chatService;
+
+    /**
+     * Constructor with dependency injection
+     */
+    public function __construct(ChatService $chatService)
+    {
+        $this->chatService = $chatService;
+    }
+
     /**
      * Get or create a conversation for the current user
      */
@@ -24,18 +36,7 @@ class ChatController extends Controller
                 return response()->json(['error' => 'User not authenticated'], 401);
             }
 
-            // Find active conversation or create a new one
-            $conversation = ChatConversation::where('user_id', $user->id)
-                ->where('status', 'active')
-                ->first();
-
-            if (!$conversation) {
-                $conversation = ChatConversation::create([
-                    'user_id' => $user->id,
-                    'status' => 'active',
-                    'category' => $request->category ?? null,
-                ]);
-            }
+            $conversation = $this->chatService->getOrCreateConversation($user->id);
 
             return response()->json([
                 'conversation' => $conversation,
@@ -48,66 +49,39 @@ class ChatController extends Controller
     }
 
     /**
-     * Send a message (AI always tries first, fallback triggers admin)
-        */
-        public function sendMessage(Request $request)
+     * Send a message with smart AI/Admin routing (Shopee-like)
+     */
+    public function sendMessage(ChatMessageRequest $request)
     {
         try {
-            $request->validate([
-                'conversation_id' => 'required|exists:chat_conversations,id',
-                'message' => 'required|string',
-            ]);
-
             $user = Auth::user();
             if (!$user) {
                 return response()->json(['error' => 'User not authenticated'], 401);
             }
 
-            $conversation = ChatConversation::findOrFail($request->conversation_id);
-
-            // Update category if provided
-            if ($request->has('category') && $conversation->category === null) {
-                $conversation->update(['category' => $request->category]);
+            $conversationId = $request->conversation_id;
+            if (!$conversationId) {
+                $conversation = $this->chatService->getOrCreateConversation($user->id);
+            } else {
+                $conversation = ChatConversation::findOrFail($conversationId);
             }
 
-            // Create user message
-            $message = ChatMessage::create([
-                'conversation_id' => $conversation->id,
-                'user_id' => $user->id,
-                'message' => $request->message,
-                'sender_type' => 'user',
-                'is_read' => false,
-            ]);
+            // Process message using new ChatService with smart routing
+            $result = $this->chatService->processUserMessage(
+                $conversation,
+                $request->message,
+                $user->id
+            );
 
-            Log::info('User message created', ['message_id' => $message->id, 'content' => $request->message]);
-
-            // AI always attempts to answer
-            $aiResponse = null;
-            try {
-                $aiResponse = $this->generateAiResponse($conversation, $request->message);
-                Log::info('AI response generated', ['ai_response_id' => $aiResponse->id ?? 'null']);
-            } catch (\Exception $e) {
-                Log::error('AI Response Error: ' . $e->getMessage());
-                $aiResponse = ChatMessage::create([
-                    'conversation_id' => $conversation->id,
-                    'message' => "Maaf, saya sedang mengalami gangguan teknis. Admin akan membantu Anda segera.",
-                    'sender_type' => 'ai',
-                    'is_read' => true,
-                ]);
-            }
-
-            // If fallback message (AI tidak bisa jawab), trigger admin notification
-            if ($aiResponse && $this->isFallbackMessage($aiResponse->message)) {
-                $this->notifyAdmins($conversation, $message);
-                Log::info('Admin notification triggered', ['conversation_id' => $conversation->id]);
-            }
-
-            // Return response
             return response()->json([
                 'success' => true,
-                'message' => $message,
-                'ai_response' => $aiResponse,
-                'admin_active' => $this->isAnyAdminActive(),
+                'type' => $result['type'],
+                'message' => $result['message'],
+                'quick_replies' => $result['quick_replies'] ?? [],
+                'suggest_admin' => $result['suggest_admin'] ?? false,
+                'confidence' => $result['confidence'] ?? null,
+                'admin_assigned' => $result['admin_assigned'] ?? false,
+                'estimated_wait' => $result['estimated_wait'] ?? null,
             ]);
 
         } catch (\Exception $e) {
@@ -119,158 +93,85 @@ class ChatController extends Controller
     }
 
     /**
-     * Check if a message is a fallback (AI tidak bisa jawab secara spesifik)
+     * Get canned responses for admin (quick replies)
      */
-    private function isFallbackMessage($msg)
-    {
-        $fallbackStrings = [
-            "admin akan membantu Anda",
-            "Admin akan membantu Anda",
-            "admin will assist you shortly",
-            "An admin will assist you shortly",
-            "gangguan teknis",
-            "For specific details, an admin will assist you shortly"
-        ];
-        
-        foreach ($fallbackStrings as $pattern) {
-            if (stripos($msg, $pattern) !== false) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Notify admins when AI fallback occurs
-     */
-    private function notifyAdmins($conversation, $message)
-    {
-        try {
-            // Set flag untuk admin notification
-            Cache::put('admin_notification_' . $conversation->id, [
-                'conversation_id' => $conversation->id,
-                'user_message' => $message->message,
-                'timestamp' => now()
-            ], 3600); // 1 hour
-
-            Log::info('Admin notification set', ['conversation_id' => $conversation->id]);
-        } catch (\Exception $e) {
-            Log::error('Error notifying admins: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Generate AI response (simplified version without OpenAI for now)
-     */
-    private function generateAiResponse($conversation, $userMessage)
-    {
-        try {
-            Log::info('Generating AI response', ['user_message' => $userMessage, 'category' => $conversation->category]);
-
-            // For now, use rule-based responses instead of OpenAI
-            $aiReply = $this->generateRuleBasedResponse($conversation->category, $userMessage);
-            
-            Log::info('AI reply generated', ['reply' => $aiReply]);
-
-            // Save AI response to database
-            $aiMessage = ChatMessage::create([
-                'conversation_id' => $conversation->id,
-                'message' => $aiReply,
-                'sender_type' => 'ai',
-                'is_read' => true,
-            ]);
-
-            return $aiMessage;
-
-        } catch (\Exception $e) {
-            Log::error('Error in generateAiResponse: ' . $e->getMessage());
-            throw $e;
-        }
-    }
-
-    /**
-     * Generate rule-based response (fallback dari OpenAI)
-     */
-    private function generateRuleBasedResponse($category, $userMessage)
-    {
-        $userMessageLower = strtolower($userMessage);
-        
-        // Greeting responses
-        if (preg_match('/\b(halo|hai|hello|hi|selamat)\b/i', $userMessage)) {
-            return "Halo! Selamat datang di Vitalife. Saya siap membantu Anda dengan pertanyaan seputar layanan wellness kami. Ada yang bisa saya bantu?";
-        }
-
-        // Category-specific responses
-        switch ($category) {
-            case 'Facilities & Accommodations':
-                if (strpos($userMessageLower, 'spa') !== false) {
-                    return "Vitalife menyediakan fasilitas spa lengkap dengan ruang pijat, sauna, dan area relaksasi. Kami memiliki berbagai treatment spa untuk kesehatan dan kecantikan Anda. Untuk informasi lebih detail tentang paket dan harga, admin akan membantu Anda segera.";
-                } elseif (strpos($userMessageLower, 'yoga') !== false) {
-                    return "Kami memiliki studio yoga yang nyaman dengan instruktur berpengalaman. Tersedia kelas yoga untuk berbagai level dari pemula hingga advanced. Untuk jadwal kelas dan pendaftaran, admin akan membantu Anda segera.";
-                } elseif (strpos($userMessageLower, 'fasilitas') !== false || strpos($userMessageLower, 'facility') !== false) {
-                    return "Vitalife memiliki fasilitas lengkap termasuk spa, studio yoga, ruang konsultasi kesehatan, dan area event. Semua fasilitas dirancang untuk memberikan pengalaman wellness terbaik. Admin akan membantu Anda dengan detail fasilitas yang Anda butuhkan.";
-                } else {
-                    return "Untuk informasi fasilitas dan akomodasi Vitalife, admin akan membantu Anda dengan detail yang Anda butuhkan.";
-                }
-
-            case 'Health & Security':
-                if (strpos($userMessageLower, 'protokol') !== false || strpos($userMessageLower, 'kesehatan') !== false) {
-                    return "Vitalife menerapkan protokol kesehatan dan keamanan yang ketat untuk memastikan kenyamanan dan keselamatan semua tamu. Kami mengikuti standar internasional dalam layanan wellness. Untuk detail protokol spesifik, admin akan membantu Anda segera.";
-                } else {
-                    return "Kesehatan dan keamanan Anda adalah prioritas utama kami. Admin akan membantu Anda dengan informasi detail tentang protokol yang kami terapkan.";
-                }
-
-            case 'Cancellations & Refunds':
-                if (strpos($userMessageLower, 'batal') !== false || strpos($userMessageLower, 'cancel') !== false) {
-                    return "Kebijakan pembatalan Vitalife memungkinkan pembatalan gratis hingga 24 jam sebelum jadwal appointment. Untuk kasus khusus dan detail kebijakan refund, admin akan membantu Anda segera.";
-                } else {
-                    return "Untuk informasi pembatalan dan refund, admin akan membantu Anda dengan detail kebijakan yang berlaku.";
-                }
-
-            case 'Payments & Promotions':
-                if (strpos($userMessageLower, 'promo') !== false || strpos($userMessageLower, 'diskon') !== false || strpos($userMessageLower, 'voucher') !== false) {
-                    return "Vitalife memiliki berbagai promo menarik! Anda bisa cek voucher terbaru di halaman voucher website kami. Untuk promo khusus dan penawaran terbaru, admin akan membantu Anda segera.";
-                } elseif (strpos($userMessageLower, 'bayar') !== false || strpos($userMessageLower, 'payment') !== false) {
-                    return "Kami menerima berbagai metode pembayaran termasuk transfer bank, e-wallet, dan kartu kredit. Untuk detail pembayaran dan cicilan, admin akan membantu Anda segera.";
-                } else {
-                    return "Untuk informasi pembayaran dan promosi terbaru, admin akan membantu Anda dengan penawaran terbaik.";
-                }
-
-            default:
-                // General responses
-                if (strpos($userMessageLower, 'terima kasih') !== false || strpos($userMessageLower, 'thanks') !== false) {
-                    return "Sama-sama! Senang bisa membantu Anda. Jika ada pertanyaan lain, jangan ragu untuk bertanya.";
-                } elseif (strpos($userMessageLower, 'jam') !== false || strpos($userMessageLower, 'buka') !== false || strpos($userMessageLower, 'tutup') !== false) {
-                    return "Vitalife buka setiap hari dengan jam operasional yang fleksibel. Untuk jam operasional detail dan booking appointment, admin akan membantu Anda segera.";
-                } else {
-                    return "Terima kasih atas pertanyaan Anda. Admin akan membantu Anda dengan informasi yang lebih detail segera.";
-                }
-        }
-    }
-
-    /**
-     * Admin get conversations
-     */
-    public function adminGetConversations()
+    public function getCannedResponses()
     {
         try {
             if (!auth()->check() || auth()->user()->role !== 'admin') {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
+            $responses = $this->chatService->getCannedResponses();
+            return response()->json(['canned_responses' => $responses]);
+        } catch (\Exception $e) {
+            Log::error('Error in getCannedResponses: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to load canned responses'], 500);
+        }
+    }
+
+    /**
+     * Rate a conversation
+     */
+    public function rateConversation(Request $request, $conversationId)
+    {
+        try {
+            $request->validate([
+                'rating' => 'required|integer|min:1|max:5',
+                'feedback' => 'nullable|string|max:500'
+            ]);
+
+            $conversation = ChatConversation::findOrFail($conversationId);
+
+            // Verify user owns this conversation
+            if ($conversation->user_id !== auth()->id()) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+
+            $this->chatService->saveRating(
+                $conversation,
+                $request->rating,
+                $request->feedback
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Terima kasih atas rating Anda!'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error in rateConversation: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to save rating'], 500);
+        }
+    }
+
+    /**
+     * Admin get conversations with enhanced info
+     */
+    public function adminGetConversations()
+    {
+        try {
+            if (!Auth::check() || Auth::user()->role !== 'admin') {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+
             $this->updateAdminActivity();
 
-            $conversations = ChatConversation::with(['user', 'latestMessage'])
+            $conversations = ChatConversation::with(['user', 'latestMessage', 'admin'])
+                ->orderBy('waiting_since', 'desc')
                 ->orderBy('updated_at', 'desc')
                 ->get()
                 ->map(function ($conversation) {
                     return [
                         'id' => $conversation->id,
                         'user' => $conversation->user,
+                        'admin' => $conversation->admin,
                         'status' => $conversation->status,
                         'category' => $conversation->category,
                         'latest_message' => $conversation->latestMessage,
-                        'unread_count' => $conversation->unreadMessagesCount(),
+                        'unread_by_admin' => $conversation->unread_by_admin ?? 0,
+                        'unread_by_user' => $conversation->unread_by_user ?? 0,
+                        'waiting_since' => $conversation->waiting_since,
+                        'rating' => $conversation->rating,
                         'created_at' => $conversation->created_at,
                         'updated_at' => $conversation->updated_at,
                     ];
@@ -289,19 +190,21 @@ class ChatController extends Controller
     public function adminGetMessages($conversationId)
     {
         try {
-            if (!auth()->check() || auth()->user()->role !== 'admin') {
+            if (!Auth::check() || Auth::user()->role !== 'admin') {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
             $this->updateAdminActivity();
 
             $conversation = ChatConversation::with(['messages', 'user'])->findOrFail($conversationId);
-            
-            // Mark user messages as read
+
+            // Mark messages as read by admin and reset counter
             $conversation->messages()
                 ->where('sender_type', 'user')
                 ->where('is_read', false)
-                ->update(['is_read' => true]);
+                ->update(['is_read' => true, 'read_at' => now()]);
+
+            $conversation->update(['unread_by_admin' => 0]);
 
             return response()->json([
                 'conversation' => $conversation,
@@ -314,16 +217,12 @@ class ChatController extends Controller
     }
 
     /**
-     * Admin send message
+     * Admin send message using ChatService
      */
-    public function adminSendMessage(Request $request, $conversationId)
+    public function adminSendMessage(AdminChatRequest $request, $conversationId)
     {
         try {
-            $request->validate([
-                'message' => 'required|string',
-            ]);
-
-            if (!auth()->check() || auth()->user()->role !== 'admin') {
+            if (!Auth::check() || Auth::user()->role !== 'admin') {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
@@ -331,15 +230,17 @@ class ChatController extends Controller
 
             $conversation = ChatConversation::findOrFail($conversationId);
 
-            $message = ChatMessage::create([
-                'conversation_id' => $conversation->id,
-                'admin_id' => auth()->id(),
-                'message' => $request->message,
-                'sender_type' => 'admin',
-                'is_read' => true,
-            ]);
+            // Use ChatService for admin message
+            $message = $this->chatService->sendAdminMessage(
+                $conversation,
+                Auth::id(),
+                $request->message
+            );
 
-            return response()->json(['message' => $message]);
+            return response()->json([
+                'success' => true,
+                'message' => $message
+            ]);
         } catch (\Exception $e) {
             Log::error('Error in adminSendMessage: ' . $e->getMessage());
             return response()->json(['error' => 'Failed to send message'], 500);
@@ -347,12 +248,117 @@ class ChatController extends Controller
     }
 
     /**
-     * Admin close conversation
+     * Admin resolve/close conversation
+     */
+    public function adminResolveConversation($conversationId)
+    {
+        try {
+            if (!Auth::check() || Auth::user()->role !== 'admin') {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+
+            $conversation = ChatConversation::findOrFail($conversationId);
+
+            // Use ChatService to resolve conversation
+            $this->chatService->resolveConversation($conversation, Auth::id());
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Conversation resolved successfully'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error in adminResolveConversation: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to resolve conversation'], 500);
+        }
+    }
+
+    /**
+     * Admin transfer conversation to another admin
+     */
+    public function adminTransferConversation(Request $request, $conversationId)
+    {
+        try {
+            $request->validate([
+                'new_admin_id' => 'required|exists:users,id',
+                'reason' => 'nullable|string|max:255'
+            ]);
+
+            if (!Auth::check() || Auth::user()->role !== 'admin') {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+
+            $conversation = ChatConversation::findOrFail($conversationId);
+
+            // Use ChatService to transfer conversation
+            $this->chatService->transferToAdmin(
+                $conversation,
+                $request->new_admin_id,
+                Auth::id(),
+                $request->reason ?? 'No reason provided'
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Conversation transferred successfully'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error in adminTransferConversation: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to transfer conversation'], 500);
+        }
+    }
+
+    /**
+     * Admin assign conversation to self
+     */
+    public function adminAssignToSelf($conversationId)
+    {
+        try {
+            if (!Auth::check() || Auth::user()->role !== 'admin') {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+
+            $conversation = ChatConversation::findOrFail($conversationId);
+
+            // Use ChatService to assign conversation
+            $this->chatService->assignToAdmin($conversation, Auth::id());
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Conversation assigned to you'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error in adminAssignToSelf: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to assign conversation'], 500);
+        }
+    }
+
+    /**
+     * Admin get performance stats
+     */
+    public function adminGetStats(Request $request)
+    {
+        try {
+            if (!Auth::check() || Auth::user()->role !== 'admin') {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+
+            $period = $request->input('period', 'today');
+            $stats = $this->chatService->getAdminStats(Auth::id(), $period);
+
+            return response()->json(['stats' => $stats]);
+        } catch (\Exception $e) {
+            Log::error('Error in adminGetStats: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to load stats'], 500);
+        }
+    }
+
+    /**
+     * Admin close conversation (deprecated - use adminResolveConversation)
      */
     public function adminCloseConversation($conversationId)
     {
         try {
-            if (!auth()->check() || auth()->user()->role !== 'admin') {
+            if (!Auth::check() || Auth::user()->role !== 'admin') {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
@@ -372,12 +378,12 @@ class ChatController extends Controller
     public function adminReopenConversation($conversationId)
     {
         try {
-            if (!auth()->check() || auth()->user()->role !== 'admin') {
+            if (!Auth::check() || Auth::user()->role !== 'admin') {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
             $conversation = ChatConversation::findOrFail($conversationId);
-            $conversation->update(['status' => 'active']);
+            $conversation->update(['status' => 'active', 'resolved_at' => null, 'resolved_by' => null]);
 
             return response()->json(['message' => 'Conversation reopened successfully']);
         } catch (\Exception $e) {
@@ -392,12 +398,12 @@ class ChatController extends Controller
     public function updateAdminActivityStatus(Request $request)
     {
         try {
-            if (!auth()->check() || auth()->user()->role !== 'admin') {
+            if (!Auth::check() || Auth::user()->role !== 'admin') {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
             $this->updateAdminActivity();
-            
+
             return response()->json(['message' => 'Admin activity updated']);
         } catch (\Exception $e) {
             Log::error('Error in updateAdminActivityStatus: ' . $e->getMessage());
@@ -433,8 +439,8 @@ class ChatController extends Controller
      */
     private function updateAdminActivity()
     {
-        if (auth()->check() && auth()->user()->role === 'admin') {
-            $adminId = auth()->id();
+        if (Auth::check() && Auth::user()->role === 'admin') {
+            $adminId = Auth::id();
             Cache::put('admin_active_' . $adminId, Carbon::now(), 300); // 5 minutes
         }
     }

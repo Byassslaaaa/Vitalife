@@ -45,4 +45,45 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Get the conversations for this user.
+     */
+    public function conversations()
+    {
+        return $this->hasMany(ChatConversation::class, 'user_id');
+    }
+
+    /**
+     * Get active chats assigned to this admin.
+     */
+    public function activeChats()
+    {
+        return $this->hasMany(ChatConversation::class, 'admin_id')
+            ->where('status', 'active');
+    }
+
+    /**
+     * Get all chats assigned to this admin.
+     */
+    public function assignedChats()
+    {
+        return $this->hasMany(ChatConversation::class, 'admin_id');
+    }
+
+    /**
+     * Get resolved chats by this admin.
+     */
+    public function resolvedChats()
+    {
+        return $this->hasMany(ChatConversation::class, 'resolved_by');
+    }
+
+    /**
+     * Check if user is admin
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
 }

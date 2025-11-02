@@ -40,12 +40,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Weather API route
 Route::get('/weather', 'App\Http\Controllers\WeatherController@getWeather');
 
-// Payment routes - use BookingController methods
-Route::post('/create-spa-payment', [BookingController::class, 'createSpaPayment']);
-Route::post('/create-yoga-payment', [BookingController::class, 'createYogaPayment']);
+// Payment routes - with rate limiting for security
+Route::middleware(['throttle:10,1'])->group(function () {
+    Route::post('/create-spa-payment', [BookingController::class, 'createSpaPayment']);
+    Route::post('/create-yoga-payment', [BookingController::class, 'createYogaPayment']);
+});
 
-// Webhook endpoint for Midtrans payment notifications
-Route::post('/midtrans-webhook', function (Request $request) {
+// Webhook endpoint for Midtrans payment notifications - use refactored handler
+Route::post('/midtrans-webhook', [BookingController::class, 'handleMidtransCallback']);
+
+// Legacy webhook handler (backup - will be removed after testing)
+Route::post('/midtrans-webhook-legacy', function (Request $request) {
     try {
         $serverKey = config('midtrans.server_key');
 

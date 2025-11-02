@@ -123,6 +123,14 @@ class EmailNotificationService
         }
     }
 
+    /**
+     * Send payment confirmation (alias for sendPaymentSuccessNotification)
+     */
+    public function sendPaymentConfirmation($booking, $type = 'spa')
+    {
+        return $this->sendPaymentSuccessNotification($booking, $type);
+    }
+
 
 
     /**

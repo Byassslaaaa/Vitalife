@@ -13,8 +13,30 @@ class ChatConversation extends Model
 
     protected $fillable = [
         'user_id',
+        'admin_id',
         'status',
         'category',
+        'last_message_at',
+        'assigned_at',
+        'waiting_since',
+        'transferred_from',
+        'transferred_at',
+        'resolved_at',
+        'resolved_by',
+        'rating',
+        'rating_feedback',
+        'rated_at',
+        'unread_by_admin',
+        'unread_by_user',
+    ];
+
+    protected $casts = [
+        'last_message_at' => 'datetime',
+        'assigned_at' => 'datetime',
+        'waiting_since' => 'datetime',
+        'transferred_at' => 'datetime',
+        'resolved_at' => 'datetime',
+        'rated_at' => 'datetime',
     ];
 
     /**
@@ -23,6 +45,30 @@ class ChatConversation extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * Get the admin assigned to this conversation.
+     */
+    public function admin(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'admin_id');
+    }
+
+    /**
+     * Get the admin who resolved this conversation.
+     */
+    public function resolver(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'resolved_by');
+    }
+
+    /**
+     * Get the admin who transferred this conversation.
+     */
+    public function transferredFromAdmin(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'transferred_from');
     }
 
     /**
@@ -47,5 +93,37 @@ class ChatConversation extends Model
     public function unreadMessagesCount()
     {
         return $this->messages()->where('sender_type', 'user')->where('is_read', false)->count();
+    }
+
+    /**
+     * Scope for active conversations
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
+    }
+
+    /**
+     * Scope for waiting admin conversations
+     */
+    public function scopeWaitingAdmin($query)
+    {
+        return $query->where('status', 'waiting_admin');
+    }
+
+    /**
+     * Scope for resolved conversations
+     */
+    public function scopeResolved($query)
+    {
+        return $query->where('status', 'resolved');
+    }
+
+    /**
+     * Scope for assigned to specific admin
+     */
+    public function scopeAssignedTo($query, $adminId)
+    {
+        return $query->where('admin_id', $adminId);
     }
 }

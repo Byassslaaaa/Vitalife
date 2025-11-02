@@ -110,27 +110,30 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/notifications', [NotificationController::class, 'getNotifications']);
     Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead']);
 
-    // Comprehensive Spa Booking Routes (REQUIRES AUTH)
-    Route::prefix('spa')->name('spa.')->group(function () {
-        Route::post('/booking', [BookingController::class, 'book'])->name('booking.store');
-        Route::get('/booking/{bookingCode}', [BookingController::class, 'getBooking'])->name('booking.show');
-        Route::get('/booking/{bookingCode}/payment', [BookingController::class, 'payment'])->name('booking.payment');
-        Route::post('/booking/{bookingCode}/cancel', [BookingController::class, 'cancelBooking'])->name('booking.cancel');
-    });
+    // BOOKING ROUTES - Require email verification & rate limiting for security
+    Route::middleware(['verified', 'throttle:20,1'])->group(function () {
+        // Comprehensive Spa Booking Routes
+        Route::prefix('spa')->name('spa.')->group(function () {
+            Route::post('/booking', [BookingController::class, 'book'])->name('booking.store');
+            Route::get('/booking/{bookingCode}', [BookingController::class, 'getBooking'])->name('booking.show');
+            Route::get('/booking/{bookingCode}/payment', [BookingController::class, 'payment'])->name('booking.payment');
+            Route::post('/booking/{bookingCode}/cancel', [BookingController::class, 'cancelBooking'])->name('booking.cancel');
+        });
 
-    // API Routes for Spa Booking (REQUIRES AUTH)
-    Route::prefix('api')->group(function () {
-        Route::post('/spa-booking', [BookingController::class, 'book']);
-        Route::get('/spa-booking/{bookingCode}/status', [BookingController::class, 'getBooking']);
-        Route::post('/create-spa-payment', [BookingController::class, 'createSpaPayment']);
-        Route::post('/create-gym-payment', [BookingController::class, 'createGymPayment']);
-        Route::post('/create-yoga-payment', [BookingController::class, 'createYogaPayment']);
-        Route::get('/booking/{bookingCode}/details', [BookingController::class, 'getBookingDetails']);
-    });
+        // API Routes for Booking (with rate limiting)
+        Route::prefix('api')->group(function () {
+            Route::post('/spa-booking', [BookingController::class, 'book']);
+            Route::get('/spa-booking/{bookingCode}/status', [BookingController::class, 'getBooking']);
+            Route::post('/create-spa-payment', [BookingController::class, 'createSpaPayment']);
+            Route::post('/create-gym-payment', [BookingController::class, 'createGymPayment']);
+            Route::post('/create-yoga-payment', [BookingController::class, 'createYogaPayment']);
+            Route::get('/booking/{bookingCode}/details', [BookingController::class, 'getBookingDetails']);
+        });
 
-    // BOOKING ROUTES (REQUIRES AUTH)
-    Route::post('/yoga/booking', [BookingController::class, 'book']);
-    Route::post('/gym/booking', [BookingController::class, 'book'])->name('gym.booking.process');
+        // Yoga & Gym Booking Routes
+        Route::post('/yoga/booking', [BookingController::class, 'book']);
+        Route::post('/gym/booking', [BookingController::class, 'book'])->name('gym.booking.process');
+    });
 
     // Additional Booking Routes
     Route::get('/booking/{bookingCode}/confirmation', [BookingController::class, 'confirmation'])->name('booking.confirmation');

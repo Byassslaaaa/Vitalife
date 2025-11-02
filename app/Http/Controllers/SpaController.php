@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Spa;
 use App\Models\SpaService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class SpaController extends Controller
 {
@@ -27,9 +28,15 @@ class SpaController extends Controller
             });
             $searchPerformed = true;
             $searchCriteria[] = "lokasi: " . $request->location;
-        }
 
-        $spaTotal = $query->get();
+            // Don't cache search results
+            $spaTotal = $query->get();
+        } else {
+            // Cache listing for 1 hour (3600 seconds) - Performance optimization
+            $spaTotal = Cache::remember('spas.all', 3600, function () use ($query) {
+                return $query->get();
+            });
+        }
 
         // Set status pencarian
         if ($searchPerformed) {

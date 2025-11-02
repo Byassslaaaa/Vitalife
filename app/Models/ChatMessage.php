@@ -11,16 +11,20 @@ class ChatMessage extends Model
     use HasFactory;
 
     protected $fillable = [
+        'chat_conversation_id',
         'conversation_id',
+        'sender_id',
         'user_id',
         'admin_id',
         'message',
         'sender_type',
         'is_read',
+        'read_at',
     ];
 
     protected $casts = [
         'is_read' => 'boolean',
+        'read_at' => 'datetime',
     ];
 
     /**
