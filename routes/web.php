@@ -271,14 +271,13 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     });
 
     // Spa Analytics & Reports
-    // Temporary disabled - SPA Analytics routes
-    // Route::prefix('spa-analytics')->name('spa-analytics.')->group(function () {
-    //     Route::get('/', [SpasController::class, 'analytics'])->name('index');
-    //     Route::get('/revenue', [SpasController::class, 'revenueReport'])->name('revenue');
-    //     Route::get('/bookings', [SpasController::class, 'bookingReport'])->name('bookings');
-    //     Route::get('/services', [SpasController::class, 'serviceReport'])->name('services');
-    //     Route::get('/export', [SpasController::class, 'exportReport'])->name('export');
-    // });
+    Route::prefix('spa-analytics')->name('spa-analytics.')->group(function () {
+        Route::get('/', [SpaAdminController::class, 'analytics'])->name('index');
+        Route::get('/revenue', [SpaAdminController::class, 'revenueReport'])->name('revenue');
+        Route::get('/bookings', [SpaAdminController::class, 'bookingReport'])->name('bookings');
+        Route::get('/services', [SpaAdminController::class, 'serviceReport'])->name('services');
+        Route::get('/export', [SpaAdminController::class, 'exportReport'])->name('export');
+    });
 
     // ============================================================================
     // OTHER EXISTING ROUTES

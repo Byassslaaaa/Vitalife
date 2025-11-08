@@ -1,16 +1,18 @@
 {
     "name": "laravel/laravel",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "HeaLife - Your Wellness & Health Companion Platform",
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "barryvdh/laravel-dompdf": "^3.0",
         "intervention/image": "^3.7",
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.1",
         "laravel/socialite": "^5.16",
         "laravel/tinker": "^2.9",
+        "maatwebsite/excel": "^3.1",
         "midtrans/midtrans-php": "^2.6",
         "openai-php/laravel": "^0.10.1"
     },

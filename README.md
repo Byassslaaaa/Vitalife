@@ -1,4 +1,4 @@
-# 🌟 Vitalife - Health & Wellness Platform
+# 🌟 HeaLife - Your Wellness & Health Companion
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="200" alt="Laravel Logo">
@@ -25,7 +25,7 @@
 
 ## 📋 Deskripsi
 
-**Vitalife** adalah platform digital yang menghubungkan pengguna dengan berbagai layanan kesehatan dan wellness termasuk Spa, Gym, dan Yoga. Platform ini menyediakan sistem booking yang terintegrasi, manajemen admin yang komprehensif, dan pengalaman pengguna yang seamless.
+**HeaLife** adalah platform digital yang menghubungkan pengguna dengan berbagai layanan kesehatan dan wellness termasuk Spa, Gym, dan Yoga. Platform ini menyediakan sistem booking yang terintegrasi, manajemen admin yang komprehensif, dan pengalaman pengguna yang seamless.
 
 ## ✨ Features
 

@@ -406,7 +406,7 @@
                     <!-- Service Selection -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Choose Class</label>
-                        <select name="selected_service" id="serviceSelect" required
+                        <select name="service_id" id="serviceSelect" required
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             <option value="">Select a class...</option>
                             @php
@@ -449,7 +449,8 @@
                                 }
                             @endphp
                             @foreach ($bookableServices as $service)
-                                <option value="{{ $service['title'] }}" data-price="{{ $service['price'] }}"
+                                <option value="{{ $service['id'] }}" data-price="{{ $service['price'] }}"
+                                    data-title="{{ $service['title'] }}"
                                     data-category="{{ $service['category'] ?? 'General' }}">
                                     {{ $service['title'] }} - Rp {{ number_format($service['price'], 0, ',', '.') }}
                                 </option>
@@ -458,7 +459,7 @@
                     </div>
 
                     <!-- Class Type (hidden field based on selected service) -->
-                    <input type="hidden" name="class_type_booking" id="classTypeBooking" value="General">
+                    <input type="hidden" name="class_type" id="classTypeBooking" value="General">
 
                     <!-- Total Amount (hidden field calculated from selected service) -->
                     <input type="hidden" name="total_amount" id="totalAmount" value="0">
@@ -530,6 +531,9 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        // Check if user is authenticated
+        const isAuthenticated = {{ auth()->check() ? 'true' : 'false' }};
+
         document.addEventListener('DOMContentLoaded', function() {
             // Image gallery functionality
             const thumbnails = document.querySelectorAll('.thumbnail');
@@ -598,8 +602,26 @@
 
             if (bookingBtn) {
                 bookingBtn.addEventListener('click', function() {
-                    // Allow users to access booking modal without authentication
-                    // Authentication check moved to payment processing stage
+                    // Check if user is logged in
+                    if (!isAuthenticated) {
+                        Swal.fire({
+                            title: 'Login Diperlukan',
+                            text: 'Anda harus login terlebih dahulu untuk melakukan booking.',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Login Sekarang',
+                            cancelButtonText: 'Batal',
+                            confirmButtonColor: '#3B82F6',
+                            cancelButtonColor: '#6B7280'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Redirect to login page with return URL
+                                window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname);
+                            }
+                        });
+                        return;
+                    }
+
                     openYogaBookingModal();
                 });
             }
@@ -647,7 +669,7 @@
 
                     // Validate service selection
                     const serviceSelect = document.getElementById('serviceSelect');
-                    if (!serviceSelect.value) {
+                    if (!serviceSelect.value || serviceSelect.value === 'null') {
                         Swal.fire('Error', 'Please select a yoga class.', 'error');
                         return;
                     }
@@ -673,6 +695,9 @@
                         '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Processing...';
                     submitBtn.disabled = true;
 
+                    // Log the data being sent
+                    console.log('[YOGA BOOKING] Sending booking data:', data);
+
                     // Submit booking request
                     fetch('/api/create-yoga-payment', {
                             method: 'POST',
@@ -683,34 +708,65 @@
                             },
                             body: JSON.stringify(data)
                         })
-                        .then(response => {
+                        .then(async response => {
+                            console.log('[YOGA BOOKING] Response status:', response.status);
+                            console.log('[YOGA BOOKING] Response OK:', response.ok);
+
                             // Handle authentication error (401)
                             if (response.status === 401) {
-                                response.json().then(errorData => {
-                                    console.log('Authentication required:', errorData);
-
-                                    // Show login prompt and redirect to login
-                                    Swal.fire({
-                                        title: 'Login Required',
-                                        text: errorData.message ||
-                                            'You must be logged in to make a booking. Please login first.',
-                                        icon: 'warning',
-                                        showCancelButton: true,
-                                        confirmButtonText: 'Login Now',
-                                        cancelButtonText: 'Cancel',
-                                        confirmButtonColor: '#3B82F6',
-                                        cancelButtonColor: '#6B7280'
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            // Redirect to login page
-                                            window.location.href = '/login';
-                                        }
-                                    });
-                                });
+                                const errorData = await response.json();
+                                console.log('[YOGA BOOKING] Authentication required:', errorData);
 
                                 submitBtn.innerHTML = originalText;
                                 submitBtn.disabled = false;
-                                return;
+
+                                // Show login prompt and redirect to login
+                                Swal.fire({
+                                    title: 'Login Required',
+                                    text: errorData.message ||
+                                        'You must be logged in to make a booking. Please login first.',
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Login Now',
+                                    cancelButtonText: 'Cancel',
+                                    confirmButtonColor: '#3B82F6',
+                                    cancelButtonColor: '#6B7280'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        // Redirect to login page
+                                        window.location.href = '/login';
+                                    }
+                                });
+
+                                return null; // Return null to skip next then
+                            }
+
+                            // Handle validation errors (422)
+                            if (response.status === 422) {
+                                const errorData = await response.json();
+                                console.log('[YOGA BOOKING] Validation errors:', errorData);
+
+                                submitBtn.innerHTML = originalText;
+                                submitBtn.disabled = false;
+
+                                const errorMessages = errorData.errors
+                                    ? Object.values(errorData.errors).flat().join('\n')
+                                    : errorData.message || 'Validation failed';
+
+                                Swal.fire('Validation Error', errorMessages, 'error');
+                                return null;
+                            }
+
+                            // Handle other HTTP errors
+                            if (!response.ok) {
+                                const errorText = await response.text();
+                                console.log('[YOGA BOOKING] Server error response:', errorText);
+
+                                submitBtn.innerHTML = originalText;
+                                submitBtn.disabled = false;
+
+                                Swal.fire('Server Error', `HTTP ${response.status}: ${response.statusText}`, 'error');
+                                return null;
                             }
 
                             return response.json();
@@ -718,14 +774,18 @@
                         .then(result => {
                             if (!result) return; // Skip if we already handled auth error
 
+                            console.log('[YOGA BOOKING] Response data:', result);
+
                             submitBtn.innerHTML = originalText;
                             submitBtn.disabled = false;
 
                             if (result.success && result.payment_token && result.booking_id) {
+                                console.log('[YOGA BOOKING] Payment successful, loading Midtrans...');
                                 closeYogaBookingModal();
                                 // Show payment processing with Midtrans
                                 loadMidtransSnap(result.payment_token, result.booking_id);
                             } else {
+                                console.log('[YOGA BOOKING] Booking failed:', result.message);
                                 // Only show error message if it's not an authentication error
                                 if (result.message && !result.message.includes('logged in')) {
                                     Swal.fire('Error', result.message ||
@@ -734,7 +794,7 @@
                             }
                         })
                         .catch(error => {
-                            console.error('Booking error:', error);
+                            console.error('[YOGA BOOKING] Error:', error);
                             submitBtn.innerHTML = originalText;
                             submitBtn.disabled = false;
                             Swal.fire('Error', 'A server error occurred. Please try again.', 'error');
@@ -767,7 +827,7 @@
             }
         });
     </script>
-    <script type="text/javascript" src="{{ config('services.midtrans.snap_url') }}"
-        data-client-key="{{ config('services.midtrans.client_key') }}"></script>
+    <script type="text/javascript" src="{{ config('midtrans.snap_url') }}"
+        data-client-key="{{ config('midtrans.client_key') }}"></script>
     </div>
 </x-app-layout>

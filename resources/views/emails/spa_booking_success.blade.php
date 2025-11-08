@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Konfirmasi Booking Spa - Vitalife</title>
+    <title>Konfirmasi Booking Spa - HeaLife</title>
     <style>
         .email-container {
             max-width: 600px;
@@ -126,7 +126,7 @@
         <div class="content">
             <h2>Halo {{ $customerName }}! 🌸</h2>
 
-            <p>Terima kasih telah memilih <strong>Vitalife Spa & Wellness</strong>! Booking treatment spa Anda telah
+            <p>Terima kasih telah memilih <strong>HeaLife Spa & Wellness</strong>! Booking treatment spa Anda telah
                 berhasil dikonfirmasi.</p>
 
             <div class="booking-card">
@@ -243,15 +243,15 @@
             <p>Kami menantikan kedatangan Anda untuk pengalaman spa yang menyegarkan! 🌺</p>
 
             <p>Dengan hangat,<br>
-                <strong>Tim Vitalife Spa & Wellness</strong>
+                <strong>Tim HeaLife Spa & Wellness</strong>
             </p>
         </div>
 
         <div class="footer">
-            <p>💆‍♀️ <strong>Vitalife Spa & Wellness Center</strong></p>
+            <p>💆‍♀️ <strong>HeaLife Spa & Wellness Center</strong></p>
             <p>📍 Jl. Wellness No. 123, Jakarta Selatan 12345</p>
             <p>📞 +62 21-1234-5678 | 📧 {{ $supportEmail }}</p>
-            <p>🌐 <a href="{{ url('/') }}">www.vitalife.com</a></p>
+            <p>🌐 <a href="{{ url('/') }}">www.healife.com</a></p>
             <hr style="margin: 15px 0;">
             <p><small>Email ini dikirim secara otomatis. Mohon tidak membalas email ini.</small></p>
         </div>

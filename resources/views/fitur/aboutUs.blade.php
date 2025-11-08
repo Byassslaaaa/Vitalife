@@ -2,21 +2,21 @@
     <section class="ezy__team1 light py-6 md:py-16 bg-blue-100  text-zinc-900">
         <div class="bg-slate-300 p-4 sm:p-8">
             <div class="relative w-96 h-96 mx-auto mb-6">
-                <img src="../image/logovitalife.png" alt="Logo Vitalife"
+                <img src="../image/Logo_healife.png" alt="Logo HeaLife"
                     class="absolute inset-0 object-center w-full h-full">
             </div>
-            <h1 class="text-4xl sm:text-5xl font-bold text-center mb-4 sm:mb-8">Vitalife?</h1>
+            <h1 class="text-4xl sm:text-5xl font-bold text-center mb-4 sm:mb-8">HeaLife?</h1>
 
             <p class="text-center mb-6 sm:mb-8 text-sm text-gray-600 px-14 sm:px-14">
-                Vitalife adalah aplikasi inovatif yang berfokus pada wellness tourism dalam kategori health tourism,
+                HeaLife adalah aplikasi inovatif yang berfokus pada wellness tourism dalam kategori health tourism,
                 dirancang untuk meningkatkan pengalaman wisata kesehatan pengguna. Aplikasi ini menawarkan rekomendasi
                 pusat yoga dan spa terdekat di destinasi wisata, serta informasi tentang acara olahraga atau event
-                terbaru yang khas di lokasi tersebut. Selain itu, Vitalife menghubungkan pengguna dengan dokter umum
+                terbaru yang khas di lokasi tersebut. Selain itu, HeaLife menghubungkan pengguna dengan dokter umum
                 atau spesialis di klinik-klinik terdekat untuk konsultasi kesehatan, baik sebelum maupun setelah
                 aktivitas wisata, memastikan keselamatan dan kesiapan fisik pengguna. Fitur reservasi online yang mudah
                 dan transparan, informasi lengkap tentang fasilitas dan ulasan pengguna, serta opsi pelacakan
                 perkembangan kesehatan dan kebugaran, semuanya disediakan untuk mempersonalisasi dan memperkaya
-                perjalanan wellness pengguna. Vitalife juga rutin melakukan survei kepuasan pelanggan untuk terus
+                perjalanan wellness pengguna. HeaLife juga rutin melakukan survei kepuasan pelanggan untuk terus
                 meningkatkan kualitas layanan berdasarkan umpan balik yang diterima, sehingga memastikan pengalaman
                 pengguna yang optimal dan terarah dalam perjalanan kesehatan mereka.
             </p>
@@ -48,7 +48,7 @@
         </div>
         <div class="p-6 md:p-10 max-w-6xl mx-auto mt-28">
             <p class="mb-6 text-lg font-semibold">
-                <span class="font-bold">Vitalife</span> mewujudkan harmoni antara kebugaran, pemanjaan diri, dan
+                <span class="font-bold">HeaLife</span> mewujudkan harmoni antara kebugaran, pemanjaan diri, dan
                 pengalaman wisata yang menyegarkan. Aplikasi ini menggabungkan elemen-elemen kunci untuk menciptakan
                 gaya hidup yang aktif dan seimbang:
             </p>
@@ -65,7 +65,7 @@
             </ol>
 
             <p class="text-lg">
-                Filosofi ini mencerminkan komitmen <span class="font-bold">Vitalife</span> untuk mengintegrasikan
+                Filosofi ini mencerminkan komitmen <span class="font-bold">HeaLife</span> untuk mengintegrasikan
                 kesehatan, kesenangan, dan petualangan dalam satu platform yang komprehensif, mendukung perjalanan
                 setiap individu menuju kehidupan yang lebih sehat dan lebih memuaskan.
             </p>
@@ -84,7 +84,7 @@
                             <li>Melambangkan kepercayaan, profesionalisme, dan stabilitas.</li>
                             <li>Mewakili kedalaman pengalaman dan pengetahuan dalam industri kesehatan dan pariwisata.
                             </li>
-                            <li>Mencerminkan keamanan dan reliabilitas layanan Vitalife.</li>
+                            <li>Mencerminkan keamanan dan reliabilitas layanan HeaLife.</li>
                         </ol>
                     </div>
                 </div>
@@ -105,7 +105,7 @@
                 <!-- Kombinasi -->
                 <div style="background-image: url('../image/custom-1.png');" class="bg-cover bg-center p-3 rounded-lg">
                     <p class="text-lg ml-10 mr-40">
-                        Kombinasi kedua warna ini dalam logo Vitalife menciptakan kesan harmonis antara aspek
+                        Kombinasi kedua warna ini dalam logo HeaLife menciptakan kesan harmonis antara aspek
                         profesional dan menyegarkan dari layanan yang ditawarkan. Gradasi dari biru tua ke biru muda
                         dapat diinterpretasikan sebagai perjalanan transformatif yang dialami pengguna - dari mencari
                         stabilitas kesehatan hingga mencapai vitalitas dan kebugaran optimal.
@@ -122,7 +122,7 @@
                         <h2 class="font-bold text-lg mb-2">Lingkaran:</h2>
                         <ol class="list-decimal list-inside space-y-1">
                             <li>Melambangkan keutuhan, keseimbangan, dan siklus kehidupan yang berkelanjutan.</li>
-                            <li>Mewakili pendekatan holistik Vitalife terhadap kesehatan dan kesejahteraan.</li>
+                            <li>Mewakili pendekatan holistik HeaLife terhadap kesehatan dan kesejahteraan.</li>
                             <li>Menggambarkan komunitas dan inklusivitas dalam pengalaman wisata kesehatan.</li>
                         </ol>
                     </div>
@@ -382,7 +382,7 @@
                     <div class="flex flex-col justify-center items-center text-center">
                         <div class="flex items-center justify-center mb-4">
                             <div>
-                                <img src="../image/LOGO_1.png" alt="" class="max-w-full h-auto w-24">
+                                <img src="../image/Logo_healife.png" alt="" class="max-w-full h-auto w-24">
                             </div>
                             <div>
                                 <p class="ml-3">&copy; Copyright {{ date('Y') }}</p>

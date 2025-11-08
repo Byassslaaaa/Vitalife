@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('contact_person')->nullable();
             $table->string('contact_phone')->nullable();
             $table->string('image');
-            $table->string('maps')->nullable(); // Tambahkan jika sebelumnya memang ada kolom maps
+            $table->text('maps')->nullable(); // Changed to text to accommodate iframe embed code
             $table->timestamps();
         });
     }

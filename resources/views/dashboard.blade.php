@@ -34,7 +34,7 @@
                             <h1
                                 class="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black text-gray-900 leading-tight">
                                 WELCOME<br>
-                                <span class="text-blue-500 font-bold">VITALIFE</span>
+                                <span class="text-blue-500 font-bold">HEALIFE</span>
                             </h1>
                             <p class="text-lg lg:text-xl text-gray-700 max-w-2xl leading-relaxed">
                                 We are the solution for travelling in a healthy condition and we provide health
@@ -349,7 +349,7 @@
                                 <button @click="openItem = openItem === 1 ? null : 1"
                                     class="flex justify-between items-center w-full text-left">
                                     <span class="font-medium text-gray-900 flex-grow pr-3">
-                                        Why do you prefer Vitalife compared to other wellness tourism platforms?
+                                        Why do you prefer HeaLife compared to other wellness tourism platforms?
                                     </span>
                                     <svg class="w-6 h-6 flex-shrink-0 text-blue-500 transform transition-transform duration-200"
                                         :class="{ 'rotate-45': openItem === 1 }" fill="none" stroke="currentColor"
@@ -359,7 +359,7 @@
                                     </svg>
                                 </button>
                                 <div x-show="openItem === 1" x-transition class="mt-3 text-gray-600 text-sm">
-                                    I prefer Vitalife because of its transparent pricing, helpful reviews, progress
+                                    I prefer HeaLife because of its transparent pricing, helpful reviews, progress
                                     tracking,
                                     and ease of booking consultations and activities.
                                 </div>
@@ -371,7 +371,7 @@
                                     class="flex justify-between items-center w-full text-left">
                                     <span class="font-medium text-gray-900 flex-grow pr-3">
                                         What was your experience with the registration process and initial use of the
-                                        Vitalife website?
+                                        HeaLife website?
                                     </span>
                                     <svg class="w-6 h-6 flex-shrink-0 text-blue-500 transform transition-transform duration-200"
                                         :class="{ 'rotate-45': openItem === 2 }" fill="none" stroke="currentColor"
@@ -391,7 +391,7 @@
                                 <button @click="openItem = openItem === 3 ? null : 3"
                                     class="flex justify-between items-center w-full text-left">
                                     <span class="font-medium text-gray-900 flex-grow pr-3">
-                                        What features appealed to you the most when you first saw the Vitalife website?
+                                        What features appealed to you the most when you first saw the HeaLife website?
                                     </span>
                                     <svg class="w-6 h-6 flex-shrink-0 text-blue-500 transform transition-transform duration-200"
                                         :class="{ 'rotate-45': openItem === 3 }" fill="none" stroke="currentColor"
@@ -410,7 +410,7 @@
                                 <button @click="openItem = openItem === 4 ? null : 4"
                                     class="flex justify-between items-center w-full text-left">
                                     <span class="font-medium text-gray-900 flex-grow pr-3">
-                                        How can Vitalife help you plan and enjoy your wellness journey?
+                                        How can HeaLife help you plan and enjoy your wellness journey?
                                     </span>
                                     <svg class="w-6 h-6 flex-shrink-0 text-blue-500 transform transition-transform duration-200"
                                         :class="{ 'rotate-45': openItem === 4 }" fill="none" stroke="currentColor"
@@ -420,7 +420,7 @@
                                     </svg>
                                 </button>
                                 <div x-show="openItem === 4" x-transition class="mt-3 text-gray-600 text-sm">
-                                    Vitalife recommends facilities, packages, and events tailored to your wellness
+                                    HeaLife recommends facilities, packages, and events tailored to your wellness
                                     goals.
                                 </div>
                             </div>
@@ -449,7 +449,7 @@
             <!-- Chat Header -->
             <div class="text-white p-4 flex justify-between items-center" style="background-color: #374151;">
                 <div class="flex-1">
-                    <h3 class="font-bold">Vitalife Support</h3>
+                    <h3 class="font-bold">HeaLife Support</h3>
                     <div id="session-timer" class="text-xs text-gray-300 hidden">
                         Session expires in: <span id="timer-display">15:00</span>
                     </div>
@@ -579,7 +579,7 @@
                     if (currentConversation === null) {
                         // Guest user: basic chat with predefined responses
                         addSystemMessage(
-                            'Welcome to Vitalife Support! I can help you with general information about our services.'
+                            'Welcome to HeaLife Support! I can help you with general information about our services.'
                         );
                     }
                 }

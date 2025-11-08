@@ -15,19 +15,19 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Seed core users (idempotent)
-        if (User::where('email', 'admin@vitalife.com')->doesntExist()) {
+        if (User::where('email', 'admin@healife.com')->doesntExist()) {
             User::factory()->create([
-                'name' => 'Admin Vitalife',
-                'email' => 'admin@vitalife.com',
+                'name' => 'Admin HeaLife',
+                'email' => 'admin@healife.com',
                 'password' => Hash::make('admin123'),
                 'role' => 'admin',
             ]);
         }
 
-        if (User::where('email', 'demo@vitalife.web.id')->doesntExist()) {
+        if (User::where('email', 'demo@healife.web.id')->doesntExist()) {
             User::factory()->create([
                 'name' => 'Demo User',
-                'email' => 'demo@vitalife.web.id',
+                'email' => 'demo@healife.web.id',
                 'password' => Hash::make('password'),
                 'role' => 'user',
             ]);

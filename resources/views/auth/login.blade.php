@@ -5,7 +5,7 @@
             style="background-image: url('../image/login.jpg');">
             <div class="absolute inset-0 bg-gradient-to-l from-blue-700 to-transparent opacity-70"></div>
             <div class="absolute top-4 left-4 z-20 px-4 py-28">
-                <img src="../image/LOGO_1.png" alt="Logo" class="w-32 h-auto">
+                <img src="../image/Logo_healife.png" alt="Logo" class="w-32 h-auto">
             </div>
             <div class="relative z-10 text-start px-3">
                 <h2 class="text-4xl font-bold mb-4">Hello, Welcome</h2>
@@ -20,7 +20,7 @@
         <!-- Right Column - Create Account -->
         <div class="flex flex-col justify-center items-center px-6 bg-white">
             <div class="w-full max-w-md">
-                <h2 class="text-3xl font-bold mb-8 text-emerald-500">Sign in to Vitalife</h2>
+                <h2 class="text-3xl font-bold mb-8 text-emerald-500">Sign in to HeaLife</h2>
 
                 <!-- Social Media Links -->
                 <div class="flex space-x-6 mb-6">

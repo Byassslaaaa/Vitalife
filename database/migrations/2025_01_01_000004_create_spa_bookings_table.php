@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('service_name');
             $table->integer('service_price'); // Changed to integer for consistency
             $table->date('booking_date');
-            $table->time('booking_time');
+            $table->dateTime('booking_time'); // Changed to dateTime to store full datetime
             $table->integer('duration')->default(60); // Duration in minutes
             $table->integer('total_amount');
             $table->string('status')->default('pending'); // pending, confirmed, cancelled, completed

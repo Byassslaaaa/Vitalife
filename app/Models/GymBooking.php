@@ -18,6 +18,7 @@ class GymBooking extends Model
         'service_id',
         'service_name',
         'service_price',
+        'total_amount',
         'status',
         'payment_status',
         'payment_token',

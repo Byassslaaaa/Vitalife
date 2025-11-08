@@ -29,7 +29,7 @@ class YogaBookingSuccessMail extends Mailable
         $bookingCode = is_array($this->booking) ? $this->booking['booking_code'] : $this->booking->booking_code;
 
         return new Envelope(
-            from: new Address(env('MAIL_FROM_ADDRESS', 'yoga@vitalife.com'), env('MAIL_FROM_NAME', 'Vitalife Yoga')),
+            from: new Address(env('MAIL_FROM_ADDRESS', 'yoga@healife.com'), env('MAIL_FROM_NAME', 'HeaLife Yoga')),
             subject: '🧘‍♀️ Konfirmasi Booking Yoga - ' . $bookingCode
         );
     }
@@ -57,7 +57,7 @@ class YogaBookingSuccessMail extends Mailable
                 'paymentMethod' => $this->booking->payment_method,
                 'notes' => $this->booking->notes,
                 'specialRequests' => $this->booking->special_requests,
-                'supportEmail' => env('MAIL_FROM_ADDRESS', 'support@vitalife.com')
+                'supportEmail' => env('MAIL_FROM_ADDRESS', 'support@healife.com')
             ]
         );
     }

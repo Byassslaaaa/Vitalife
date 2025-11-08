@@ -24,8 +24,8 @@ class WelcomeEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address(env('MAIL_FROM_ADDRESS', 'noreply@vitalife.com'), env('MAIL_FROM_NAME', 'Vitalife Team')),
-            subject: '🎉 Selamat Datang di Vitalife - Platform Wellness Terbaik!'
+            from: new Address(env('MAIL_FROM_ADDRESS', 'noreply@healife.com'), env('MAIL_FROM_NAME', 'HeaLife Team')),
+            subject: '🎉 Selamat Datang di HeaLife - Platform Wellness Terbaik!'
         );
     }
 
@@ -37,7 +37,7 @@ class WelcomeEmail extends Mailable
                 'userName' => $this->user->name,
                 'userEmail' => $this->user->email,
                 'userPhone' => $this->user->phone ?? 'Belum diisi',
-                'supportEmail' => env('MAIL_FROM_ADDRESS', 'support@vitalife.com')
+                'supportEmail' => env('MAIL_FROM_ADDRESS', 'support@healife.com')
             ]
         );
     }

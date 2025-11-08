@@ -12,8 +12,8 @@ class BookingSpaRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // Only authenticated users can book
-        return $this->user() !== null;
+        // Authorization is handled in the controller
+        return true;
     }
 
     /**
@@ -55,9 +55,9 @@ class BookingSpaRequest extends FormRequest
             'customer_phone' => [
                 'required',
                 'string',
-                'regex:/^([0-9\s\-\+\(\)]*)$/',
+                'regex:/^(\+62|62|0)[0-9]{9,13}$/', // Indonesian phone format
                 'min:10',
-                'max:20'
+                'max:15'
             ],
 
             // Booking details

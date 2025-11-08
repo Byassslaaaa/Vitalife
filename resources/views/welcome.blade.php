@@ -17,7 +17,7 @@
                     <div>
                         <h1 class="text-3xl font-bold leading-tight md:text-6xl mb-6 text-white animate-fadeIn">What is
                             <span
-                                class="text-blue-300 ml-2 my-4 text-6xl font-bold leading-tight animate-fadeIn">Vitalife</span>?
+                                class="text-blue-300 ml-2 my-4 text-6xl font-bold leading-tight animate-fadeIn">HeaLife</span>?
                         </h1>
 
                         <!-- Login and Register buttons -->
@@ -35,7 +35,7 @@
                         </div>
                         <div class="max-w-lg flex justify-center mx-auto animate-fadeIn">
                             <div class="text-center text-white">
-                                <p class="text-xl opacity-80 leading-snug animate-fadeIn">Project Vitalife is a mobile application development project "Vitalife" which aims to increase health and fitness tourism in Indonesia. This application will help users in finding the best yoga and spa centers, latest sports and events, consult doctors, track their progress, and get feedback about the application's services.</p>
+                                <p class="text-xl opacity-80 leading-snug animate-fadeIn">Project HeaLife is a mobile application development project "HeaLife" which aims to increase health and fitness tourism in Indonesia. This application will help users in finding the best yoga and spa centers, latest sports and events, consult doctors, track their progress, and get feedback about the application's services.</p>
                             </div>
                         </div>
                     </div>
@@ -52,7 +52,7 @@
                         <div class="flex flex-col justify-center items-center text-center">
                             <div class="flex items-center justify-center mb-6">
                                 <div>
-                                    <img src="../image/LOGO_1.png" alt="" class="max-w-full h-auto w-24 h-24">
+                                    <img src="../image/Logo_healife.png" alt="" class="max-w-full h-auto w-24 h-24">
                                 </div>
                                 <div>
                                     <p class="ml-3">&copy; Copyright {{ date('Y') }}</p>

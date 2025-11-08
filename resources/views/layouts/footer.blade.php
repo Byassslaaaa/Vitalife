@@ -7,12 +7,12 @@
                 <div class="flex-1 max-w-md pr-18 pl-10">
                     <!-- Logo -->
                     <div class="flex items-center mb-6 mt-2 ">
-                        <img src="{{ asset('image/LOGO_1.png') }}" alt="Vitalife Logo" class="w-38 h-12 mr-3">
+                        <img src="{{ asset('image/Logo_healife.png') }}" alt="HeaLife Logo" class="w-38 h-12 mr-3">
                     </div>
 
                     <!-- Description -->
                     <p class="text-gray-300 text-xs leading-relaxed mb-8" style="font-size: 15px; line-height: 1.4;">
-                        The Vitalife project is a mobile application development project aimed at enhancing
+                        The HeaLife project is a mobile application development project aimed at enhancing
                         health and wellness tourism in Indonesia. It helps users find the best yoga and spa
                         centers, events, consult with doctors, and track their wellness progress.
                     </p>
@@ -115,10 +115,10 @@
                 <!-- Copyright -->
                 <div>
                     <p class="text-xs text-gray-400" style="font-size: 15px; line-height: 1.4;">
-                        © All Right reserved | Owned by Vitalife
+                        © All Right reserved | Owned by HeaLife
                     </p>
                 </div>
             </div>
 
         </div>
-    </div>>
+    </div>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Selamat Datang di Vitalife</title>
+    <title>Selamat Datang di HeaLife</title>
     <style>
         .email-container {
             max-width: 600px;
@@ -60,18 +60,18 @@
 <body>
     <div class="email-container">
         <div class="header">
-            <h1>🎉 Selamat Datang di Vitalife!</h1>
+            <h1>🎉 Selamat Datang di HeaLife!</h1>
             <p>Platform Wellness Terbaik untuk Hidup Sehat Anda</p>
         </div>
 
         <div class="content">
             <h2>Halo {{ $userName }}! 👋</h2>
 
-            <p>Selamat datang di <strong>Vitalife</strong> - platform wellness terpercaya yang akan mengubah gaya hidup
+            <p>Selamat datang di <strong>HeaLife</strong> - platform wellness terpercaya yang akan mengubah gaya hidup
                 Anda menjadi lebih sehat dan bahagia!</p>
 
             <div class="highlight">
-                <h3>✨ Apa yang bisa Anda nikmati di Vitalife:</h3>
+                <h3>✨ Apa yang bisa Anda nikmati di HeaLife:</h3>
                 <ul>
                     <li>🏋️‍♂️ <strong>Gym Premium</strong> - Fasilitas fitness lengkap dengan peralatan terbaru</li>
                     <li>🧘‍♀️ <strong>Yoga Classes</strong> - Kelas yoga untuk ketenangan jiwa dan raga</li>
@@ -105,15 +105,15 @@
             <p>Mari bersama-sama menciptakan gaya hidup sehat yang berkelanjutan! 💪</p>
 
             <p>Salam hangat,<br>
-                <strong>Tim Vitalife</strong>
+                <strong>Tim HeaLife</strong>
             </p>
         </div>
 
         <div class="footer">
-            <p>🏢 <strong>Vitalife Wellness Center</strong></p>
+            <p>🏢 <strong>HeaLife Wellness Center</strong></p>
             <p>📍 Jl. Wellness No. 123, Jakarta Selatan 12345</p>
             <p>📞 +62 21-1234-5678 | 📧 {{ $supportEmail }}</p>
-            <p>🌐 <a href="{{ url('/') }}">www.vitalife.com</a></p>
+            <p>🌐 <a href="{{ url('/') }}">www.healife.com</a></p>
             <hr style="margin: 15px 0;">
             <p><small>Email ini dikirim secara otomatis. Mohon tidak membalas email ini.</small></p>
         </div>

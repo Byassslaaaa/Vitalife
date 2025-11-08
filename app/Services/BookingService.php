@@ -27,6 +27,123 @@ class BookingService
     }
 
     /**
+     * Check for booking slot conflicts
+     *
+     * @param array $data Booking data with date, time, service_id
+     * @param string $type Booking type (spa|yoga|gym)
+     * @throws \Exception if slot is already booked
+     */
+    protected function checkSlotConflict(array $data, string $type): void
+    {
+        $bookingDate = $data['booking_date'];
+        $bookingTime = $data['booking_time'] ?? null;
+        $serviceId = $data['service_id'];
+
+        // For spa bookings, check capacity instead of blocking all bookings
+        // Multiple customers can book the same service at different rooms/therapists
+        if ($type === 'spa' && $bookingTime) {
+            $spaId = $data['spa_id'] ?? null;
+            if ($spaId) {
+                // Get spa capacity (default 5 concurrent services)
+                $maxCapacity = 5; // TODO: Add capacity field to spas table
+
+                $bookedCount = SpaBooking::where('spa_id', $spaId)
+                    ->where('booking_date', $bookingDate)
+                    ->where('booking_time', 'LIKE', '%' . $bookingTime . '%')
+                    ->whereIn('status', ['pending', 'confirmed'])
+                    ->whereIn('payment_status', ['pending', 'paid'])
+                    ->count();
+
+                if ($bookedCount >= $maxCapacity) {
+                    throw new \Exception('Spa sudah penuh untuk waktu ini. Silakan pilih waktu yang berbeda.');
+                }
+            }
+        }
+
+        // For yoga bookings, check class capacity and time slot
+        if ($type === 'yoga') {
+            $service = YogaService::find($serviceId);
+            $maxCapacity = $service->capacity ?? 20; // Default 20 if not set
+
+            $bookedCount = YogaBooking::where('service_id', $serviceId)
+                ->where('booking_date', $bookingDate)
+                ->whereIn('status', ['pending', 'confirmed'])
+                ->whereIn('payment_status', ['pending', 'paid'])
+                ->count();
+
+            if ($bookedCount >= $maxCapacity) {
+                throw new \Exception('Kelas yoga sudah penuh untuk tanggal ini. Silakan pilih tanggal lain.');
+            }
+        }
+
+        // For gym bookings, check daily capacity
+        if ($type === 'gym') {
+            $gymId = $data['gym_id'] ?? null;
+            if ($gymId) {
+                $gym = Gym::find($gymId);
+                $maxCapacity = $gym->capacity ?? 50; // Default 50 if not set
+
+                $bookedCount = GymBooking::where('gym_id', $gymId)
+                    ->where('booking_date', $bookingDate)
+                    ->whereIn('status', ['pending', 'confirmed'])
+                    ->whereIn('payment_status', ['pending', 'paid'])
+                    ->count();
+
+                if ($bookedCount >= $maxCapacity) {
+                    throw new \Exception('Gym sudah penuh untuk tanggal ini. Silakan pilih tanggal lain.');
+                }
+            }
+        }
+
+        Log::info('Slot availability checked', [
+            'type' => $type,
+            'date' => $bookingDate,
+            'time' => $bookingTime ?? 'N/A',
+            'service_id' => $serviceId
+        ]);
+    }
+
+    /**
+     * Validate booking date and time to prevent past bookings
+     *
+     * @param string $bookingDate
+     * @param string|null $bookingTime
+     * @throws \Exception if date/time is in the past
+     */
+    protected function validateBookingDateTime(string $bookingDate, ?string $bookingTime = null): void
+    {
+        $now = now();
+        $bookingDateTime = $bookingTime
+            ? \Carbon\Carbon::parse($bookingDate . ' ' . $bookingTime)
+            : \Carbon\Carbon::parse($bookingDate);
+
+        if ($bookingDateTime->isPast()) {
+            throw new \Exception('Tidak dapat booking untuk waktu yang sudah lewat. Silakan pilih tanggal/waktu yang akan datang.');
+        }
+
+        // Minimum booking time (configurable: 30 minutes for flexibility)
+        if ($bookingTime) {
+            $minutesDifference = $now->diffInMinutes($bookingDateTime, false);
+
+            // If negative, booking is in the past
+            if ($minutesDifference < 0) {
+                throw new \Exception('Tidak dapat booking untuk waktu yang sudah lewat. Silakan pilih tanggal/waktu yang akan datang.');
+            }
+
+            // Require minimum 30 minutes advance booking (flexible for same-day bookings)
+            $minimumMinutes = 30;
+            if ($minutesDifference < $minimumMinutes) {
+                throw new \Exception("Booking harus dilakukan minimal {$minimumMinutes} menit sebelum waktu layanan. Silakan pilih waktu yang lebih lama.");
+            }
+        }
+
+        Log::info('Booking date/time validated', [
+            'booking_date' => $bookingDate,
+            'booking_time' => $bookingTime ?? 'N/A'
+        ]);
+    }
+
+    /**
      * Process booking untuk semua tipe (Spa/Yoga/Gym)
      *
      * @param array $data Validated booking data
@@ -40,6 +157,15 @@ class BookingService
             'type' => $type,
             'customer_email' => $data['customer_email'] ?? 'unknown'
         ]);
+
+        // Validate booking date/time (prevent past bookings)
+        $this->validateBookingDateTime(
+            $data['booking_date'],
+            $data['booking_time'] ?? null
+        );
+
+        // Check for slot conflicts (prevent double booking)
+        $this->checkSlotConflict($data, $type);
 
         // Get service details
         $service = $this->getService($data['service_id'], $type);
@@ -195,6 +321,7 @@ class BookingService
             'service_id' => $service->id,
             'service_name' => $service->name,
             'service_price' => $totalAmount,
+            'total_amount' => $totalAmount,
             'booking_date' => $data['booking_date'],
             'notes' => $data['notes'] ?? null,
             'status' => 'pending',
@@ -213,7 +340,6 @@ class BookingService
                 'booking_time' => $data['booking_time'] ?? null,
                 'class_type' => $data['class_type'] ?? 'regular',
                 'customer_address' => $data['customer_address'] ?? null,
-                'total_amount' => $totalAmount,
             ],
             'gym' => [
                 'gym_id' => $data['gym_id'],

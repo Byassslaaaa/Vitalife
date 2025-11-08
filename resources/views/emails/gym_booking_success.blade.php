@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Konfirmasi Booking Gym - Vitalife</title>
+    <title>Konfirmasi Booking Gym - HeaLife</title>
     <style>
         .email-container {
             max-width: 600px;
@@ -126,7 +126,7 @@
         <div class="content">
             <h2>Halo {{ $customerName }}! 🔥</h2>
 
-            <p>Selamat! Booking gym Anda di <strong>Vitalife Fitness Center</strong> telah berhasil dikonfirmasi.
+            <p>Selamat! Booking gym Anda di <strong>HeaLife Fitness Center</strong> telah berhasil dikonfirmasi.
                 Saatnya mencapai goals fitness Anda!</p>
 
             <div class="booking-card">
@@ -249,15 +249,15 @@
             <p>Let's crush your fitness goals together! See you at the gym! 💪🔥</p>
 
             <p>Stay strong & healthy,<br>
-                <strong>Tim Vitalife Fitness Center</strong>
+                <strong>Tim HeaLife Fitness Center</strong>
             </p>
         </div>
 
         <div class="footer">
-            <p>💪 <strong>Vitalife Fitness Center</strong></p>
+            <p>💪 <strong>HeaLife Fitness Center</strong></p>
             <p>📍 Jl. Wellness No. 123, Jakarta Selatan 12345</p>
             <p>📞 +62 21-1234-5678 | 📧 {{ $supportEmail }}</p>
-            <p>🌐 <a href="{{ url('/') }}">www.vitalife.com</a></p>
+            <p>🌐 <a href="{{ url('/') }}">www.healife.com</a></p>
             <hr style="margin: 15px 0;">
             <p><small>Email ini dikirim secara otomatis. Mohon tidak membalas email ini.</small></p>
         </div>

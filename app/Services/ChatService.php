@@ -199,7 +199,7 @@ class ChatService
     {
         $responses = [
             'general' => [
-                'text' => "Halo! Terima kasih telah menghubungi VitaLife. Saya asisten virtual yang siap membantu Anda. Ada yang bisa saya bantu?",
+                'text' => "Halo! Terima kasih telah menghubungi HeaLife. Saya asisten virtual yang siap membantu Anda. Ada yang bisa saya bantu?",
                 'quick_replies' => [
                     'Booking Spa',
                     'Booking Yoga',
@@ -219,7 +219,7 @@ class ChatService
                 ]
             ],
             'payment' => [
-                'text' => "VitaLife menerima pembayaran melalui transfer bank, e-wallet (GoPay, OVO, Dana), dan kartu kredit. Semua transaksi aman menggunakan Midtrans. Ada yang ingin ditanyakan tentang pembayaran?",
+                'text' => "HeaLife menerima pembayaran melalui transfer bank, e-wallet (GoPay, OVO, Dana), dan kartu kredit. Semua transaksi aman menggunakan Midtrans. Ada yang ingin ditanyakan tentang pembayaran?",
                 'quick_replies' => [
                     'Metode Pembayaran',
                     'Cek Status Bayar',
@@ -237,7 +237,7 @@ class ChatService
                 ]
             ],
             'location' => [
-                'text' => "VitaLife memiliki cabang Spa, Yoga Studio, dan Gym di berbagai lokasi. Anda bisa cek lokasi lengkap di website kami atau saya hubungkan dengan admin untuk info lebih detail.",
+                'text' => "HeaLife memiliki cabang Spa, Yoga Studio, dan Gym di berbagai lokasi. Anda bisa cek lokasi lengkap di website kami atau saya hubungkan dengan admin untuk info lebih detail.",
                 'quick_replies' => [
                     'Lokasi Spa',
                     'Lokasi Yoga',
@@ -246,7 +246,7 @@ class ChatService
                 ]
             ],
             'service' => [
-                'text' => "VitaLife menyediakan layanan Spa treatment, kelas Yoga, dan fasilitas Gym dengan berbagai paket. Setiap layanan memiliki harga dan benefit yang berbeda. Mau info detail tentang layanan apa?",
+                'text' => "HeaLife menyediakan layanan Spa treatment, kelas Yoga, dan fasilitas Gym dengan berbagai paket. Setiap layanan memiliki harga dan benefit yang berbeda. Mau info detail tentang layanan apa?",
                 'quick_replies' => [
                     'Paket Spa',
                     'Kelas Yoga',
@@ -413,7 +413,7 @@ class ChatService
         ]);
 
         // Send rating request message
-        $ratingMessage = "Terima kasih telah menggunakan layanan VitaLife! Kami mohon feedback Anda tentang pelayanan kami. Silakan berikan rating 1-5 bintang.";
+        $ratingMessage = "Terima kasih telah menggunakan layanan HeaLife! Kami mohon feedback Anda tentang pelayanan kami. Silakan berikan rating 1-5 bintang.";
         $this->saveMessage($conversation, null, $ratingMessage, 'bot');
 
         Log::info("Conversation {$conversation->id} resolved by admin {$adminId}");
@@ -439,7 +439,7 @@ class ChatService
     public function getCannedResponses(): array
     {
         return [
-            'greeting' => 'Halo! Terima kasih telah menghubungi VitaLife. Saya akan membantu Anda hari ini.',
+            'greeting' => 'Halo! Terima kasih telah menghubungi HeaLife. Saya akan membantu Anda hari ini.',
             'booking_help' => 'Untuk proses booking, saya akan bantu Anda step by step. Layanan apa yang ingin Anda booking?',
             'payment_help' => 'Untuk masalah pembayaran, bisa tolong berikan booking code Anda?',
             'voucher_help' => 'Untuk voucher, silakan berikan kode voucher Anda dan saya akan cek statusnya.',

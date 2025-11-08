@@ -29,7 +29,7 @@ class SpaBookingSuccessMail extends Mailable
         $bookingCode = is_array($this->booking) ? $this->booking['booking_code'] : $this->booking->booking_code;
 
         return new Envelope(
-            from: new Address(env('MAIL_FROM_ADDRESS', 'spa@vitalife.com'), env('MAIL_FROM_NAME', 'Vitalife Spa')),
+            from: new Address(env('MAIL_FROM_ADDRESS', 'spa@healife.com'), env('MAIL_FROM_NAME', 'HeaLife Spa')),
             subject: '🌺 Konfirmasi Booking Spa - ' . $bookingCode
         );
     }
@@ -56,7 +56,7 @@ class SpaBookingSuccessMail extends Mailable
                 'paymentMethod' => $this->booking->payment_method,
                 'notes' => $this->booking->notes,
                 'therapistPreference' => $this->booking->therapist_preference,
-                'supportEmail' => env('MAIL_FROM_ADDRESS', 'support@vitalife.com')
+                'supportEmail' => env('MAIL_FROM_ADDRESS', 'support@healife.com')
             ]
         );
     }

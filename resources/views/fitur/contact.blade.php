@@ -74,7 +74,7 @@
                     <div class="flex flex-col justify-center items-center text-center">
                         <div class="flex items-center justify-center mb-4">
                             <div>
-                                <img src="../image/LOGO_1.png" alt="" class="max-w-full h-auto w-24">
+                                <img src="../image/Logo_healife.png" alt="" class="max-w-full h-auto w-24">
                             </div>
                             <div>
                                 <p class="ml-3">&copy; Copyright {{ date('Y') }}</p>

@@ -16,7 +16,7 @@ class ChatEnhancementSeeder extends Seeder
         $cannedResponses = [
             [
                 'title' => 'Greeting - Welcome',
-                'message' => 'Halo! Terima kasih telah menghubungi VitaLife. Saya akan membantu Anda hari ini. Ada yang bisa saya bantu?',
+                'message' => 'Halo! Terima kasih telah menghubungi HeaLife. Saya akan membantu Anda hari ini. Ada yang bisa saya bantu?',
                 'category' => 'greeting',
                 'shortcut' => '/hello',
                 'is_active' => true,
@@ -44,7 +44,7 @@ class ChatEnhancementSeeder extends Seeder
             ],
             [
                 'title' => 'Payment - Methods',
-                'message' => 'VitaLife menerima pembayaran via Transfer Bank, E-wallet (GoPay, OVO, Dana, LinkAja, ShopeePay), dan Kartu Kredit/Debit. Semua transaksi aman melalui Midtrans.',
+                'message' => 'HeaLife menerima pembayaran via Transfer Bank, E-wallet (GoPay, OVO, Dana, LinkAja, ShopeePay), dan Kartu Kredit/Debit. Semua transaksi aman melalui Midtrans.',
                 'category' => 'payment',
                 'shortcut' => '/paymethods',
                 'is_active' => true,
@@ -86,14 +86,14 @@ class ChatEnhancementSeeder extends Seeder
             ],
             [
                 'title' => 'Location - Information',
-                'message' => 'VitaLife memiliki berbagai cabang di Jakarta, Bandung, dan Surabaya. Untuk info lengkap lokasi dan jam operasional, silakan kunjungi halaman "Lokasi" di website kami.',
+                'message' => 'HeaLife memiliki berbagai cabang di Jakarta, Bandung, dan Surabaya. Untuk info lengkap lokasi dan jam operasional, silakan kunjungi halaman "Lokasi" di website kami.',
                 'category' => 'location',
                 'shortcut' => '/location',
                 'is_active' => true,
             ],
             [
                 'title' => 'Closing - Thank You',
-                'message' => 'Terima kasih telah menghubungi VitaLife! Jika ada pertanyaan lain, jangan ragu untuk chat kembali. Semoga harimu menyenangkan! 😊',
+                'message' => 'Terima kasih telah menghubungi HeaLife! Jika ada pertanyaan lain, jangan ragu untuk chat kembali. Semoga harimu menyenangkan! 😊',
                 'category' => 'closing',
                 'shortcut' => '/thanks',
                 'is_active' => true,

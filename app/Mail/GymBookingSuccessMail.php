@@ -29,7 +29,7 @@ class GymBookingSuccessMail extends Mailable
         $bookingCode = is_array($this->booking) ? $this->booking['booking_code'] : $this->booking->booking_code;
 
         return new Envelope(
-            from: new Address(env('MAIL_FROM_ADDRESS', 'gym@vitalife.com'), env('MAIL_FROM_NAME', 'Vitalife Fitness')),
+            from: new Address(env('MAIL_FROM_ADDRESS', 'gym@healife.com'), env('MAIL_FROM_NAME', 'HeaLife Fitness')),
             subject: '💪 Konfirmasi Booking Gym - ' . $bookingCode
         );
     }
@@ -55,7 +55,7 @@ class GymBookingSuccessMail extends Mailable
                 'paymentStatus' => $this->booking->payment_status,
                 'paymentMethod' => $this->booking->payment_method,
                 'notes' => $this->booking->notes,
-                'supportEmail' => env('MAIL_FROM_ADDRESS', 'support@vitalife.com')
+                'supportEmail' => env('MAIL_FROM_ADDRESS', 'support@healife.com')
             ]
         );
     }

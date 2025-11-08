@@ -112,7 +112,7 @@
     <div class="email-container">
         <div class="header">
             <h1>✅ Booking Berhasil Dikonfirmasi!</h1>
-            <p>Terima kasih telah mempercayai Vitalife untuk kebutuhan wellness Anda</p>
+            <p>Terima kasih telah mempercayai HeaLife untuk kebutuhan wellness Anda</p>
         </div>
 
         <div class="content">
@@ -198,18 +198,18 @@
                 <li>⏰ Jam Operasional: 06:00 - 22:00 WIB</li>
             </ul>
 
-            <p>Terima kasih telah memilih Vitalife. Nikmati pengalaman wellness terbaik bersama kami! 🌟</p>
+            <p>Terima kasih telah memilih HeaLife. Nikmati pengalaman wellness terbaik bersama kami! 🌟</p>
 
             <p>Salam sehat,<br>
-                <strong>Tim Vitalife</strong>
+                <strong>Tim HeaLife</strong>
             </p>
         </div>
 
         <div class="footer">
-            <p>🏢 <strong>Vitalife Wellness Center</strong></p>
+            <p>🏢 <strong>HeaLife Wellness Center</strong></p>
             <p>📍 Jl. Wellness No. 123, Jakarta Selatan 12345</p>
             <p>📞 +62 21-1234-5678 | 📧 {{ $supportEmail }}</p>
-            <p>🌐 <a href="{{ url('/') }}">www.vitalife.com</a></p>
+            <p>🌐 <a href="{{ url('/') }}">www.healife.com</a></p>
             <hr style="margin: 15px 0;">
             <p><small>Email ini dikirim secara otomatis. Mohon tidak membalas email ini.</small></p>
         </div>

@@ -2,14 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Validator;
-use App\Models\Booking;
 use App\Models\SpaService;
 use App\Http\Controllers\BookingController;
-use Carbon\Carbon;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -44,101 +38,8 @@ Route::get('/weather', 'App\Http\Controllers\WeatherController@getWeather');
 Route::middleware(['throttle:10,1'])->group(function () {
     Route::post('/create-spa-payment', [BookingController::class, 'createSpaPayment']);
     Route::post('/create-yoga-payment', [BookingController::class, 'createYogaPayment']);
+    Route::post('/create-gym-payment', [BookingController::class, 'createGymPayment']);
 });
 
-// Webhook endpoint for Midtrans payment notifications - use refactored handler
+// Webhook endpoint for Midtrans payment notifications
 Route::post('/midtrans-webhook', [BookingController::class, 'handleMidtransCallback']);
-
-// Legacy webhook handler (backup - will be removed after testing)
-Route::post('/midtrans-webhook-legacy', function (Request $request) {
-    try {
-        $serverKey = config('midtrans.server_key');
-
-        if (!$serverKey) {
-            return response()->json(['message' => 'Server key not configured'], 500);
-        }
-
-        // Verify signature
-        $orderId = $request->order_id;
-        $statusCode = $request->status_code;
-        $grossAmount = $request->gross_amount;
-        $signatureKey = $request->signature_key;
-
-        $expectedSignature = hash('sha512', $orderId . $statusCode . $grossAmount . $serverKey);
-
-        if ($signatureKey !== $expectedSignature) {
-            return response()->json(['message' => 'Invalid signature'], 401);
-        }
-
-        // Find booking by order_id
-        $booking = Booking::where('order_id', $orderId)->first();
-
-        if (!$booking) {
-            Log::warning('Booking not found for order_id: ' . $orderId);
-            return response()->json(['message' => 'Booking not found'], 404);
-        }
-
-        // Handle different transaction statuses
-        $transactionStatus = $request->transaction_status;
-        $fraudStatus = $request->fraud_status;
-
-        Log::info('Midtrans webhook received', [
-            'order_id' => $orderId,
-            'transaction_status' => $transactionStatus,
-            'fraud_status' => $fraudStatus,
-            'booking_id' => $booking->id
-        ]);
-
-        if ($transactionStatus === 'capture') {
-            if ($fraudStatus === 'challenge') {
-                $booking->update(['payment_status' => 'pending', 'status' => 'pending']);
-            } elseif ($fraudStatus === 'accept') {
-                $booking->update(['payment_status' => 'paid', 'status' => 'confirmed']);
-
-                // Send email notification on successful payment
-                try {
-                    if ($booking->service_type === 'spa') {
-                        Mail::to($booking->user_email)->send(new \App\Mail\SpaBookingSuccessMail($booking));
-                    } elseif ($booking->service_type === 'yoga') {
-                        Mail::to($booking->user_email)->send(new \App\Mail\YogaBookingSuccessMail($booking));
-                    } elseif ($booking->service_type === 'gym') {
-                        Mail::to($booking->user_email)->send(new \App\Mail\GymBookingSuccessMail($booking));
-                    }
-
-                    Log::info('Email notification sent for successful payment', ['order_id' => $orderId]);
-                } catch (\Exception $e) {
-                    Log::error('Failed to send email notification', ['error' => $e->getMessage(), 'order_id' => $orderId]);
-                }
-            }
-        } elseif ($transactionStatus === 'settlement') {
-            $booking->update(['payment_status' => 'paid', 'status' => 'confirmed']);
-
-            // Send email notification on successful payment
-            try {
-                if ($booking->service_type === 'spa') {
-                    Mail::to($booking->user_email)->send(new \App\Mail\SpaBookingSuccessMail($booking));
-                } elseif ($booking->service_type === 'yoga') {
-                    Mail::to($booking->user_email)->send(new \App\Mail\YogaBookingSuccessMail($booking));
-                } elseif ($booking->service_type === 'gym') {
-                    Mail::to($booking->user_email)->send(new \App\Mail\GymBookingSuccessMail($booking));
-                }
-
-                Log::info('Email notification sent for successful payment', ['order_id' => $orderId]);
-            } catch (\Exception $e) {
-                Log::error('Failed to send email notification', ['error' => $e->getMessage(), 'order_id' => $orderId]);
-            }
-        } elseif (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
-            $booking->update(['payment_status' => 'failed', 'status' => 'cancelled']);
-        } elseif ($transactionStatus === 'pending') {
-            $booking->update(['payment_status' => 'pending', 'status' => 'pending']);
-        }
-
-        return response()->json(['message' => 'OK']);
-    } catch (\Exception $e) {
-        Log::error('Webhook error', [
-            'error' => $e->getMessage(),
-            'request_data' => $request->all()
-        ]);
-        return response()->json(['message' => 'Internal server error'], 500);
-    }
-});

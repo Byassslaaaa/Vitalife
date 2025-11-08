@@ -32,8 +32,8 @@ return new class extends Migration
             $table->timestamp('rated_at')->nullable()->after('rating_feedback');
 
             // Unread message counters
-            $table->integer('unread_by_admin')->default(0)->after('last_message_at');
-            $table->integer('unread_by_user')->default(0)->after('unread_by_admin');
+            $table->integer('unread_by_admin')->default(0);
+            $table->integer('unread_by_user')->default(0);
 
             // Add indexes for performance
             $table->index('admin_id', 'idx_chat_admin');
@@ -45,14 +45,13 @@ return new class extends Migration
 
         // Enhance chat_messages table
         Schema::table('chat_messages', function (Blueprint $table) {
-            // Message metadata
-            $table->boolean('is_read')->default(false)->after('message');
-            $table->timestamp('read_at')->nullable()->after('is_read');
+            // Message metadata (is_read already exists in original migration)
+            $table->timestamp('read_at')->nullable();
 
             // Add indexes
-            $table->index('chat_conversation_id', 'idx_msg_conversation');
+            $table->index('conversation_id', 'idx_msg_conversation');
             $table->index('sender_type', 'idx_msg_sender_type');
-            $table->index(['chat_conversation_id', 'created_at'], 'idx_msg_conv_created');
+            $table->index(['conversation_id', 'created_at'], 'idx_msg_conv_created');
             $table->index('is_read', 'idx_msg_read');
         });
 
@@ -136,7 +135,7 @@ return new class extends Migration
             $table->dropIndex('idx_msg_sender_type');
             $table->dropIndex('idx_msg_conv_created');
             $table->dropIndex('idx_msg_read');
-            $table->dropColumn(['is_read', 'read_at']);
+            $table->dropColumn('read_at');
         });
 
         // Revert chat_conversations

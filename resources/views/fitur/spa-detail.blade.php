@@ -1,6 +1,10 @@
 <x-app-layout>
     <!-- Add CSRF token meta tag -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <!-- Prevent browser caching for booking page -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
 
     <style>
         .unified-gradient {
@@ -659,9 +663,14 @@
         data-client-key="{{ config('midtrans.client_key') }}"></script>
 
     <script>
+        // Page Version: 2025-11-08-v2 - PLEASE HARD REFRESH IF YOU SEE ERRORS!
+        console.log('%c[SPA BOOKING v2.0] Page loaded successfully', 'color: green; font-weight: bold; font-size: 14px');
+        console.log('[INFO] If you see booking errors, please do CTRL+SHIFT+R (hard refresh)');
+
         // Global variables
         const bookableServices = @json($bookableServices ?? []);
         const spaData = @json($spa);
+        const isAuthenticated = {{ auth()->check() ? 'true' : 'false' }};
         let appliedVoucher = null;
         let currentServicePrice = 0;
         const adminFee = 5000;
@@ -702,6 +711,7 @@
             const spaBookingForm = document.getElementById('spaBookingForm');
             const serviceSelect = document.querySelector('select[name="service_type"]');
             const servicePriceEl = document.getElementById('servicePrice');
+            const adminFeeEl = document.getElementById('adminFee');
             const totalPriceEl = document.getElementById('totalPrice');
             const applyVoucherBtn = document.getElementById('applyVoucherBtn');
             const voucherCodeInput = document.getElementById('voucherCode');
@@ -738,6 +748,27 @@
             if (bookingBtn) {
                 bookingBtn.addEventListener('click', function() {
                     console.log('Booking button clicked');
+
+                    // Check if user is logged in
+                    if (!isAuthenticated) {
+                        Swal.fire({
+                            title: 'Login Diperlukan',
+                            text: 'Anda harus login terlebih dahulu untuk melakukan booking.',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Login Sekarang',
+                            cancelButtonText: 'Batal',
+                            confirmButtonColor: '#3B82F6',
+                            cancelButtonColor: '#6B7280'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Redirect to login page with return URL
+                                window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname);
+                            }
+                        });
+                        return;
+                    }
+
                     openSpaBookingModal();
                 });
             }
@@ -1121,6 +1152,7 @@
                     booking_date: bookingData.booking_date,
                     booking_time: bookingData.booking_time,
                     service_type: bookingData.service_type,
+                    service_price: serviceFee, // Include service price for backend validation
                     booking_type: bookingType, // venue or terapis
                     service_address: bookingType === 'terapis' ? bookingData.service_address :
                         'Venue booking - customer comes to spa location',
@@ -1133,13 +1165,16 @@
                     voucher_id: appliedVoucher ? appliedVoucher.id : null
                 };
 
-                console.log('Sending payment data:', paymentData);
+                console.log('[DEBUG] Sending payment data:', paymentData);
 
                 // Get CSRF token
                 const csrfToken = document.querySelector('meta[name="csrf-token"]');
                 if (!csrfToken) {
+                    console.error('[ERROR] CSRF token not found in page');
                     throw new Error('CSRF token not found');
                 }
+
+                console.log('[DEBUG] Making API call to /api/create-spa-payment');
 
                 // Call backend API to create payment using new universal booking controller
                 const response = await fetch('/api/create-spa-payment', {
@@ -1152,7 +1187,8 @@
                     body: JSON.stringify(paymentData)
                 });
 
-                console.log('API response status:', response.status);
+                console.log('[DEBUG] API response status:', response.status);
+                console.log('[DEBUG] API response headers:', response.headers);
 
                 // Handle authentication error (401)
                 if (response.status === 401) {
@@ -1184,15 +1220,17 @@
                 }
 
                 if (!response.ok) {
+                    console.error('[ERROR] Response not OK, status:', response.status);
                     const errorData = await response.json();
-                    console.error('API error:', errorData);
+                    console.error('[ERROR] API error data:', errorData);
                     throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
                 }
 
                 const result = await response.json();
-                console.log('API result:', result);
+                console.log('[DEBUG] API result:', result);
 
                 if (result.success && result.payment_token) {
+                    console.log('[SUCCESS] Payment token received:', result.payment_token);
                     return {
                         success: true,
                         payment_token: result.payment_token,
@@ -1201,10 +1239,12 @@
                         booking_data: bookingData
                     };
                 } else {
+                    console.error('[ERROR] Invalid result structure:', result);
                     throw new Error(result.message || 'Failed to create payment token');
                 }
             } catch (error) {
-                console.error('Error creating payment:', error);
+                console.error('[ERROR] Exception in processDirectPayment:', error);
+                console.error('[ERROR] Error stack:', error.stack);
                 return {
                     success: false,
                     message: error.message || 'Terjadi kesalahan saat membuat pembayaran'
@@ -1215,31 +1255,50 @@
         // Fungsi validasi form
         function validateForm() {
             const form = document.getElementById('spaBookingForm');
-            const bookingType = document.querySelector('input[name="booking_type"]:checked').value;
+            const bookingTypeElement = document.querySelector('input[name="booking_type"]:checked');
+
+            // Check if booking type is selected
+            if (!bookingTypeElement) {
+                Swal.fire({
+                    title: 'Booking Type Tidak Dipilih',
+                    text: 'Silakan pilih jenis booking (Booking Tempat atau Booking Terapis).',
+                    icon: 'warning',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#F59E0B'
+                });
+                return false;
+            }
+
+            const bookingType = bookingTypeElement.value;
             let isValid = true;
 
             // Get required fields based on booking type
             let requiredFields;
             if (bookingType === 'terapis') {
-                requiredFields = form.querySelectorAll('input[required], select[required], textarea[required]');
+                requiredFields = form.querySelectorAll('input[required]:not([name="booking_type"]), select[required]');
+                // Add service_address as required for terapis booking
+                const serviceAddressField = form.querySelector('textarea[name="service_address"]');
+                if (serviceAddressField) {
+                    requiredFields = [...requiredFields, serviceAddressField];
+                }
             } else {
                 // For venue booking, exclude service_address from required validation
-                requiredFields = form.querySelectorAll('input[required], select[required]');
-                // Add notes if it has required attribute
-                const notesField = form.querySelector('textarea[name="notes"]');
-                if (notesField && notesField.hasAttribute('required')) {
-                    requiredFields = [...requiredFields, notesField];
-                }
+                requiredFields = form.querySelectorAll('input[required]:not([name="booking_type"]), select[required]');
             }
 
             requiredFields.forEach(field => {
-                if (!field.value.trim()) {
+                const value = field.value ? field.value.trim() : '';
+                if (!value) {
                     field.classList.add('border-red-500');
                     isValid = false;
+                    console.log('Field kosong:', field.name, field);
                 } else {
                     field.classList.remove('border-red-500');
                 }
             });
+
+            // Collect validation errors
+            let validationErrors = [];
 
             // Validasi email
             const email = form.querySelector('input[type="email"]');
@@ -1248,13 +1307,9 @@
                 if (!emailRegex.test(email.value)) {
                     email.classList.add('border-red-500');
                     isValid = false;
-                    Swal.fire({
-                        title: 'Email Tidak Valid',
-                        text: 'Silakan masukkan alamat email yang valid.',
-                        icon: 'error',
-                        confirmButtonText: 'OK',
-                        confirmButtonColor: '#EF4444'
-                    });
+                    validationErrors.push('Email tidak valid');
+                } else {
+                    email.classList.remove('border-red-500');
                 }
             }
 
@@ -1262,16 +1317,13 @@
             const phone = form.querySelector('input[type="tel"]');
             if (phone && phone.value) {
                 const phoneRegex = /^[\d\s\-\+()]+$/;
-                if (!phoneRegex.test(phone.value) || phone.value.length < 10) {
+                const cleanPhone = phone.value.replace(/[\s\-\+()]/g, '');
+                if (!phoneRegex.test(phone.value) || cleanPhone.length < 10) {
                     phone.classList.add('border-red-500');
                     isValid = false;
-                    Swal.fire({
-                        title: 'Nomor Telepon Tidak Valid',
-                        text: 'Silakan masukkan nomor telepon yang valid (minimal 10 digit).',
-                        icon: 'error',
-                        confirmButtonText: 'OK',
-                        confirmButtonColor: '#EF4444'
-                    });
+                    validationErrors.push('Nomor telepon tidak valid (minimal 10 digit)');
+                } else {
+                    phone.classList.remove('border-red-500');
                 }
             }
 
@@ -1285,20 +1337,31 @@
                 if (selectedDate < today) {
                     bookingDate.classList.add('border-red-500');
                     isValid = false;
-                    Swal.fire({
-                        title: 'Tanggal Tidak Valid',
-                        text: 'Tanggal booking tidak boleh di masa lalu.',
-                        icon: 'error',
-                        confirmButtonText: 'OK',
-                        confirmButtonColor: '#EF4444'
-                    });
+                    validationErrors.push('Tanggal booking tidak boleh di masa lalu');
+                } else {
+                    bookingDate.classList.remove('border-red-500');
                 }
             }
 
             if (!isValid) {
+                // Scroll to first invalid field
+                const firstInvalidField = form.querySelector('.border-red-500');
+                if (firstInvalidField) {
+                    firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    setTimeout(() => {
+                        firstInvalidField.focus();
+                    }, 300);
+                }
+
+                // Build error message
+                let errorMessage = 'Silakan lengkapi semua field yang diperlukan (ditandai dengan border merah).';
+                if (validationErrors.length > 0) {
+                    errorMessage += '\n\nKesalahan:\n' + validationErrors.map((err, idx) => `${idx + 1}. ${err}`).join('\n');
+                }
+
                 Swal.fire({
                     title: 'Form Tidak Lengkap',
-                    text: 'Silakan lengkapi semua field yang diperlukan.',
+                    html: errorMessage.replace(/\n/g, '<br>'),
                     icon: 'warning',
                     confirmButtonText: 'OK',
                     confirmButtonColor: '#F59E0B'
