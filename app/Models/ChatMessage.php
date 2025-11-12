@@ -11,9 +11,7 @@ class ChatMessage extends Model
     use HasFactory;
 
     protected $fillable = [
-        'chat_conversation_id',
         'conversation_id',
-        'sender_id',
         'user_id',
         'admin_id',
         'message',

@@ -19,12 +19,16 @@ class Yoga extends Model
         'waktuBuka',
         'image',
         'maps',
-        'class_type'
+        'class_type',
+        'is_open',
+        'services'
     ];
 
     protected $casts = [
         'waktuBuka' => 'array',
-        'harga' => 'integer'
+        'harga' => 'integer',
+        'is_open' => 'boolean',
+        'services' => 'array'
     ];
 
     /**
@@ -49,6 +53,40 @@ class Yoga extends Model
     public function yogaServices()
     {
         return $this->hasMany(YogaService::class, 'yoga_id', 'id_yoga');
+    }
+
+    /**
+     * Get the testimonials for this yoga
+     */
+    public function testimonials()
+    {
+        return $this->hasMany(Testimonial::class, 'testimonial_id', 'id_yoga')
+                    ->where('testimonial_type', 'yoga');
+    }
+
+    /**
+     * Get approved testimonials only
+     */
+    public function approvedTestimonials()
+    {
+        return $this->testimonials()->where('is_approved', true);
+    }
+
+    /**
+     * Get average rating from approved testimonials
+     */
+    public function getAverageRatingAttribute()
+    {
+        $avg = $this->approvedTestimonials()->avg('rating');
+        return $avg ? round($avg, 1) : 0;
+    }
+
+    /**
+     * Get total count of approved testimonials
+     */
+    public function getTestimonialsCountAttribute()
+    {
+        return $this->approvedTestimonials()->count();
     }
 
     /**
@@ -126,21 +164,12 @@ class Yoga extends Model
     public function getFacilitiesAttribute()
     {
         return $this->detailConfig?->facilities ?? [
-            [
-                'title' => 'Hatha Yoga',
-                'description' => 'Gentle yoga practice focusing on basic postures and breathing',
-                'icon' => 'fa-solid fa-person-walking'
-            ],
-            [
-                'title' => 'Meditation',
-                'description' => 'Mindfulness and meditation sessions for inner peace',
-                'icon' => 'fa-solid fa-brain'
-            ],
-            [
-                'title' => 'Breathing Exercises',
-                'description' => 'Pranayama techniques for better health and wellness',
-                'icon' => 'fa-solid fa-wind'
-            ]
+            'Air Conditioned Studio',
+            'Yoga Props Available',
+            'Meditation Corner',
+            'Herbal Tea Corner',
+            'Changing Room',
+            'Free Parking'
         ];
     }
 

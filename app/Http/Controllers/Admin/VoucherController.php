@@ -28,9 +28,10 @@ class VoucherController extends Controller
 
         try {
             $validatedData = $request->validate([
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'description' => 'required|string',
-                'discount_percentage' => 'required|integer|min:0|max:100',
+                'discount_type' => 'required|in:percentage,fixed',
+                'discount_percentage' => 'nullable|integer|min:0|max:100|required_if:discount_type,percentage',
+                'discount_amount' => 'nullable|integer|min:0|required_if:discount_type,fixed',
                 'usage_limit' => 'nullable|integer|min:1',
                 'expired_at' => 'nullable|date|after:today',
                 'code' => 'required|string|unique:vouchers,code',
@@ -38,26 +39,16 @@ class VoucherController extends Controller
 
             Log::info('Validation passed');
 
-            if ($request->hasFile('image')) {
-                $imageName = time() . '.' . $request->image->extension();
-                $imagePath = 'images/vouchers/' . $imageName;
-
-                // Log the image information
-                Log::info('Processing image upload', [
-                    'original_name' => $request->image->getClientOriginalName(),
-                    'size' => $request->image->getSize(),
-                    'target_path' => $imagePath
-                ]);
-
-                $request->image->move(public_path('images/vouchers'), $imageName);
-                $validatedData['image'] = $imagePath;
-
-                Log::info('Image uploaded successfully');
-            }
-
             // Initialize default values for fields that might be null
             $validatedData['usage_count'] = 0;
             $validatedData['is_used'] = false;
+
+            // Set default values based on discount type
+            if ($validatedData['discount_type'] === 'percentage') {
+                $validatedData['discount_amount'] = 0;
+            } else {
+                $validatedData['discount_percentage'] = 0;
+            }
 
             // Log the data being saved to the database
             Log::info('Attempting to save voucher with data:', $validatedData);
@@ -66,7 +57,7 @@ class VoucherController extends Controller
 
             Log::info('Voucher created successfully with ID: ' . $voucher->id);
 
-            return redirect()->route('admin.vouchers.show', $voucher)->with('success', 'Voucher berhasil disimpan');
+            return redirect()->route('admin.vouchers.index')->with('success', 'Voucher berhasil disimpan');
         } catch (\Exception $e) {
             Log::error('Error creating voucher: ' . $e->getMessage(), [
                 'file' => $e->getFile(),
@@ -91,24 +82,20 @@ class VoucherController extends Controller
     public function update(Request $request, Voucher $voucher)
     {
         $validatedData = $request->validate([
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'description' => 'required|string',
-            'discount_percentage' => 'required|integer|min:0|max:100',
+            'discount_type' => 'required|in:percentage,fixed',
+            'discount_percentage' => 'nullable|integer|min:0|max:100|required_if:discount_type,percentage',
+            'discount_amount' => 'nullable|integer|min:0|required_if:discount_type,fixed',
             'usage_limit' => 'nullable|integer|min:1',
             'expired_at' => 'nullable|date|after:today',
             'code' => 'required|string|unique:vouchers,code,' . $voucher->id,
         ]);
 
-        if ($request->hasFile('image')) {
-            // Hapus gambar lama jika ada
-            if ($voucher->image && file_exists(public_path($voucher->image))) {
-                unlink(public_path($voucher->image));
-            }
-
-            // Upload gambar baru
-            $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('images/vouchers'), $imageName);
-            $validatedData['image'] = 'images/vouchers/' . $imageName;
+        // Set default values based on discount type
+        if ($validatedData['discount_type'] === 'percentage') {
+            $validatedData['discount_amount'] = 0;
+        } else {
+            $validatedData['discount_percentage'] = 0;
         }
 
         try {
@@ -123,15 +110,11 @@ class VoucherController extends Controller
     public function destroy(Voucher $voucher)
     {
         try {
-            if ($voucher->image && file_exists(public_path($voucher->image))) {
-                unlink(public_path($voucher->image));
-            }
-
             $voucher->delete();
-            return redirect()->route('admin.vouchers.index')->with('success', 'Voucher deleted successfully.');
+            return redirect()->route('admin.vouchers.index')->with('success', 'Voucher berhasil dihapus.');
         } catch (\Exception $e) {
             Log::error('Error deleting voucher: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Failed to delete voucher: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal menghapus voucher: ' . $e->getMessage());
         }
     }
 }

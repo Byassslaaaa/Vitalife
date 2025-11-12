@@ -202,9 +202,82 @@
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
+                </div>
 
+                <!-- Services (3 Services) -->
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Services Yoga (3 Services Utama dengan Foto)</h3>
+
+                    @for($i = 0; $i < 3; $i++)
+                        @php
+                            $service = isset($yoga->services[$i]) ? $yoga->services[$i] : null;
+                        @endphp
+                        <div class="mb-6 p-4 border border-gray-200 rounded-lg bg-white">
+                            <h4 class="font-medium text-gray-800 mb-3">Service {{ $i + 1 }}</h4>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="services_{{ $i }}_name" class="block text-sm font-medium text-gray-700">Nama Service</label>
+                                    <input type="text" name="services[{{ $i }}][name]" id="services_{{ $i }}_name"
+                                           value="{{ old('services.'.$i.'.name', $service['name'] ?? '') }}"
+                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
+                                           placeholder="Contoh: Hatha Yoga">
+                                    @error('services.'.$i.'.name')
+                                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div>
+                                    <label for="services_{{ $i }}_image" class="block text-sm font-medium text-gray-700">Foto Service (Circular)</label>
+                                    @if(isset($service['image']))
+                                        <div class="mb-2">
+                                            <img src="{{ asset($service['image']) }}" alt="Service Image"
+                                                 class="w-16 h-16 object-cover rounded-full border-2 border-gray-300">
+                                        </div>
+                                    @endif
+                                    <input type="file" name="services[{{ $i }}][image]" id="services_{{ $i }}_image"
+                                           accept="image/*"
+                                           class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
+                                           onchange="previewServiceImage(event, {{ $i }})">
+                                    <div id="serviceImagePreview{{ $i }}" class="mt-2">
+                                        <img src="/placeholder.svg" alt="Preview" class="w-16 h-16 object-cover rounded-full bg-gray-200 hidden border-2 border-gray-300">
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">Foto akan ditampilkan dalam bentuk lingkaran. Kosongkan jika tidak ingin mengubah foto.</p>
+                                    @error('services.'.$i.'.image')
+                                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div class="md:col-span-2">
+                                    <label for="services_{{ $i }}_description" class="block text-sm font-medium text-gray-700">Deskripsi Service</label>
+                                    <textarea name="services[{{ $i }}][description]" id="services_{{ $i }}_description" rows="3"
+                                              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
+                                              placeholder="Jelaskan detail service ini...">{{ old('services.'.$i.'.description', $service['description'] ?? '') }}</textarea>
+                                    @error('services.'.$i.'.description')
+                                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div>
+                                    <label for="services_{{ $i }}_price" class="block text-sm font-medium text-gray-700">Harga (Opsional)</label>
+                                    <input type="number" name="services[{{ $i }}][price]" id="services_{{ $i }}_price"
+                                           value="{{ old('services.'.$i.'.price', $service['price'] ?? '') }}"
+                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
+                                           placeholder="Contoh: 75000" min="0" step="1000">
+                                    @error('services.'.$i.'.price')
+                                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                    @enderror
+                                    <p class="text-xs text-gray-500 mt-1">Masukkan harga dalam Rupiah. Kosongkan jika tidak ingin mengubah.</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endfor
+                </div>
+
+                <!-- Main Image -->
+                <div class="bg-gray-50 p-4 rounded-lg">
                     <div class="mb-4 md:col-span-2">
-                        <label for="image" class="block text-sm font-medium text-gray-700 mb-2">Gambar</label>
+                        <label for="image" class="block text-sm font-medium text-gray-700 mb-2">Gambar Utama Yoga</label>
                         <div class="flex items-start space-x-4">
                             @if($yoga->image)
                                 <div class="w-32 h-32 overflow-hidden rounded-lg">
@@ -231,4 +304,19 @@
             </form>
         </div>
     </div>
+
+    <script>
+        function previewServiceImage(event, index) {
+            const input = event.target;
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.querySelector(`#serviceImagePreview${index} img`);
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
 @endsection

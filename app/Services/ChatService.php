@@ -35,7 +35,6 @@ class ChatService
             ['user_id' => $userId],
             [
                 'status' => 'active',
-                'last_message_at' => now(),
             ]
         );
     }
@@ -50,7 +49,6 @@ class ChatService
 
         // Update conversation activity
         $conversation->update([
-            'last_message_at' => now(),
             'unread_by_admin' => DB::raw('unread_by_admin + 1')
         ]);
 
@@ -361,7 +359,6 @@ class ChatService
 
         // Update conversation
         $conversation->update([
-            'last_message_at' => now(),
             'unread_by_user' => DB::raw('unread_by_user + 1'),
             'unread_by_admin' => 0
         ]);
@@ -375,8 +372,9 @@ class ChatService
     protected function saveMessage(ChatConversation $conversation, ?int $senderId, string $message, string $senderType): ChatMessage
     {
         return ChatMessage::create([
-            'chat_conversation_id' => $conversation->id,
-            'sender_id' => $senderId,
+            'conversation_id' => $conversation->id,
+            'user_id' => $senderType === 'user' ? $senderId : null,
+            'admin_id' => $senderType === 'admin' ? $senderId : null,
             'sender_type' => $senderType,
             'message' => $message,
             'is_read' => false

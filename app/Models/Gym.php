@@ -54,6 +54,40 @@ class Gym extends Model
         return $this->hasMany(GymBooking::class, 'gym_id', 'id_gym');
     }
 
+    /**
+     * Get the testimonials for this gym
+     */
+    public function testimonials()
+    {
+        return $this->hasMany(Testimonial::class, 'testimonial_id', 'id_gym')
+                    ->where('testimonial_type', 'gym');
+    }
+
+    /**
+     * Get approved testimonials only
+     */
+    public function approvedTestimonials()
+    {
+        return $this->testimonials()->where('is_approved', true);
+    }
+
+    /**
+     * Get average rating from approved testimonials
+     */
+    public function getAverageRatingAttribute()
+    {
+        $avg = $this->approvedTestimonials()->avg('rating');
+        return $avg ? round($avg, 1) : 0;
+    }
+
+    /**
+     * Get total count of approved testimonials
+     */
+    public function getTestimonialsCountAttribute()
+    {
+        return $this->approvedTestimonials()->count();
+    }
+
     // Accessor untuk mendapatkan 3 services pertama
     public function getTopServicesAttribute()
     {

@@ -1,314 +1,462 @@
 <x-app-layout>
     <style>
-        .unified-gradient {
-            background: linear-gradient(to bottom, #FFFFFF 0%, #BED9FE 100%);
+        .yoga-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .yoga-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(16, 185, 129, 0.15);
+        }
+
+        .filter-active {
+            background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+            color: white;
+        }
+
+        .sort-dropdown {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .sort-dropdown.active {
+            max-height: 300px;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite;
         }
     </style>
 
-    {{-- Unified YOGA Section --}}
-    <div class="unified-gradient min-h-screen">
-        <!-- Hero Section -->
-        <div class="pt-32 pb-20">
-            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-                <div class="text-left mb-12">
-                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-gray-900 mb-4">YOGA</h1>
-                    <p class="text-lg lg:text-xl text-gray-700">Finding Yoga location nearby you</p>
+    {{-- Modern YOGA Booking Section --}}
+    <div class="bg-gradient-to-b from-gray-50 to-white min-h-screen">
+        <!-- Hero Section with Search -->
+        <section class="pt-32 pb-12 relative overflow-hidden bg-gradient-to-r from-emerald-600 to-teal-600">
+            <div class="absolute inset-0 bg-black/10"></div>
+            <div class="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
+                <!-- Title -->
+                <div class="text-center mb-12">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl mb-4">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                    </div>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-3">
+                        YOGA & MEDITATION
+                    </h1>
+                    <p class="text-lg lg:text-xl text-white/90 font-medium">
+                        Discover {{ count($yogaTotal) }}+ Premium Yoga Studios
+                    </p>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="max-w-4xl mx-auto">
+                    <div class="bg-white rounded-2xl shadow-2xl p-6">
+                        <div class="flex flex-col md:flex-row gap-4">
+                            <!-- Search Input -->
+                            <div class="flex-1">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Search Yoga Studio</label>
+                                <div class="relative">
+                                    <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    </svg>
+                                    <input type="text"
+                                           id="search-input"
+                                           placeholder="Search by name or location..."
+                                           class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all outline-none">
+                                </div>
+                            </div>
+
+                            <!-- Search Button -->
+                            <div class="md:self-end">
+                                <button id="search-btn" class="w-full md:w-auto px-8 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold rounded-xl hover:from-emerald-700 hover:to-teal-700 transition-all shadow-lg hover:shadow-xl">
+                                    <span class="flex items-center justify-center">
+                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                        </svg>
+                                        Search
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Yoga Listings Grid -->
-        <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-12">
-            <div id="yoga-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                @foreach ($yogaTotal as $index => $yoga)
-                    <div
-                        class="yoga-item bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 {{ $index >= 6 ? 'hidden' : '' }}">
-                        <!-- Make the entire card clickable -->
-                        <a href="{{ route('yoga.detail', $yoga->id_yoga) }}" class="block h-full">
-                            <!-- Header -->
-                            <div class="p-6 border-b border-gray-100">
-                                <h3 class="text-xl font-bold text-gray-900 mb-2">{{ $yoga->nama }}</h3>
-                                <div class="flex items-center text-gray-600 mb-1">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                        </path>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                    </svg>
-                                    <span class="text-sm">{{ $yoga->alamat }}</span>
-                                </div>
-                            </div>
-
-                            <!-- Image -->
-                            <div class="aspect-w-16 aspect-h-9">
-                                <img src="{{ asset($yoga->image) }}" alt="{{ $yoga->nama }}"
-                                    class="w-full h-48 object-cover">
-                            </div>
-
-                            <!-- Facilities -->
-                            <div class="p-6">
-                                <h4 class="text-lg font-semibold text-gray-900 mb-4">Facilities</h4>
-                                <div class="grid grid-cols-3 gap-4 mb-6">
-                                    <div class="text-center">
-                                        <div
-                                            class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                                            <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
-                                                </path>
-                                            </svg>
-                                        </div>
-                                        <p class="text-xs font-medium text-gray-900">Traditional</p>
-                                        <p class="text-xs font-medium text-gray-900">Massage</p>
-                                        <p class="text-xs text-gray-500 mt-1">Traditional massage to relieve tension</p>
-                                    </div>
-                                    <div class="text-center">
-                                        <div
-                                            class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
-                                                </path>
-                                            </svg>
-                                        </div>
-                                        <p class="text-xs font-medium text-gray-900">Reflexology</p>
-                                        <p class="text-xs text-gray-500 mt-1">Stimulate foot reflex points to boost
-                                            health
-                                        </p>
-                                    </div>
-                                    <div class="text-center">
-                                        <div
-                                            class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                                            </svg>
-                                        </div>
-                                        <p class="text-xs font-medium text-gray-900">Thai Massage</p>
-                                        <p class="text-xs text-gray-500 mt-1">Thai massage with pressure and stretch</p>
-                                    </div>
-                                </div>
-
-                                <!-- Details -->
-                                <div class="space-y-3 mb-6">
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-sm text-gray-600">Phone:</span>
-                                        <span class="text-sm font-medium text-gray-900">{{ $yoga->noHP }}</span>
-                                    </div>
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-sm text-gray-600">Price:</span>
-                                        <span class="text-lg font-bold text-blue-600">Rp
-                                            {{ number_format($yoga->harga, 0, ',', '.') }}</span>
-                                    </div>
-                                    @if (isset($yoga->class_type))
-                                        <div class="flex items-center justify-between">
-                                            <span class="text-sm text-gray-600">Class Type:</span>
-                                            <span
-                                                class="text-sm font-medium text-gray-900 capitalize">{{ $yoga->class_type }}</span>
-                                        </div>
-                                    @endif
-                                </div>
-
-                                <!-- Opening Hours -->
-                                <div class="mb-6">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h5 class="text-sm font-semibold text-gray-900">Opening Work</h5>
-                                    </div>
-                                    <div class="flex items-center text-gray-600">
-                                        <div class="w-3 h-3 bg-gray-300 rounded-full mr-2"></div>
-                                        <span class="text-sm">Open 24 Hours</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
+        <!-- Filter and Sort Section -->
+        <main class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-12 pb-20">
+            <!-- Filter Bar -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                    <!-- Results Count -->
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Showing</p>
+                            <p class="text-lg font-bold text-gray-900"><span id="results-count">{{ count($yogaTotal) }}</span> Studios</p>
+                        </div>
                     </div>
+
+                    <!-- Sort and Filter Controls -->
+                    <div class="flex flex-wrap gap-3">
+                        <!-- Sort Dropdown -->
+                        <div class="relative" x-data="{ open: false }">
+                            <button @click="open = !open" class="flex items-center px-4 py-2.5 bg-white border-2 border-gray-200 rounded-xl hover:border-emerald-500 transition-all">
+                                <svg class="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path>
+                                </svg>
+                                <span class="text-sm font-semibold text-gray-700">Sort By</span>
+                                <svg class="w-4 h-4 ml-2 text-gray-600" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-100 z-20">
+                                <div class="p-2">
+                                    <button onclick="sortYogas('rating-high')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-50 transition-colors flex items-center">
+                                        <svg class="w-5 h-5 mr-3 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                                        </svg>
+                                        <span class="text-sm font-medium">Highest Rated</span>
+                                    </button>
+                                    <button onclick="sortYogas('rating-low')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-50 transition-colors flex items-center">
+                                        <svg class="w-5 h-5 mr-3 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                                        </svg>
+                                        <span class="text-sm font-medium">Lowest Rated</span>
+                                    </button>
+                                    <button onclick="sortYogas('reviews-high')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-50 transition-colors flex items-center">
+                                        <svg class="w-5 h-5 mr-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path>
+                                        </svg>
+                                        <span class="text-sm font-medium">Most Reviewed</span>
+                                    </button>
+                                    <button onclick="sortYogas('name-az')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-50 transition-colors flex items-center">
+                                        <svg class="w-5 h-5 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"></path>
+                                        </svg>
+                                        <span class="text-sm font-medium">Name (A-Z)</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Rating Filter -->
+                        <div class="flex items-center gap-2">
+                            <button onclick="filterByRating('all')" class="filter-btn px-4 py-2.5 bg-white border-2 border-gray-200 rounded-xl hover:border-emerald-500 transition-all text-sm font-semibold">
+                                All
+                            </button>
+                            <button onclick="filterByRating(4)" class="filter-btn px-4 py-2.5 bg-white border-2 border-gray-200 rounded-xl hover:border-emerald-500 transition-all text-sm font-semibold flex items-center">
+                                <svg class="w-4 h-4 mr-1 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                                </svg>
+                                4+
+                            </button>
+                        </div>
+
+                        <!-- Clear Filters -->
+                        <button id="clear-filters" onclick="clearAllFilters()" class="px-4 py-2.5 text-sm font-semibold text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all">
+                            Clear All
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Yoga Listings Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="yoga-listings">
+                @foreach ($yogaTotal as $index => $yoga)
+                    <article class="yoga-item yoga-card bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-emerald-300 transition-all {{ $index >= 9 ? 'hidden' : '' }}"
+                        data-yoga-id="{{ $yoga->id_yoga }}"
+                        data-yoga-name="{{ strtolower($yoga->nama) }}"
+                        data-yoga-location="{{ strtolower($yoga->alamat) }}"
+                        data-yoga-rating="{{ $yoga->average_rating }}"
+                        data-yoga-reviews="{{ $yoga->testimonials_count }}">
+
+                        <!-- Image Section -->
+                        <div class="relative overflow-hidden group">
+                            <a href="{{ route('yoga.detail', $yoga->id_yoga) }}">
+                                <img src="{{ $yoga->image ? asset($yoga->image) : asset('image/yoga-default.jpg') }}"
+                                    alt="{{ $yoga->nama }}"
+                                    class="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-700"
+                                    loading="{{ $index < 6 ? 'eager' : 'lazy' }}">
+
+                                <!-- Category Badge -->
+                                <div class="absolute top-3 left-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">
+                                    <svg class="w-3 h-3 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                                    </svg>
+                                    YOGA
+                                </div>
+
+                                <!-- Rating Badge -->
+                                <div class="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg flex items-center space-x-1">
+                                    <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                                    </svg>
+                                    <span class="text-sm font-bold text-gray-900">{{ number_format($yoga->average_rating, 1) }}</span>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Content Section -->
+                        <div class="p-5">
+                            <a href="{{ route('yoga.detail', $yoga->id_yoga) }}" class="block">
+                                <!-- Title -->
+                                <h3 class="text-xl font-bold text-gray-900 mb-2 hover:text-emerald-600 transition-colors line-clamp-1">
+                                    {{ $yoga->nama }}
+                                </h3>
+
+                                <!-- Location -->
+                                <div class="flex items-start text-gray-600 mb-4">
+                                    <svg class="w-4 h-4 mr-2 mt-0.5 flex-shrink-0 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                    <span class="text-sm line-clamp-2">{{ $yoga->alamat }}</span>
+                                </div>
+
+                                <!-- Rating and Reviews -->
+                                <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                                    <div class="flex items-center space-x-1">
+                                        @php
+                                            $avgRating = $yoga->average_rating;
+                                            $fullStars = floor($avgRating);
+                                            $hasHalf = ($avgRating - $fullStars) >= 0.5;
+                                        @endphp
+                                        @for ($i = 0; $i < $fullStars; $i++)
+                                            <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                                            </svg>
+                                        @endfor
+                                        @if ($hasHalf)
+                                            <svg class="w-4 h-4 text-yellow-400" viewBox="0 0 20 20">
+                                                <defs>
+                                                    <linearGradient id="halfYoga{{ $yoga->id_yoga }}">
+                                                        <stop offset="50%" stop-color="#FBBF24"/>
+                                                        <stop offset="50%" stop-color="#D1D5DB"/>
+                                                    </linearGradient>
+                                                </defs>
+                                                <path fill="url(#halfYoga{{ $yoga->id_yoga }})" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                                            </svg>
+                                        @endif
+                                        @for ($i = 0; $i < (5 - $fullStars - ($hasHalf ? 1 : 0)); $i++)
+                                            <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20">
+                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                                            </svg>
+                                        @endfor
+                                    </div>
+                                    <span class="text-xs text-gray-500 font-medium">{{ $yoga->testimonials_count }} reviews</span>
+                                </div>
+                            </a>
+
+                            <!-- View Details Button -->
+                            <a href="{{ route('yoga.detail', $yoga->id_yoga) }}" class="mt-4 block w-full py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-sm font-semibold rounded-xl hover:from-emerald-700 hover:to-teal-700 transition-all text-center shadow-md hover:shadow-lg">
+                                View Details & Book
+                            </a>
+                        </div>
+                    </article>
                 @endforeach
             </div>
 
             <!-- Load More Button -->
-            @if (count($yogaTotal) > 6)
-                <div class="text-center mt-12">
-                    <button id="loadMoreBtn"
-                        class="bg-gray-800 hover:bg-gray-900 text-white font-medium py-3 px-8 rounded-lg transition duration-300">
-                        Load More
+            @if (count($yogaTotal) > 9)
+                <div class="flex justify-center mt-12">
+                    <button id="load-more-yogas"
+                        class="px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-full hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                        Load More Studios
                     </button>
                 </div>
             @endif
-        </div>
+        </main>
 
-        @include('layouts.footer')
-
-        <!-- Modal Booking Yoga (Keep existing modal) -->
-        <div id="yogaBookingModal"
-            class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
-            <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-md shadow-lg rounded-md bg-white">
-                <button class="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
-                    onclick="closeYogaBookingModal()">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-                <div class="mt-3 text-center">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Booking Yoga</h3>
-                    <form id="yogaBookingForm" class="space-y-4">
-                        <input type="hidden" id="modal-yoga-id" name="yoga_id">
-                        <div>
-                            <label for="customer_name" class="block text-sm font-medium text-gray-700">Nama</label>
-                            <input type="text" id="customer_name" name="customer_name" required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                        </div>
-                        <div>
-                            <label for="customer_email" class="block text-sm font-medium text-gray-700">Email</label>
-                            <input type="email" id="customer_email" name="customer_email" required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                        </div>
-                        <div>
-                            <label for="customer_phone" class="block text-sm font-medium text-gray-700">No. HP</label>
-                            <input type="text" id="customer_phone" name="customer_phone" required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                        </div>
-                        <div>
-                            <label for="booking_date" class="block text-sm font-medium text-gray-700">Tanggal</label>
-                            <input type="date" id="booking_date" name="booking_date" required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                        </div>
-                        <div>
-                            <label for="booking_time" class="block text-sm font-medium text-gray-700">Jam</label>
-                            <input type="time" id="booking_time" name="booking_time" required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                        </div>
-                        <div>
-                            <label for="class_type_booking" class="block text-sm font-medium text-gray-700">Tipe
-                                Kelas</label>
-                            <select id="class_type_booking" name="class_type_booking" required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                                <option value="">Pilih Tipe</option>
-                                <option value="offline">Offline</option>
-                                <option value="online">Online</option>
-                                <option value="private">Private</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="notes" class="block text-sm font-medium text-gray-700">Catatan</label>
-                            <textarea id="notes" name="notes" rows="2"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"></textarea>
-                        </div>
-                        <button type="submit"
-                            class="w-full bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition duration-300">
-                            Booking & Lanjut Bayar
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
+        <!-- Chatbot Component -->
+        <x-chatbot-widget defaultCategory="Yoga Information" />
     </div>
-</x-app-layout>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const loadMoreBtn = document.getElementById('loadMoreBtn');
-        let currentlyShown = 6;
-        const totalItems = document.querySelectorAll('.yoga-item').length;
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                let allYogas = Array.from(document.querySelectorAll('.yoga-item'));
+                let filteredYogas = [...allYogas];
+                let currentFilter = 'all';
+                let currentSort = 'default';
+                const loadMoreBtn = document.getElementById('load-more-yogas');
 
-        // Load More functionality
-        if (loadMoreBtn) {
-            loadMoreBtn.addEventListener('click', function() {
-                const hiddenItems = document.querySelectorAll('.yoga-item.hidden');
-                const itemsToShow = Math.min(6, hiddenItems.length);
+                // Search Functionality
+                const searchInput = document.getElementById('search-input');
+                const searchBtn = document.getElementById('search-btn');
 
-                for (let i = 0; i < itemsToShow; i++) {
-                    hiddenItems[i].classList.remove('hidden');
+                function performSearch() {
+                    const query = searchInput.value.toLowerCase().trim();
+
+                    filteredYogas = allYogas.filter(yoga => {
+                        const name = yoga.dataset.yogaName;
+                        const location = yoga.dataset.yogaLocation;
+                        return name.includes(query) || location.includes(query);
+                    });
+
+                    applyCurrentFiltersAndSort();
                 }
 
-                currentlyShown += itemsToShow;
+                searchBtn.addEventListener('click', performSearch);
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') performSearch();
+                });
 
-                // Hide Load More button if all items are shown
-                if (currentlyShown >= totalItems) {
-                    loadMoreBtn.style.display = 'none';
+                // Debounced search on input
+                let searchTimeout;
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(performSearch, 300);
+                });
+
+                // Sort Functionality
+                window.sortYogas = function(sortType) {
+                    currentSort = sortType;
+                    const yogasArray = [...filteredYogas];
+
+                    switch(sortType) {
+                        case 'rating-high':
+                            yogasArray.sort((a, b) => parseFloat(b.dataset.yogaRating) - parseFloat(a.dataset.yogaRating));
+                            break;
+                        case 'rating-low':
+                            yogasArray.sort((a, b) => parseFloat(a.dataset.yogaRating) - parseFloat(b.dataset.yogaRating));
+                            break;
+                        case 'reviews-high':
+                            yogasArray.sort((a, b) => parseInt(b.dataset.yogaReviews) - parseInt(a.dataset.yogaReviews));
+                            break;
+                        case 'name-az':
+                            yogasArray.sort((a, b) => a.dataset.yogaName.localeCompare(b.dataset.yogaName));
+                            break;
+                        default:
+                            break;
+                    }
+
+                    filteredYogas = yogasArray;
+                    displayYogas();
+                };
+
+                // Filter by Rating
+                window.filterByRating = function(minRating) {
+                    currentFilter = minRating;
+
+                    // Update filter button styles
+                    document.querySelectorAll('.filter-btn').forEach(btn => {
+                        btn.classList.remove('filter-active');
+                        btn.classList.add('bg-white', 'border-gray-200');
+                    });
+
+                    event.target.classList.add('filter-active');
+                    event.target.classList.remove('bg-white', 'border-gray-200');
+
+                    applyCurrentFiltersAndSort();
+                };
+
+                function applyCurrentFiltersAndSort() {
+                    // Apply search first
+                    let yogas = [...filteredYogas];
+
+                    // Then apply rating filter
+                    if (currentFilter !== 'all') {
+                        yogas = yogas.filter(yoga => parseFloat(yoga.dataset.yogaRating) >= parseFloat(currentFilter));
+                    }
+
+                    // Then apply sort
+                    if (currentSort === 'rating-high') {
+                        yogas.sort((a, b) => parseFloat(b.dataset.yogaRating) - parseFloat(a.dataset.yogaRating));
+                    } else if (currentSort === 'rating-low') {
+                        yogas.sort((a, b) => parseFloat(a.dataset.yogaRating) - parseFloat(b.dataset.yogaRating));
+                    } else if (currentSort === 'reviews-high') {
+                        yogas.sort((a, b) => parseInt(b.dataset.yogaReviews) - parseInt(a.dataset.yogaReviews));
+                    } else if (currentSort === 'name-az') {
+                        yogas.sort((a, b) => a.dataset.yogaName.localeCompare(b.dataset.yogaName));
+                    }
+
+                    filteredYogas = yogas;
+                    displayYogas();
                 }
-            });
-        }
 
-        // Cek status pencarian
-        const searchStatus = '{{ session('search_status') }}';
-        const searchQuery = '{{ session('search_query') }}';
+                function displayYogas() {
+                    const container = document.getElementById('yoga-listings');
 
-        if (searchStatus === 'success') {
-            Swal.fire({
-                title: 'Yoga Ditemukan!',
-                text: `Hasil pencarian untuk ${searchQuery}`,
-                icon: 'success',
-                confirmButtonText: 'OK'
-            });
-        } else if (searchStatus === 'not_found') {
-            Swal.fire({
-                title: 'Yoga Tidak Ditemukan',
-                text: `Tidak ada hasil untuk pencarian dengan kriteria: ${searchQuery}`,
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-        }
+                    // Hide all yogas first
+                    allYogas.forEach(yoga => {
+                        yoga.classList.add('hidden');
+                        yoga.style.order = '';
+                    });
 
-        // Booking Yoga Button functionality is preserved in the detail page
-    });
-</script>
-<script type="text/javascript" src="{{ config('midtrans.snap_url') }}"
-    data-client-key="{{ config('midtrans.client_key') }}"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // For each yoga item, try to create a direct iframe or fallback to a text link
-        @foreach ($yogaTotal as $yoga)
-            try {
-                const mapContainer = document.getElementById('map-{{ $yoga->id_yoga }}');
-                if (mapContainer) {
-                    // Try to create the iframe
-                    const iframe = document.createElement('iframe');
-                    iframe.src = "{{ $yoga->maps }}";
-                    iframe.width = "100%";
-                    iframe.height = "100%";
-                    iframe.style.border = "none";
-                    iframe.allowFullscreen = true;
-                    iframe.loading = "lazy";
-                    iframe.referrerPolicy = "no-referrer-when-downgrade";
-
-                    // Handle errors
-                    iframe.onerror = function() {
-                        createFallbackLink(mapContainer, "{{ $yoga->maps }}");
-                    };
-
-                    // Try to detect if the iframe loaded properly
-                    iframe.onload = function() {
-                        if (!this.contentWindow || !this.contentWindow.location || this.contentWindow
-                            .location.href === "about:blank") {
-                            createFallbackLink(mapContainer, "{{ $yoga->maps }}");
+                    // Show and reorder filtered yogas
+                    filteredYogas.forEach((yoga, index) => {
+                        yoga.style.order = index;
+                        if (index < 9) {
+                            yoga.classList.remove('hidden');
                         }
-                    };
+                    });
 
-                    mapContainer.appendChild(iframe);
-                }
-            } catch (e) {
-                console.error("Error creating map:", e);
-                if (mapContainer) {
-                    createFallbackLink(mapContainer, "{{ $yoga->maps }}");
-                }
-            }
-        @endforeach
+                    // Update results count
+                    document.getElementById('results-count').textContent = filteredYogas.length;
 
-        function createFallbackLink(container, mapUrl) {
-            container.innerHTML = `
-                <div class="flex flex-col items-center justify-center h-full">
-                    <p class="text-gray-600 mb-3">Peta tidak dapat dimuat secara langsung</p>
-                    <a href="${mapUrl}" target="_blank" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                        Buka di Google Maps
-                    </a>
-                </div>
-            `;
-        }
-    });
-</script>
+                    // Update load more button
+                    if (loadMoreBtn) {
+                        loadMoreBtn.style.display = filteredYogas.length > 9 ? 'block' : 'none';
+                    }
+
+                    // Smooth scroll to results
+                    if (window.scrollY > 400) {
+                        container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }
+
+                // Clear All Filters
+                window.clearAllFilters = function() {
+                    searchInput.value = '';
+                    currentFilter = 'all';
+                    currentSort = 'default';
+                    filteredYogas = [...allYogas];
+
+                    // Reset filter buttons
+                    document.querySelectorAll('.filter-btn').forEach(btn => {
+                        btn.classList.remove('filter-active');
+                        btn.classList.add('bg-white', 'border-gray-200');
+                    });
+
+                    displayYogas();
+                };
+
+                // Load More Functionality
+                if (loadMoreBtn) {
+                    loadMoreBtn.addEventListener('click', function() {
+                        const hiddenYogas = filteredYogas.filter((yoga, index) => {
+                            return index >= 9 && yoga.classList.contains('hidden');
+                        });
+
+                        const nextBatch = hiddenYogas.slice(0, 9);
+                        nextBatch.forEach(yoga => yoga.classList.remove('hidden'));
+
+                        if (document.querySelectorAll('.yoga-item:not(.hidden)').length >= filteredYogas.length) {
+                            loadMoreBtn.style.display = 'none';
+                        }
+                    });
+                }
+
+                // Initialize display
+                displayYogas();
+            });
+        </script>
+    @endpush
+</x-app-layout>

@@ -1,426 +1,442 @@
 <x-app-layout>
-    <section class="ezy__team1 light py-6 md:py-16 bg-blue-100  text-zinc-900">
-        <div class="bg-slate-300 p-4 sm:p-8">
-            <div class="relative w-96 h-96 mx-auto mb-6">
-                <img src="../image/Logo_healife.png" alt="Logo HeaLife"
-                    class="absolute inset-0 object-center w-full h-full">
-            </div>
-            <h1 class="text-4xl sm:text-5xl font-bold text-center mb-4 sm:mb-8">HeaLife?</h1>
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
 
-            <p class="text-center mb-6 sm:mb-8 text-sm text-gray-600 px-14 sm:px-14">
-                HeaLife adalah aplikasi inovatif yang berfokus pada wellness tourism dalam kategori health tourism,
-                dirancang untuk meningkatkan pengalaman wisata kesehatan pengguna. Aplikasi ini menawarkan rekomendasi
-                pusat yoga dan spa terdekat di destinasi wisata, serta informasi tentang acara olahraga atau event
-                terbaru yang khas di lokasi tersebut. Selain itu, HeaLife menghubungkan pengguna dengan dokter umum
-                atau spesialis di klinik-klinik terdekat untuk konsultasi kesehatan, baik sebelum maupun setelah
-                aktivitas wisata, memastikan keselamatan dan kesiapan fisik pengguna. Fitur reservasi online yang mudah
-                dan transparan, informasi lengkap tentang fasilitas dan ulasan pengguna, serta opsi pelacakan
-                perkembangan kesehatan dan kebugaran, semuanya disediakan untuk mempersonalisasi dan memperkaya
-                perjalanan wellness pengguna. HeaLife juga rutin melakukan survei kepuasan pelanggan untuk terus
-                meningkatkan kualitas layanan berdasarkan umpan balik yang diterima, sehingga memastikan pengalaman
-                pengguna yang optimal dan terarah dalam perjalanan kesehatan mereka.
-            </p>
-        </div>
-        <div class="relative w-full mb-6">
-            <img src="../image/webvitalife.png" alt="Logo Vitalife" class="w-full h-auto object-contain">
-        </div>
-        <div class="container mx-auto px-4 py-8">
-            <h1 class="text-3xl font-bold text-center mb-8">Color Palette</h1>
-
-            <div class="grid grid-cols-4 sm:grid-cols-4 gap-10 max-w-4xl mx-auto">
-                <div class="flex flex-col items-center w-full h-32 sm:h-32">
-                    <img src="../image/custom1.png" alt="Logo Vitalife" class="w-full h-auto object-contain">
-                    <p class="mt-3 text-sm font-medium">#DCF0ED</p>
-                </div>
-                <div class="flex flex-col items-center w-full h-32 sm:h-32">
-                    <img src="../image/custom2.png" alt="Logo Vitalife" class="w-full h-auto object-contain">
-                    <p class="mt-3 text-sm font-medium">#80C8DC</p>
-                </div>
-                <div class="flex flex-col items-center w-full h-32 sm:h-32">
-                    <img src="../image/custom3.png" alt="Logo Vitalife" class="w-full h-auto object-contain">
-                    <p class="mt-3 text-sm font-medium">#355385</p>
-                </div>
-                <div class="flex flex-col items-center w-full h-32 sm:h-32">
-                    <img src="../image/custom4.png" alt="Logo Vitalife" class="w-full h-auto object-contain">
-                    <p class="mt-3 text-sm font-medium">#0E1036</p>
-                </div>
-            </div>
-        </div>
-        <div class="p-6 md:p-10 max-w-6xl mx-auto mt-28">
-            <p class="mb-6 text-lg font-semibold">
-                <span class="font-bold">HeaLife</span> mewujudkan harmoni antara kebugaran, pemanjaan diri, dan
-                pengalaman wisata yang menyegarkan. Aplikasi ini menggabungkan elemen-elemen kunci untuk menciptakan
-                gaya hidup yang aktif dan seimbang:
-            </p>
-
-            <ol class="list-decimal pl-6 mb-6 space-y-2">
-                <li>Vitalitas sebagai fondasi kesehatan holistik.</li>
-                <li>Indulgensi yang bijak untuk menyeimbangkan kerja keras dan relaksasi.</li>
-                <li>Turisme yang menginspirasi dan memperluas wawasan.</li>
-                <li>Aktivitas yang mendorong pertumbuhan fisik dan mental.</li>
-                <li>Lifestyle yang mendukung kesejahteraan jangka panjang.</li>
-                <li>Invigorasi untuk memperbarui semangat dan energi.</li>
-                <li>Fitness sebagai kunci kualitas hidup yang lebih baik.</li>
-                <li>Events yang mempertemukan komunitas dengan minat serupa.</li>
-            </ol>
-
-            <p class="text-lg">
-                Filosofi ini mencerminkan komitmen <span class="font-bold">HeaLife</span> untuk mengintegrasikan
-                kesehatan, kesenangan, dan petualangan dalam satu platform yang komprehensif, mendukung perjalanan
-                setiap individu menuju kehidupan yang lebih sehat dan lebih memuaskan.
-            </p>
-        </div>
-
-        <div class="container mx-auto p-4 py-8">
-            <h1 class="text-3xl font-bold text-center mb-6">Color Pallet</h1>
-
-            <div class="grid grid-cols-1 gap-4">
-                <!-- Biru Tua -->
-                <div style="background-image: url('../image/custom-4.png');"
-                    class=" bg-cover bg-center text-white p-3 rounded-lg text-lg">
-                    <div class="ml-10">
-                        <h2 class="font-bold mb-4">Biru Tua:</h2>
-                        <ol class="list-decimal list-inside space-y-2">
-                            <li>Melambangkan kepercayaan, profesionalisme, dan stabilitas.</li>
-                            <li>Mewakili kedalaman pengalaman dan pengetahuan dalam industri kesehatan dan pariwisata.
-                            </li>
-                            <li>Mencerminkan keamanan dan reliabilitas layanan HeaLife.</li>
-                        </ol>
-                    </div>
-                </div>
-
-                <!-- Biru Muda -->
-                <div style="background-image: url('../image/custom-2.png');"
-                    class="bg-cover bg-center p-3 rounded-lg text-lg">
-                    <div class="ml-10">
-                        <h2 class="font-bold mb-4">Biru Muda:</h2>
-                        <ol class="list-decimal list-inside space-y-2">
-                            <li>Menyimbolkan kesegaran, vitalitas, dan energi positif.</li>
-                            <li>Menggambarkan kejernihan pikiran dan ketenangan yang didapat dari gaya hidup sehat.</li>
-                            <li>Merepresentasikan inovasi dan pendekatan modern terhadap wisata kesehatan.</li>
-                        </ol>
-                    </div>
-                </div>
-
-                <!-- Kombinasi -->
-                <div style="background-image: url('../image/custom-1.png');" class="bg-cover bg-center p-3 rounded-lg">
-                    <p class="text-lg ml-10 mr-40">
-                        Kombinasi kedua warna ini dalam logo HeaLife menciptakan kesan harmonis antara aspek
-                        profesional dan menyegarkan dari layanan yang ditawarkan. Gradasi dari biru tua ke biru muda
-                        dapat diinterpretasikan sebagai perjalanan transformatif yang dialami pengguna - dari mencari
-                        stabilitas kesehatan hingga mencapai vitalitas dan kebugaran optimal.
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="container pl-24 pt-20">
-            <div class="space-y-10 text-lg">
-                <!-- Logo 1 -->
-                <div class="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6">
-                    <img src="../image/log1.png" alt="Logo 1" class="w-40 h-40 object-contain mr-10">
-                    <div>
-                        <h2 class="font-bold text-lg mb-2">Lingkaran:</h2>
-                        <ol class="list-decimal list-inside space-y-1">
-                            <li>Melambangkan keutuhan, keseimbangan, dan siklus kehidupan yang berkelanjutan.</li>
-                            <li>Mewakili pendekatan holistik HeaLife terhadap kesehatan dan kesejahteraan.</li>
-                            <li>Menggambarkan komunitas dan inklusivitas dalam pengalaman wisata kesehatan.</li>
-                        </ol>
-                    </div>
-                </div>
-
-                <!-- Logo 2 -->
-                <div class="flex flex-col md:flex-row items-start md:items-center space-y-6 md:space-y-4 md:space-x-6">
-                    <img src="../image/log2.png" alt="Logo 2" class="w-40 h-40 object-contain mr-10">
-                    <div>
-                        <h2 class="font-bold text-lg mb-2">Figur Manusia:</h2>
-                        <ol class="list-decimal list-inside space-y-1">
-                            <li>Dua bentuk menyerupai figur manusia dengan tangan terangkat, menggambarkan:</li>
-                            <li>Kegembiraan dan kebebasan yang didapat dari gaya hidup sehat.</li>
-                        </ol>
-                    </div>
-                </div>
-
-                <!-- Logo 3 -->
-                <div class="flex flex-col md:flex-row items-start md:items-center space-y-6 md:space-y-4 md:space-x-6">
-                    <img src="../image/log3.png" alt="Logo 3" class="w-40 h-40 object-contain mr-10">
-                    <div>
-                        <h2 class="font-bold text-lg mb-2">Elemen Menyerupai Daun:</h2>
-                        <p>Daun: pertumbuhan, pembaruan, dan keberlanjutan dalam perjalanan kesehatan.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="ezy__team1 light py-6 md:py-16 bg-blue-100  text-zinc-900">
-        <div class="container px-4 mx-auto">
-            <div class="flex justify-center mb-6 md:mb-12 text-lg">
-                <div class="max-w-lg text-center">
-                    <h2 class="text-4xl leading-none font-bold mb-4">Our Experts Team</h2>
-                    <p class="text-gray-900">Contributed in building this website</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4">
-                <!-- item 1 -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-                    <img src="../image/tir.jpeg" alt="Suci Mutiarani" class="w-full h-64 object-cover" />
-                    <div class="p-6 text-center">
-                        <h4 class="text-xl text-gray-200 font-semibold mb-1">Suci Mutiarani</h4>
-                        <h6 class="text-blue-600 dark:text-blue-400 font-medium mb-3">Project Manajer</h6>
-                        <p class="text-gray-400 dark:text-gray-300 text-sm mb-4">
-                            <span class="short-text">
-                                A Project Manager is an individual who is responsible for managing and coordinating all
-                                aspects of a project, including planning, implementation, and supervision, to ensure the
-                                project is completed on time.
-                            </span>
-                            <span class="full-text" style="display: none;">
-                                A Project Manager is an individual who is responsible for managing and coordinating all
-                                aspects of a project, including planning, implementation, and supervision, to ensure the
-                                project is completed on time.
-                            </span>
-                        </p>
-                        <div
-                            class="flex flex-col items-center space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
-                            <div class="flex space-x-4">
-                                <button onclick="window.open('https://instagram.com/scmtrnnn', '_blank')">
-                                    <svg class="w-6 h-6 text-gray-800 dark:text-white hover:text-pink-600"
-                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                                        height="24" fill="none" viewBox="0 0 24 24">
-                                        <path fill="currentColor" fill-rule="evenodd"
-                                            d="M3 8a5 5 0 0 1 5-5h8a5 5 0 0 1 5 5v8a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8Zm5-3a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H8Zm7.597 2.214a1 1 0 0 1 1-1h.01a1 1 0 1 1 0 2h-.01a1 1 0 0 1-1-1ZM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm-5 3a5 5 0 1 1 10 0 5 5 0 0 1-10 0Z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                </button>
-                                <button onclick="window.open('https://wa.me/08816759161', '_blank')">
-                                    <svg class="w-6 h-6 text-gray-800 dark:text-white hover:text-green-500"
-                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                                        height="24" fill="none" viewBox="0 0 24 24">
-                                        <path fill="currentColor" fill-rule="evenodd"
-                                            d="M12 4a8 8 0 0 0-6.895 12.06l.569.718-.697 2.359 2.32-.648.379.243A8 8 0 1 0 12 4ZM2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10a9.96 9.96 0 0 1-5.016-1.347l-4.948 1.382 1.426-4.829-.006-.007-.033-.055A9.958 9.958 0 0 1 2 12Z"
-                                            clip-rule="evenodd" />
-                                        <path fill="currentColor"
-                                            d="M16.735 13.492c-.038-.018-1.497-.736-1.756-.83a1.008 1.008 0 0 0-.34-.075c-.196 0-.362.098-.49.291-.146.217-.587.732-.723.886-.018.02-.042.045-.057.045-.013 0-.239-.093-.307-.123-1.564-.68-2.751-2.313-2.914-2.589-.023-.04-.024-.057-.024-.057.005-.021.058-.074.085-.101.08-.079.166-.182.249-.283l.117-.14c.121-.14.175-.25.237-.375l.033-.066a.68.68 0 0 0-.02-.64c-.034-.069-.65-1.555-.715-1.711-.158-.377-.366-.552-.655-.552-.027 0 0 0-.112.005-.137.005-.883.104-1.213.311-.35.22-.94.924-.94 2.16 0 1.112.705 2.162 1.008 2.561l.041.06c1.161 1.695 2.608 2.951 4.074 3.537 1.412.564 2.081.63 2.461.63.16 0.288-.013.4-.024l.072-.007c.488-.043 1.56-.599 1.804-1.276.192-.534.243-1.117.115-1.329-.088-.144-.239-.216-.43-.308Z" />
-                                    </svg>
-                                </button>
-                                <button onclick="window.open('https://www.linkedin.com/in/suci-mutiarani-9b1b62237', '_blank')">
-                                    <svg class="w-6 h-6 text-gray-800 dark:text-white hover:text-blue-500"
-                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                                        height="24" fill="currentColor" viewBox="0 0 24 24">
-                                        <path fill-rule="evenodd"
-                                            d="M12.51 8.796v1.697a3.738 3.738 0 0 1 3.288-1.684c3.455 0 4.202 2.16 4.202 4.97V19.5h-3.2v-5.072c0-1.21-.244-2.766-2.128-2.766-1.827 0-2.139 1.317-2.139 2.676V19.5h-3.19V8.796h3.168ZM7.2 6.106a1.61 1.61 0 0 1-.988 1.483 1.595 1.595 0 0 1-1.743-.348A1.607 1.607 0 0 1 5.6 4.5a1.601 1.601 0 0 1 1.6 1.606Z"
-                                            clip-rule="evenodd" />
-                                        <path d="M7.2 8.809H4V19.5h3.2V8.809Z" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- item 2 --}}
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-                    <img src="../image/lega.jpeg" alt="Legawan Perkasa" class="w-full h-64 object-cover" />
-                    <div class="p-6 text-center">
-                        <h4 class="text-xl text-gray-200 font-semibold mb-1">Legawan Perkasa</h4>
-                        <h6 class="text-blue-600 dark:text-blue-400 font-medium mb-3">Analisis Sistem</h6>
-                        <p class="text-gray-400 dark:text-gray-300 text-sm mb-4">
-                            <span class="short-text">
-                                Systems Analysis is the process of understanding and evaluating information systems or
-                                business processes with the aim of improving efficiency, effectiveness and suitability
-                                to organizational needs through
-                            </span>
-                        </p>
-                        <div
-                            class="flex flex-col items-center space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
-                            <div class="flex space-x-4">
-                                <button
-                                    onclick="window.open('https://www.instagram.com/legawanp13?igsh=OTcyeHFieGpvMno0', '_blank')">
-                                    <svg class="w-6 h-6 text-gray-800 dark:text-white hover:text-pink-600"
-                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                                        height="24" fill="none" viewBox="0 0 24 24">
-                                        <path fill="currentColor" fill-rule="evenodd"
-                                            d="M3 8a5 5 0 0 1 5-5h8a5 5 0 0 1 5 5v8a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8Zm5-3a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H8Zm7.597 2.214a1 1 0 0 1 1-1h.01a1 1 0 1 1 0 2h-.01a1 1 0 0 1-1-1ZM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm-5 3a5 5 0 1 1 10 0 5 5 0 0 1-10 0Z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                </button>
-                                <button onclick="window.open('https://wa.me/082280718889', '_blank')">
-                                    <svg class="w-6 h-6 text-gray-800 dark:text-white hover:text-green-500"
-                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                                        height="24" fill="none" viewBox="0 0 24 24">
-                                        <path fill="currentColor" fill-rule="evenodd"
-                                            d="M12 4a8 8 0 0 0-6.895 12.06l.569.718-.697 2.359 2.32-.648.379.243A8 8 0 1 0 12 4ZM2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10a9.96 9.96 0 0 1-5.016-1.347l-4.948 1.382 1.426-4.829-.006-.007-.033-.055A9.958 9.958 0 0 1 2 12Z"
-                                            clip-rule="evenodd" />
-                                        <path fill="currentColor"
-                                            d="M16.735 13.492c-.038-.018-1.497-.736-1.756-.83a1.008 1.008 0 0 0-.34-.075c-.196 0-.362.098-.49.291-.146.217-.587.732-.723.886-.018.02-.042.045-.057.045-.013 0-.239-.093-.307-.123-1.564-.68-2.751-2.313-2.914-2.589-.023-.04-.024-.057-.024-.057.005-.021.058-.074.085-.101.08-.079.166-.182.249-.283l.117-.14c.121-.14.175-.25.237-.375l.033-.066a.68.68 0 0 0-.02-.64c-.034-.069-.65-1.555-.715-1.711-.158-.377-.366-.552-.655-.552-.027 0 0 0-.112.005-.137.005-.883.104-1.213.311-.35.22-.94.924-.94 2.16 0 1.112.705 2.162 1.008 2.561l.041.06c1.161 1.695 2.608 2.951 4.074 3.537 1.412.564 2.081.63 2.461.63.16 0.288-.013.4-.024l.072-.007c.488-.043 1.56-.599 1.804-1.276.192-.534.243-1.117.115-1.329-.088-.144-.239-.216-.43-.308Z" />
-                                    </svg>
-                                </button>
-                                <button onclick="window.open('https://linkedin.com/your_profile_username', '_blank')">
-                                    <svg class="w-6 h-6 text-gray-800 dark:text-white hover:text-blue-500"
-                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                                        height="24" fill="currentColor" viewBox="0 0 24 24">
-                                        <path fill-rule="evenodd"
-                                            d="M12.51 8.796v1.697a3.738 3.738 0 0 1 3.288-1.684c3.455 0 4.202 2.16 4.202 4.97V19.5h-3.2v-5.072c0-1.21-.244-2.766-2.128-2.766-1.827 0-2.139 1.317-2.139 2.676V19.5h-3.19V8.796h3.168ZM7.2 6.106a1.61 1.61 0 0 1-.988 1.483 1.595 1.595 0 0 1-1.743-.348A1.607 1.607 0 0 1 5.6 4.5a1.601 1.601 0 0 1 1.6 1.606Z"
-                                            clip-rule="evenodd" />
-                                        <path d="M7.2 8.809H4V19.5h3.2V8.809Z" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- item 3 --}}
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-                    <img src="../image/dims2.jpeg" alt="Dimas Rizki Setyaji"
-                        class="w-full h-64 object-cover" />
-                    <div class="p-6 text-center">
-                        <h4 class="text-xl text-gray-200 font-semibold mb-1">Dimas Rizki Setyaji</h4>
-                        <h6 class="text-blue-600 dark:text-blue-400 font-medium mb-3">UI Desainer</h6>
-                        <p class="text-gray-400 dark:text-gray-300 text-sm mb-4">UI UX Designer is a professional who
-                            designs user interfaces (UI) and ensures optimal user experience (UX) in digital products,
-                            with the aim of ensuring that the product</p>
-                        <div
-                            class="flex flex-col items-center space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
-                            <div class="flex space-x-4">
-                                <button
-                                    onclick="window.open('https://www.instagram.com/dimrizji?igsh=bHRsd2MwbGZnOW56', '_blank')">
-                                    <svg class="w-6 h-6 text-gray-800 dark:text-white hover:text-pink-600"
-                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                                        height="24" fill="none" viewBox="0 0 24 24">
-                                        <path fill="currentColor" fill-rule="evenodd"
-                                            d="M3 8a5 5 0 0 1 5-5h8a5 5 0 0 1 5 5v8a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8Zm5-3a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H8Zm7.597 2.214a1 1 0 0 1 1-1h.01a1 1 0 1 1 0 2h-.01a1 1 0 0 1-1-1ZM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm-5 3a5 5 0 1 1 10 0 5 5 0 0 1-10 0Z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                </button>
-                                <button onclick="window.open('https://wa.me/082234441456', '_blank')">
-                                    <svg class="w-6 h-6 text-gray-800 dark:text-white hover:text-green-500"
-                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                                        height="24" fill="none" viewBox="0 0 24 24">
-                                        <path fill="currentColor" fill-rule="evenodd"
-                                            d="M12 4a8 8 0 0 0-6.895 12.06l.569.718-.697 2.359 2.32-.648.379.243A8 8 0 1 0 12 4ZM2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10a9.96 9.96 0 0 1-5.016-1.347l-4.948 1.382 1.426-4.829-.006-.007-.033-.055A9.958 9.958 0 0 1 2 12Z"
-                                            clip-rule="evenodd" />
-                                        <path fill="currentColor"
-                                            d="M16.735 13.492c-.038-.018-1.497-.736-1.756-.83a1.008 1.008 0 0 0-.34-.075c-.196 0-.362.098-.49.291-.146.217-.587.732-.723.886-.018.02-.042.045-.057.045-.013 0-.239-.093-.307-.123-1.564-.68-2.751-2.313-2.914-2.589-.023-.04-.024-.057-.024-.057.005-.021.058-.074.085-.101.08-.079.166-.182.249-.283l.117-.14c.121-.14.175-.25.237-.375l.033-.066a.68.68 0 0 0-.02-.64c-.034-.069-.65-1.555-.715-1.711-.158-.377-.366-.552-.655-.552-.027 0 0 0-.112.005-.137.005-.883.104-1.213.311-.35.22-.94.924-.94 2.16 0 1.112.705 2.162 1.008 2.561l.041.06c1.161 1.695 2.608 2.951 4.074 3.537 1.412.564 2.081.63 2.461.63.16 0.288-.013.4-.024l.072-.007c.488-.043 1.56-.599 1.804-1.276.192-.534.243-1.117.115-1.329-.088-.144-.239-.216-.43-.308Z" />
-                                    </svg>
-                                </button>
-                                <button
-                                    onclick="window.open('https://www.linkedin.com/in/ahmad-sholis-9786a4296', '_blank')">
-                                    <svg class="w-6 h-6 text-gray-800 dark:text-white hover:text-blue-500"
-                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                                        height="24" fill="currentColor" viewBox="0 0 24 24">
-                                        <path fill-rule="evenodd"
-                                            d="M12.51 8.796v1.697a3.738 3.738 0 0 1 3.288-1.684c3.455 0 4.202 2.16 4.202 4.97V19.5h-3.2v-5.072c0-1.21-.244-2.766-2.128-2.766-1.827 0-2.139 1.317-2.139 2.676V19.5h-3.19V8.796h3.168ZM7.2 6.106a1.61 1.61 0 0 1-.988 1.483 1.595 1.595 0 0 1-1.743-.348A1.607 1.607 0 0 1 5.6 4.5a1.601 1.601 0 0 1 1.6 1.606Z"
-                                            clip-rule="evenodd" />
-                                        <path d="M7.2 8.809H4V19.5h3.2V8.809Z" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- item 4 --}}
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-                    <img src="../image/deemz.jpeg" alt="Dimas Edwin Saputra"
-                        class="w-full h-64 object-cover" />
-                    <div class="p-6 text-center">
-                        <h4 class="text-xl text-gray-200 font-semibold mb-1">Dimas Edwin Saputra</h4>
-                        <h6 class="text-blue-600 dark:text-blue-400 font-medium mb-3">Web Developer</h6>
-                        <p class="text-gray-400 dark:text-gray-300 text-sm mb-4">Web Developers are professionals who
-                            design, create, and maintain websites. They work on both the display (front-end) and server
-                            (back-end) parts of the website, using a variety of programming languages ​​and technologies
-                            to ensure the site functions properly and securely.</p>
-                        <div
-                            class="flex flex-col items-center space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
-                            <div class="flex space-x-4">
-                                <button onclick="window.open('https://www.instagram.com/_dimassaputra_', '_blank')">
-                                    <svg class="w-6 h-6 text-gray-800 dark:text-white hover:text-pink-600"
-                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                                        height="24" fill="none" viewBox="0 0 24 24">
-                                        <path fill="currentColor" fill-rule="evenodd"
-                                            d="M3 8a5 5 0 0 1 5-5h8a5 5 0 0 1 5 5v8a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8Zm5-3a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H8Zm7.597 2.214a1 1 0 0 1 1-1h.01a1 1 0 1 1 0 2h-.01a1 1 0 0 1-1-1ZM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm-5 3a5 5 0 1 1 10 0 5 5 0 0 1-10 0Z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                </button>
-                                <button onclick="window.open('https://wa.me/089602651828', '_blank')">
-                                    <svg class="w-6 h-6 text-gray-800 dark:text-white hover:text-green-500"
-                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                                        height="24" fill="none" viewBox="0 0 24 24">
-                                        <path fill="currentColor" fill-rule="evenodd"
-                                            d="M12 4a8 8 0 0 0-6.895 12.06l.569.718-.697 2.359 2.32-.648.379.243A8 8 0 1 0 12 4ZM2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10a9.96 9.96 0 0 1-5.016-1.347l-4.948 1.382 1.426-4.829-.006-.007-.033-.055A9.958 9.958 0 0 1 2 12Z"
-                                            clip-rule="evenodd" />
-                                        <path fill="currentColor"
-                                            d="M16.735 13.492c-.038-.018-1.497-.736-1.756-.83a1.008 1.008 0 0 0-.34-.075c-.196 0-.362.098-.49.291-.146.217-.587.732-.723.886-.018.02-.042.045-.057.045-.013 0-.239-.093-.307-.123-1.564-.68-2.751-2.313-2.914-2.589-.023-.04-.024-.057-.024-.057.005-.021.058-.074.085-.101.08-.079.166-.182.249-.283l.117-.14c.121-.14.175-.25.237-.375l.033-.066a.68.68 0 0 0-.02-.64c-.034-.069-.65-1.555-.715-1.711-.158-.377-.366-.552-.655-.552-.027 0 0 0-.112.005-.137.005-.883.104-1.213.311-.35.22-.94.924-.94 2.16 0 1.112.705 2.162 1.008 2.561l.041.06c1.161 1.695 2.608 2.951 4.074 3.537 1.412.564 2.081.63 2.461.63.16 0.288-.013.4-.024l.072-.007c.488-.043 1.56-.599 1.804-1.276.192-.534.243-1.117.115-1.329-.088-.144-.239-.216-.43-.308Z" />
-                                    </svg>
-                                </button>
-                                <button
-                                    onclick="window.open('https://www.linkedin.com/in/dimas-edwin-saputra', '_blank')">
-                                    <svg class="w-6 h-6 text-gray-800 dark:text-white hover:text-blue-500"
-                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                                        height="24" fill="currentColor" viewBox="0 0 24 24">
-                                        <path fill-rule="evenodd"
-                                            d="M12.51 8.796v1.697a3.738 3.738 0 0 1 3.288-1.684c3.455 0 4.202 2.16 4.202 4.97V19.5h-3.2v-5.072c0-1.21-.244-2.766-2.128-2.766-1.827 0-2.139 1.317-2.139 2.676V19.5h-3.19V8.796h3.168ZM7.2 6.106a1.61 1.61 0 0 1-.988 1.483 1.595 1.595 0 0 1-1.743-.348A1.607 1.607 0 0 1 5.6 4.5a1.601 1.601 0 0 1 1.6 1.606Z"
-                                            clip-rule="evenodd" />
-                                        <path d="M7.2 8.809H4V19.5h3.2V8.809Z" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    {{-- Footer --}}
-    <section class="ezy__copyright10 light py-12 bg-gray-800 dark:bg-gray-900 text-white dark:text-white">
-        <div class="container px-4">
-            <div class="grid grid-cols-12">
-                <div class="col-span-12 md:col-span-8 md:col-start-3">
-                    <div class="flex flex-col justify-center items-center text-center">
-                        <div class="flex items-center justify-center mb-4">
-                            <div>
-                                <img src="../image/Logo_healife.png" alt="" class="max-w-full h-auto w-24">
-                            </div>
-                            <div>
-                                <p class="ml-3">&copy; Copyright {{ date('Y') }}</p>
-                            </div>
-                        </div>
-                        <div class="flex space-x-4 mt-2 mb-6">
-                            <a href="{{ route('contact') }}"
-                                class="text-white hover:text-blue-600 hover:scale-110 transition duration-300">Contact</a>
-                            <a href="{{ route('aboutus') }}"
-                                class="text-white hover:text-blue-600 hover:scale-110 transition duration-300">About
-                                Us</a>
-                        </div>
-                        <p class="opacity-50 mb-6">Isheaven male their dry doesn't without him set saw two him man
-                            itself second fifth light over fish over which creepeth void don't. Image darkness
-                            gathering. All hath don't it, abundantly darkness can't forth appear, in.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-</x-app-layout>
-<script>
-    document.querySelectorAll('.read-more').forEach(function(button) {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            var container = this.closest('p');
-            var shortText = container.querySelector('.short-text');
-            var fullText = container.querySelector('.full-text');
-
-            if (shortText.style.display !== 'none') {
-                shortText.style.display = 'none';
-                fullText.style.display = 'inline';
-                this.textContent = 'Baca lebih sedikit';
-            } else {
-                shortText.style.display = 'inline';
-                fullText.style.display = 'none';
-                this.textContent = 'Baca selengkapnya';
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
             }
-        });
-    });
-</script>
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .float-animation {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .team-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .team-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(16, 185, 129, 0.2);
+        }
+
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(16, 185, 129, 0.15);
+        }
+
+        .stat-number {
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover .stat-number {
+            transform: scale(1.1);
+            color: #10b981;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite;
+        }
+    </style>
+
+    {{-- Modern About Us Page --}}
+    <div class="bg-gradient-to-b from-gray-50 to-white min-h-screen">
+
+        <!-- Hero Section with Modern Design -->
+        <section class="pt-32 pb-20 relative overflow-hidden bg-gradient-to-r from-emerald-600 to-teal-600">
+            <div class="absolute inset-0 bg-black/10"></div>
+
+            <!-- Animated Background Elements -->
+            <div class="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl"></div>
+
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
+                <div class="text-center">
+                    <!-- Logo with Animation -->
+                    <div class="inline-flex items-center justify-center w-24 h-24 mb-8 float-animation">
+                        <div class="w-full h-full bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                            <img src="{{ asset('image/Logo-Healife.png') }}" alt="Vitalife Logo" class="w-16 h-16 object-contain p-2 bg-white rounded-xl">
+                        </div>
+                    </div>
+
+                    <!-- Title -->
+                    <h1 class="text-5xl sm:text-6xl lg:text-7xl font-black text-white mb-6">
+                        About Healife
+                    </h1>
+
+                    <!-- Subtitle -->
+                    <p class="text-xl lg:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed mb-8">
+                        Your trusted companion for wellness tourism and healthy lifestyle journeys
+                    </p>
+
+                    <!-- Quick Stats -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mt-12">
+                        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+                            <div class="text-4xl font-black text-white mb-2">100+</div>
+                            <div class="text-white/80 text-sm font-medium">Wellness Centers</div>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+                            <div class="text-4xl font-black text-white mb-2">50+</div>
+                            <div class="text-white/80 text-sm font-medium">Partner Venues</div>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+                            <div class="text-4xl font-black text-white mb-2">1K+</div>
+                            <div class="text-white/80 text-sm font-medium">Happy Customers</div>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+                            <div class="text-4xl font-black text-white mb-2">24/7</div>
+                            <div class="text-white/80 text-sm font-medium">AI Support</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mission & Vision Section -->
+        <section class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+                <div class="grid md:grid-cols-2 gap-12">
+                    <!-- Mission -->
+                    <div class="group">
+                        <div class="bg-gradient-to-br from-white to-emerald-50 rounded-3xl p-10 shadow-xl hover:shadow-2xl transition-all border border-emerald-100">
+                            <div class="flex items-center mb-6">
+                                <div class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <div class="ml-4">
+                                    <h3 class="text-3xl font-black text-gray-900">Our Mission</h3>
+                                    <div class="w-20 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full mt-2"></div>
+                                </div>
+                            </div>
+                            <p class="text-gray-700 leading-relaxed text-lg">
+                                Vitalife is dedicated to <span class="font-semibold text-emerald-600">enhancing wellness tourism experiences</span> by providing comprehensive access to premium spa, yoga, and fitness facilities. We connect travelers with wellness services while ensuring their health and safety through professional consultations and transparent booking systems.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Vision -->
+                    <div class="group">
+                        <div class="bg-gradient-to-br from-white to-teal-50 rounded-3xl p-10 shadow-xl hover:shadow-2xl transition-all border border-teal-100">
+                            <div class="flex items-center mb-6">
+                                <div class="w-16 h-16 bg-gradient-to-br from-teal-500 to-emerald-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    </svg>
+                                </div>
+                                <div class="ml-4">
+                                    <h3 class="text-3xl font-black text-gray-900">Our Vision</h3>
+                                    <div class="w-20 h-1 bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full mt-2"></div>
+                                </div>
+                            </div>
+                            <p class="text-gray-700 leading-relaxed text-lg">
+                                To become the <span class="font-semibold text-teal-600">leading wellness tourism platform</span> that empowers individuals to maintain a healthy lifestyle while exploring new destinations, creating a harmonious balance between travel, fitness, and well-being for a healthier future.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Core Values Section -->
+        <section class="py-20 bg-gradient-to-br from-gray-50 to-emerald-50">
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+                <div class="text-center mb-16">
+                    <div class="inline-block px-4 py-2 bg-emerald-100 rounded-full mb-4">
+                        <span class="text-emerald-700 font-bold text-sm">OUR VALUES</span>
+                    </div>
+                    <h2 class="text-4xl md:text-5xl font-black text-gray-900 mb-4">What Drives Us</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">The principles that guide everything we do</p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Value 1 -->
+                    <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all border border-gray-100">
+                        <div class="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center mb-6 mx-auto">
+                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3 text-center">Health First</h3>
+                        <p class="text-gray-600 text-center leading-relaxed">Your wellness is our priority. We ensure every service meets the highest health and safety standards.</p>
+                    </div>
+
+                    <!-- Value 2 -->
+                    <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all border border-gray-100">
+                        <div class="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center mb-6 mx-auto">
+                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3 text-center">Community</h3>
+                        <p class="text-gray-600 text-center leading-relaxed">Building a supportive community of wellness enthusiasts and trusted partners.</p>
+                    </div>
+
+                    <!-- Value 3 -->
+                    <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all border border-gray-100">
+                        <div class="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center mb-6 mx-auto">
+                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3 text-center">Innovation</h3>
+                        <p class="text-gray-600 text-center leading-relaxed">Leveraging technology to provide seamless booking experiences and AI-powered support.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+                <div class="text-center mb-16">
+                    <div class="inline-block px-4 py-2 bg-emerald-100 rounded-full mb-4">
+                        <span class="text-emerald-700 font-bold text-sm">FEATURES</span>
+                    </div>
+                    <h2 class="text-4xl md:text-5xl font-black text-gray-900 mb-4">What We Offer</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">Comprehensive wellness services at your fingertips</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Feature 1: Spa & Wellness -->
+                    <div class="feature-card bg-white rounded-2xl p-8 border-2 border-gray-100 shadow-lg hover:border-emerald-300 transition-all">
+                        <div class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-2xl flex items-center justify-center mb-6">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Spa & Wellness</h3>
+                        <p class="text-gray-600 leading-relaxed">Discover premium spa experiences and relaxation centers with exclusive treatments and therapies.</p>
+                        <a href="{{ route('spa.index') }}" class="inline-flex items-center text-emerald-600 font-semibold mt-4 hover:text-emerald-700">
+                            Explore Spas
+                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                    </div>
+
+                    <!-- Feature 2: Yoga & Meditation -->
+                    <div class="feature-card bg-white rounded-2xl p-8 border-2 border-gray-100 shadow-lg hover:border-emerald-300 transition-all">
+                        <div class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-2xl flex items-center justify-center mb-6">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Yoga & Meditation</h3>
+                        <p class="text-gray-600 leading-relaxed">Find yoga studios and meditation centers to maintain your inner peace and mindfulness practice.</p>
+                        <a href="{{ route('yoga.index') }}" class="inline-flex items-center text-emerald-600 font-semibold mt-4 hover:text-emerald-700">
+                            Explore Yoga
+                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                    </div>
+
+                    <!-- Feature 3: Gym & Fitness -->
+                    <div class="feature-card bg-white rounded-2xl p-8 border-2 border-gray-100 shadow-lg hover:border-emerald-300 transition-all">
+                        <div class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-2xl flex items-center justify-center mb-6">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Gym & Fitness</h3>
+                        <p class="text-gray-600 leading-relaxed">Access state-of-the-art gym facilities with modern equipment to keep your fitness routine on track.</p>
+                        <a href="{{ route('gym.index') }}" class="inline-flex items-center text-emerald-600 font-semibold mt-4 hover:text-emerald-700">
+                            Explore Gyms
+                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                    </div>
+
+                    <!-- Feature 4: Easy Booking -->
+                    <div class="feature-card bg-white rounded-2xl p-8 border-2 border-gray-100 shadow-lg hover:border-emerald-300 transition-all">
+                        <div class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-2xl flex items-center justify-center mb-6">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Easy Booking</h3>
+                        <p class="text-gray-600 leading-relaxed">Simple and transparent online reservation system with instant confirmation for all wellness services.</p>
+                    </div>
+
+                    <!-- Feature 5: Vouchers & Deals -->
+                    <div class="feature-card bg-white rounded-2xl p-8 border-2 border-gray-100 shadow-lg hover:border-emerald-300 transition-all">
+                        <div class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-2xl flex items-center justify-center mb-6">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Vouchers & Deals</h3>
+                        <p class="text-gray-600 leading-relaxed">Exclusive vouchers and special promotional offers to save more on your wellness journey.</p>
+                        <a href="{{ route('voucher') }}" class="inline-flex items-center text-emerald-600 font-semibold mt-4 hover:text-emerald-700">
+                            View Vouchers
+                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                    </div>
+
+                    <!-- Feature 6: AI Chatbot -->
+                    <div class="feature-card bg-white rounded-2xl p-8 border-2 border-gray-100 shadow-lg hover:border-emerald-300 transition-all">
+                        <div class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-2xl flex items-center justify-center mb-6">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">AI Chatbot Support</h3>
+                        <p class="text-gray-600 leading-relaxed">24/7 intelligent chatbot assistance powered by AI for instant answers and personalized recommendations.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Choose Us Section -->
+        <section class="py-20 bg-gradient-to-br from-emerald-50 to-teal-50">
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <!-- Left Content -->
+                    <div>
+                        <div class="inline-block px-4 py-2 bg-white rounded-full mb-6 shadow-sm">
+                            <span class="text-emerald-700 font-bold text-sm">WHY VITALIFE</span>
+                        </div>
+                        <h2 class="text-4xl md:text-5xl font-black text-gray-900 mb-6">Why Choose Vitalife?</h2>
+                        <p class="text-xl text-gray-600 mb-8 leading-relaxed">
+                            We're more than just a booking platform. We're your wellness travel companion, committed to making healthy living accessible wherever you go.
+                        </p>
+
+                        <div class="space-y-6">
+                            <!-- Benefit 1 -->
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-lg font-bold text-gray-900 mb-1">Verified Partners</h4>
+                                    <p class="text-gray-600">All our wellness centers are thoroughly vetted and verified for quality and safety.</p>
+                                </div>
+                            </div>
+
+                            <!-- Benefit 2 -->
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-lg font-bold text-gray-900 mb-1">Best Price Guarantee</h4>
+                                    <p class="text-gray-600">Get the best deals and exclusive discounts on wellness services.</p>
+                                </div>
+                            </div>
+
+                            <!-- Benefit 3 -->
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-lg font-bold text-gray-900 mb-1">Flexible Booking</h4>
+                                    <p class="text-gray-600">Easy cancellation and rescheduling options for your convenience.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Image -->
+                    <div class="relative">
+                        <div class="aspect-w-4 aspect-h-3 rounded-3xl overflow-hidden shadow-2xl">
+                            <img src="{{ asset('image/Logo-Healife.png') }}" alt="Vitalife Platform" class="w-full h-full object-contain p-12 bg-gradient-to-br from-emerald-100 to-teal-100">
+                        </div>
+                        <!-- Floating Card -->
+                        <div class="absolute -bottom-8 -left-8 bg-white rounded-2xl p-6 shadow-2xl">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                                    </svg>
+                                </div>
+                                <div class="ml-4">
+                                    <div class="text-2xl font-black text-gray-900">4.8/5.0</div>
+                                    <div class="text-sm text-gray-600">Customer Rating</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="py-24 relative overflow-hidden bg-gradient-to-r from-emerald-600 to-teal-600">
+            <div class="absolute inset-0 bg-black/10"></div>
+            <div class="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+
+            <div class="max-w-5xl mx-auto px-6 text-center relative z-10">
+                <h2 class="text-4xl md:text-5xl font-black text-white mb-6">
+                    Ready to Start Your Wellness Journey?
+                </h2>
+                <p class="text-xl md:text-2xl text-white/90 mb-10 max-w-3xl mx-auto">
+                    Discover amazing spa, yoga, and fitness experiences with exclusive deals and personalized recommendations
+                </p>
+
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="{{ route('spa.index') }}" class="inline-flex items-center justify-center px-10 py-4 bg-white text-emerald-600 font-bold rounded-xl hover:bg-emerald-50 transition-all shadow-xl hover:shadow-2xl transform hover:scale-105">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        Explore Wellness Centers
+                    </a>
+                    <a href="{{ route('voucher') }}" class="inline-flex items-center justify-center px-10 py-4 bg-emerald-700 text-white font-bold rounded-xl hover:bg-emerald-800 transition-all shadow-xl hover:shadow-2xl transform hover:scale-105 border-2 border-white">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path>
+                        </svg>
+                        Get Exclusive Vouchers
+                    </a>
+                </div>
+
+                <!-- Trust Badges -->
+                <div class="mt-12 pt-12 border-t border-white/20">
+                    <p class="text-white/80 text-sm mb-6">Trusted by wellness enthusiasts worldwide</p>
+                    <div class="flex flex-wrap justify-center items-center gap-8">
+                        <div class="text-white/90 font-semibold">🏆 Best Platform 2024</div>
+                        <div class="text-white/90 font-semibold">⭐ 4.8/5 Rating</div>
+                        <div class="text-white/90 font-semibold">🔒 Secure Booking</div>
+                        <div class="text-white/90 font-semibold">💚 100% Verified</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chatbot Widget -->
+        <x-chatbot-widget defaultCategory="General Information" />
+    </div>
+</x-app-layout>

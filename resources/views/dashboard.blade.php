@@ -1,1022 +1,444 @@
 <x-app-layout>
     <style>
-        .unified-gradient {
-            background: linear-gradient(to bottom, #FFFFFF 0%, #BED9FE 100%);
-        }
-
-        .voucher-card-simple {
-            background: white;
-            transition: all 0.3s ease;
-        }
-
-        .voucher-card-simple:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        .voucher-header-simple {
-            background: linear-gradient(135deg, #374151 0%, #1F2937 100%);
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .snap-x { scroll-snap-type: x mandatory; }
+        .snap-start { scroll-snap-align: start; }
+        .voucher-card-simple { background: white; transition: all 0.3s ease; }
+        .voucher-card-simple:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); }
+        .voucher-header-simple { background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%); }
+        .float-animation { animation: float 3s ease-in-out infinite; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
         }
     </style>
 
-    {{-- Unified Dashboard Section --}}
-    <div class="unified-gradient min-h-screen">
+    <div class="bg-white min-h-screen">
         {{-- Hero Section --}}
         <div class="pt-32 pb-20">
-            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 w-full">
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
                 <div class="grid lg:grid-cols-2 gap-12 items-center min-h-[500px]">
-                    <!-- Left Content -->
-                    <div class="space-y-8 lg:pl-12 lg:pr-8">
+                    <div class="space-y-8">
                         <div class="space-y-6">
-                            <p class="text-base lg:text-lg font-bold text-gray-700 uppercase tracking-wider">
-                                SKIP THE TRAVEL! TAKE ONLINE
-                            </p>
-                            <h1
-                                class="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black text-gray-900 leading-tight">
-                                WELCOME<br>
-                                <span class="text-blue-500 font-bold">HEALIFE</span>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                    </svg>
+                                </div>
+                                <p class="text-sm font-medium text-gray-600 uppercase tracking-wide">
+                                    BEST PLACE TO FIND THE WELLNESS
+                                </p>
+                            </div>
+                            <h1 class="text-5xl sm:text-6xl lg:text-7xl font-black text-gray-900 leading-tight">
+                                EXPLORE
+                                <span class="block mt-2 bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">WELLNESS</span>
                             </h1>
-                            <p class="text-lg lg:text-xl text-gray-700 max-w-2xl leading-relaxed">
-                                We are the solution for travelling in a healthy condition and we provide health
-                                specialists for your wellness journey
+                            <p class="text-base text-gray-600 max-w-xl leading-relaxed">
+                                Discover the best spa centers, yoga studios, and fitness gyms in Indonesia. HeaLife helps you find wellness destinations and book your perfect retreat for a healthier lifestyle.
                             </p>
                         </div>
-
-                        <button
-                            class="inline-flex items-center px-8 py-4 text-white font-bold text-lg rounded-full hover:bg-gray-600 transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl"
-                            style="background-color: #374151;">
-                            <span class="mr-3">Explore now</span>
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                            </svg>
-                        </button>
+                        <div class="flex flex-wrap items-center gap-4">
+                            <button onclick="document.getElementById('wellness-section').scrollIntoView({behavior: 'smooth'})"
+                                class="inline-flex items-center px-8 py-4 bg-gray-900 text-white font-semibold text-base rounded-full hover:bg-gray-800 transition-colors shadow-lg">
+                                <span class="mr-3">Explore Now</span>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
+                    <div class="relative flex justify-center lg:justify-end">
+                        <div class="relative w-full max-w-md lg:max-w-lg">
+                            <div class="grid grid-cols-2 gap-4">
+                                <!-- Large Main Image (Top) - Yoga Poster -->
+                                <div class="col-span-2 relative group overflow-hidden rounded-2xl shadow-xl">
+                                    <img src="{{ asset('image/poster-yoga.png') }}" alt="Yoga Wellness" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500">
+                                </div>
 
-                    <!-- Right Content - Image with Frame Effect -->
-                    <div class="relative flex justify-center lg:justify-start lg:pl-8">
-                        <div class="relative w-80 sm:w-96 lg:w-[420px]">
-                            <!-- Background Frame -->
-                            <div
-                                class="absolute top-4 left-4 w-full h-full border-4 border-blue-600 rounded-lg z-0 opacity-20">
-                            </div>
+                                <!-- Small Image 1 (Bottom Left) - Placeholder -->
+                                <div class="relative group overflow-hidden rounded-2xl shadow-lg">
+                                    <img src="{{ asset('image/poster-spa.png') }}" alt="Spa Wellness" class="w-full h-32 object-cover group-hover:scale-110 transition-transform duration-500">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-teal-500/20"></div>
+                                </div>
 
-                            <!-- Main Image Container -->
-                            <div class="relative z-10 shadow-2xl rounded-lg overflow-hidden">
-                                <img src="{{ asset('image/bgdash.png') }}" alt="Yoga Woman in Mountains"
-                                    class="w-full h-80 sm:h-96 lg:h-[420px] object-cover object-center rounded-lg" />
-                            </div>
+                                <!-- Small Image 2 (Bottom Right) - Gym Poster -->
+                                <div class="relative group overflow-hidden rounded-2xl shadow-lg">
+                                    <img src="{{ asset('image/poster-gym.png') }}" alt="Gym Fitness" class="w-full h-32 object-cover group-hover:scale-110 transition-transform duration-500">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/20 to-blue-500/20"></div>
+                                </div>
 
-                            <!-- Floating Elements for Visual Interest -->
-                            {{-- <div
-                                class="absolute -top-4 -right-4 w-20 h-20 bg-blue-500 rounded-full opacity-20 animate-pulse">
+                                <!-- Floating Badge -->
+                                <div class="absolute -bottom-4 -left-4 bg-white rounded-2xl shadow-xl p-4 float-animation">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-500">Trusted by</p>
+                                            <p class="text-lg font-bold text-gray-900">5000+</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div
-                                class="absolute -bottom-6 -left-6 w-16 h-16 bg-blue-400 rounded-full opacity-30 animate-bounce">
-                            </div> --}}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        {{-- Wellness Support Section --}}
-        <div class="py-16">
-            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
-                <div class="mb-16">
-                    <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Wellness Support</h2>
-                    <p class="text-lg text-gray-600">Find The Wellness</p>
+        {{-- Features Section - 3 Categories --}}
+        <div id="wellness-section" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl lg:text-5xl font-black text-gray-900 mb-4">
+                        Start Your Wellness Journey
+                    </h2>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">Choose your path to better health and wellbeing</p>
                 </div>
-                <div class="grid md:grid-cols-3 gap-12 max-w-4xl mx-auto">
-                    <a href="{{ route('spa.index') }}" class="group">
-                        <div
-                            class="bg-blue-50 rounded-full w-28 h-28 lg:w-32 lg:h-32 mx-auto mb-6 flex items-center justify-center group-hover:bg-blue-100 group-hover:scale-110 transition-all duration-300 shadow-lg">
-                            <img src="{{ asset('image/spa.png') }}" alt="SPA" class="h-14 w-14 lg:h-16 lg:w-16" />
+
+                <div class="grid lg:grid-cols-3 gap-6">
+                    {{-- Spa Card --}}
+                    <a href="{{ route('spa.index') }}" class="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-50 to-teal-50 p-8 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2">
+                        <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-emerald-400/20 to-teal-400/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-500"></div>
+
+                        <div class="relative h-full flex flex-col">
+                            <div class="flex items-center justify-between mb-8">
+                                <div class="w-16 h-16 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                                    <img src="{{ asset('image/spa.png') }}" alt="Spa" class="w-10 h-10">
+                                </div>
+
+                                {{-- <div class="px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full text-sm font-bold text-emerald-600">
+                                    Spa
+                                </div> --}}
+                            </div>
+
+                            <h3 class="text-3xl font-black text-gray-900 mb-auto">
+                                Spa & Relaxation
+                            </h3>
+
+                            <div class="flex items-center text-emerald-600 font-bold group-hover:translate-x-2 transition-transform duration-300 mt-8">
+                                <span>Explore Spa Centers</span>
+                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                </svg>
+                            </div>
                         </div>
-                        <h3 class="text-xl font-bold text-gray-900">SPA</h3>
                     </a>
 
-                    <a href="{{ route('yoga.index') }}" class="group">
-                        <div
-                            class="bg-blue-50 rounded-full w-28 h-28 lg:w-32 lg:h-32 mx-auto mb-6 flex items-center justify-center group-hover:bg-blue-100 group-hover:scale-110 transition-all duration-300 shadow-lg">
-                            <img src="{{ asset('image/meditation.png') }}" alt="YOGA"
-                                class="h-14 w-14 lg:h-16 lg:w-16" />
+                    {{-- Yoga Card --}}
+                    <a href="{{ route('yoga.index') }}" class="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-teal-50 to-cyan-50 p-8 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2">
+                        <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-teal-400/20 to-cyan-400/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-500"></div>
+
+                        <div class="relative h-full flex flex-col">
+                            <div class="flex items-center justify-between mb-8">
+                                <div class="w-16 h-16 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                                    <img src="{{ asset('image/meditation.png') }}" alt="Yoga" class="w-10 h-10">
+                                </div>
+                                {{-- <div class="px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full text-sm font-bold text-teal-600">
+                                    Yoga
+                                </div> --}}
+                            </div>
+
+                            <h3 class="text-3xl font-black text-gray-900 mb-auto">
+                                Yoga & Meditation
+                            </h3>
+
+                            <div class="flex items-center text-teal-600 font-bold group-hover:translate-x-2 transition-transform duration-300 mt-8">
+                                <span>Explore Yoga Studios</span>
+                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                </svg>
+                            </div>
                         </div>
-                        <h3 class="text-xl font-bold text-gray-900">YOGA</h3>
                     </a>
 
-                    <a href="{{ route('gym.index') }}" class="group">
-                        <div
-                            class="bg-blue-50 rounded-full w-28 h-28 lg:w-32 lg:h-32 mx-auto mb-6 flex items-center justify-center group-hover:bg-blue-100 group-hover:scale-110 transition-all duration-300 shadow-lg">
-                            <img src="{{ asset('image/run.png') }}" alt="GYM" class="h-14 w-14 lg:h-16 lg:w-16" />
+                    {{-- Gym Card --}}
+                    <a href="{{ route('gym.index') }}" class="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-cyan-50 to-blue-50 p-8 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2">
+                        <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-cyan-400/20 to-blue-400/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-500"></div>
+
+                        <div class="relative h-full flex flex-col">
+                            <div class="flex items-center justify-between mb-8">
+                                <div class="w-16 h-16 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                                    <img src="{{ asset('image/run.png') }}" alt="Gym" class="w-10 h-10">
+                                </div>
+                                {{-- <div class="px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full text-sm font-bold text-cyan-600">
+                                    Gym
+                                </div> --}}
+                            </div>
+
+                            <h3 class="text-3xl font-black text-gray-900 mb-auto">
+                                Gym & Fitness
+                            </h3>
+
+                            <div class="flex items-center text-cyan-600 font-bold group-hover:translate-x-2 transition-transform duration-300 mt-8">
+                                <span>Explore Fitness Centers</span>
+                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                </svg>
+                            </div>
                         </div>
-                        <h3 class="text-xl font-bold text-gray-900">GYM</h3>
                     </a>
                 </div>
             </div>
         </div>
 
-        {{-- Trending Now Section --}}
+        {{-- Trending Section --}}
+        @if(isset($trendingItems) && $trendingItems->isNotEmpty())
+        <div class="py-16 bg-gradient-to-b from-gray-50 to-white">
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">Trending Wellness Centers</h2>
+                    <p class="text-lg text-gray-600">Most popular destinations this week</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    @foreach($trendingItems->take(3) as $item)
+                        <a href="{{ $item['detail_url'] ?? route($item['type'] . '.detail', $item['id']) }}"
+                           class="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                            <div class="relative h-48 overflow-hidden">
+                                <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}"
+                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                <div class="absolute top-4 right-4 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-xs font-semibold text-gray-900">
+                                    {{ ucfirst($item['type']) }}
+                                </div>
+                                @if(isset($item['is_open']) && $item['is_open'])
+                                <div class="absolute top-4 left-4 px-3 py-1 bg-green-500/90 backdrop-blur-sm rounded-full text-xs font-semibold text-white flex items-center">
+                                    <div class="w-1.5 h-1.5 bg-white rounded-full mr-1.5 animate-pulse"></div>
+                                    Open
+                                </div>
+                                @endif
+                            </div>
+                            <div class="p-6">
+                                <h3 class="text-xl font-bold text-gray-900 mb-2 line-clamp-1">{{ $item['name'] }}</h3>
+                                <p class="text-sm text-gray-600 mb-3 line-clamp-2 flex items-start">
+                                    <svg class="w-4 h-4 mr-1 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                    {{ $item['location'] ?? 'Location not available' }}
+                                </p>
+                                <div class="flex items-center justify-between">
+                                    <div class="text-xs text-gray-500">
+                                        {{ $item['opening_hours'] ?? 'Contact for hours' }}
+                                    </div>
+                                    @if(isset($item['formatted_price']))
+                                    <span class="text-sm font-semibold text-emerald-600">{{ $item['formatted_price'] }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+        @endif
+
+        {{-- Featured Services Section --}}
+        @if(isset($trendingItems) && $trendingItems->isNotEmpty())
+        <div class="py-16 bg-gradient-to-b from-gray-50 to-white">
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">Featured Services</h2>
+                    <p class="text-lg text-gray-600">Discover our most popular wellness services</p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    @foreach($trendingItems->take(6) as $item)
+                        @if(isset($item['services']) && $item['services']->isNotEmpty())
+                            @foreach($item['services']->take(1) as $service)
+                            <div class="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300">
+                                <div class="relative h-48 bg-gradient-to-br from-{{ $item['type'] == 'spa' ? 'emerald' : ($item['type'] == 'yoga' ? 'teal' : 'cyan') }}-100 to-{{ $item['type'] == 'spa' ? 'teal' : ($item['type'] == 'yoga' ? 'cyan' : 'blue') }}-100 flex items-center justify-center overflow-hidden">
+                                    @if(isset($service['image']) && $service['image'] && $service['image'] != 'image/spa-service.png')
+                                        <img src="{{ $service['image'] }}" alt="{{ $service['name'] }}"
+                                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                    @else
+                                        <div class="w-24 h-24 bg-gradient-to-br from-{{ $item['type'] == 'spa' ? 'emerald' : ($item['type'] == 'yoga' ? 'teal' : 'cyan') }}-500 to-{{ $item['type'] == 'spa' ? 'teal' : ($item['type'] == 'yoga' ? 'cyan' : 'blue') }}-500 rounded-full flex items-center justify-center">
+                                            <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                @if($item['type'] == 'spa')
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                @elseif($item['type'] == 'yoga')
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                @else
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                                @endif
+                                            </svg>
+                                        </div>
+                                    @endif
+                                    <div class="absolute top-4 right-4 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-xs font-semibold text-gray-900 capitalize">
+                                        {{ $item['type'] }}
+                                    </div>
+                                </div>
+                                <div class="p-6">
+                                    <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-1">{{ $service['name'] ?? 'Service' }}</h3>
+                                    <p class="text-sm text-gray-600 mb-3 line-clamp-2">{{ $service['description'] ?? 'Professional wellness service' }}</p>
+                                    <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+                                        <span class="text-xs text-gray-500">{{ $item['name'] }}</span>
+                                        <a href="{{ $item['detail_url'] }}"
+                                           class="inline-flex items-center text-sm font-semibold text-{{ $item['type'] == 'spa' ? 'emerald' : ($item['type'] == 'yoga' ? 'teal' : 'cyan') }}-600 hover:text-{{ $item['type'] == 'spa' ? 'emerald' : ($item['type'] == 'yoga' ? 'teal' : 'cyan') }}-700">
+                                            View Details
+                                            <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        @endif
+                    @endforeach
+                </div>
+            </div>
+        </div>
+        @endif
+
+        {{-- Vouchers Section --}}
+        @if(isset($vouchers) && $vouchers->isNotEmpty())
+        <div class="py-16 bg-gradient-to-b from-gray-50 to-white">
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+                <div class="flex justify-between items-center mb-12">
+                    <div>
+                        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">Special Vouchers</h2>
+                        <p class="text-lg text-gray-600">Save more on your wellness journey</p>
+                    </div>
+                    <a href="{{ route('voucher') }}" class="hidden md:inline-flex items-center px-6 py-3 bg-gray-900 text-white rounded-full hover:bg-gray-800 transition-colors">
+                        View All
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+                </div>
+                <div class="flex gap-6 overflow-x-auto snap-x scrollbar-hide pb-4">
+                    @foreach ($vouchers as $voucher)
+                        <div class="flex-shrink-0 w-80 snap-start">
+                            <div class="voucher-card-simple rounded-2xl overflow-hidden shadow-lg">
+                                <div class="voucher-header-simple p-6 text-white">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <span class="text-sm font-medium opacity-90">VOUCHER CODE</span>
+                                        <span class="px-3 py-1 bg-white/20 rounded-full text-xs font-semibold">
+                                            {{ $voucher->discount_type === 'percentage' ? $voucher->discount_value . '%' : 'Rp ' . number_format($voucher->discount_value, 0, ',', '.') }}
+                                        </span>
+                                    </div>
+                                    <p class="text-3xl font-black mb-2 tracking-wider">{{ $voucher->code }}</p>
+                                    <p class="text-sm opacity-90">{{ $voucher->description }}</p>
+                                </div>
+                                <div class="p-6">
+                                    <div class="space-y-2 mb-4">
+                                        <div class="flex items-center text-sm text-gray-600">
+                                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                            <span>Min. Purchase: Rp {{ number_format($voucher->min_purchase, 0, ',', '.') }}</span>
+                                        </div>
+                                        <div class="flex items-center text-sm text-gray-600">
+                                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                            </svg>
+                                            <span>Valid until: {{ \Carbon\Carbon::parse($voucher->valid_until)->format('d M Y') }}</span>
+                                        </div>
+                                    </div>
+                                    <button onclick="navigator.clipboard.writeText('{{ $voucher->code }}')"
+                                        class="w-full py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors">
+                                        Copy Code
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+        @endif
+
+        {{-- How It Works Section --}}
         <div class="py-16">
             <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
                 <div class="text-center mb-16">
-                    <h2 class="text-3xl lg:text-4xl font-bold text-gray-900">Trending Now</h2>
+                    <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">How It Works</h2>
+                    <p class="text-lg text-gray-600">Book your wellness experience in 3 easy steps</p>
                 </div>
-
                 <div class="grid md:grid-cols-3 gap-8">
-                    @forelse($trendingItems->take(3) as $item)
-                        <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col">
-                            <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}"
-                                class="w-full h-48 object-cover" />
-                            <div class="p-6 flex flex-col flex-grow">
-                                <h3 class="text-xl font-bold text-gray-900 mb-2">{{ $item['name'] }}</h3>
-                                <div class="flex items-center text-gray-600 mb-4">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                        </path>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                    </svg>
-                                    <span class="text-sm">{{ Str::limit($item['location'], 30) }}</span>
-                                </div>
-
-                                @if ($item['type'] === 'spa')
-                                    <div class="mb-6 flex-grow">
-                                        <div class="flex justify-between items-center mb-4">
-                                            <h4 class="font-semibold text-gray-900">Services</h4>
-                                            <a href="{{ $item['detail_url'] }}"
-                                                class="text-sm text-blue-600 cursor-pointer hover:text-blue-800">View
-                                                all</a>
-                                        </div>
-                                        <div class="grid grid-cols-3 gap-3">
-                                            @foreach ($item['services']->take(3) as $service)
-                                                <div class="text-center">
-                                                    <img src="{{ asset($service['image']) }}"
-                                                        alt="{{ $service['name'] }}" class="w-12 h-12 mx-auto mb-2" />
-                                                    <p class="text-xs font-semibold text-gray-700">
-                                                        {{ Str::limit($service['name'], 15) }}</p>
-                                                    <p class="text-xs text-gray-500">
-                                                        {{ Str::limit($service['description'], 30) }}</p>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                @elseif($item['type'] === 'yoga')
-                                    <div class="mb-6 flex-grow">
-                                        <div class="bg-blue-50 rounded-lg p-4">
-                                            <h4 class="font-semibold text-gray-900 mb-2">Yoga Session</h4>
-                                            <p class="text-lg font-bold text-blue-600">Rp
-                                                {{ number_format($item['price'], 0, ',', '.') }}</p>
-                                            <p class="text-sm text-gray-600">Professional yoga instruction</p>
-                                            @if ($item['phone'])
-                                                <p class="text-xs text-gray-500 mt-1">Phone: {{ $item['phone'] }}</p>
-                                            @endif
-                                        </div>
-                                    </div>
-                                @elseif($item['type'] === 'gym')
-                                    <div class="mb-6 flex-grow">
-                                        <div class="bg-green-50 rounded-lg p-4">
-                                            <h4 class="font-semibold text-gray-900 mb-2">Gym Facilities</h4>
-                                            <p class="text-sm text-gray-600">Modern equipment and professional trainers
-                                            </p>
-                                            <div class="flex items-center mt-2">
-                                                @if ($item['is_open'])
-                                                    <div class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse">
-                                                    </div>
-                                                    <span class="text-xs text-green-600 font-medium">Currently
-                                                        Open</span>
-                                                @else
-                                                    <div class="w-2 h-2 bg-red-400 rounded-full mr-2"></div>
-                                                    <span class="text-xs text-red-600 font-medium">Currently
-                                                        Closed</span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-
-                                <!-- Button positioned at bottom -->
-                                <div class="mt-auto">
-                                    <a href="{{ $item['detail_url'] }}"
-                                        class="w-full bg-gray-900 text-white py-2 px-4 rounded-lg font-semibold hover:bg-gray-800 transition-colors text-center block">
-                                        View Details
-                                    </a>
-                                </div>
+                    @php
+                        $steps = [
+                            ['icon' => 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z', 'title' => 'Browse & Search', 'desc' => 'Explore our curated collection of spas, yoga studios, and gyms in your area', 'color' => 'emerald'],
+                            ['icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', 'title' => 'Choose & Book', 'desc' => 'Select your preferred service, date, and time slot that fits your schedule', 'color' => 'teal'],
+                            ['icon' => 'M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5', 'title' => 'Relax & Enjoy', 'desc' => 'Show up and enjoy your wellness experience with confirmed reservation', 'color' => 'cyan']
+                        ];
+                    @endphp
+                    @foreach($steps as $index => $step)
+                    <div class="text-center relative">
+                        <div class="relative inline-block mb-6">
+                            <div class="w-20 h-20 bg-gradient-to-br from-{{ $step['color'] }}-500 to-teal-500 rounded-full flex items-center justify-center shadow-xl">
+                                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $step['icon'] }}"></path>
+                                </svg>
                             </div>
+                            <div class="absolute -top-2 -right-2 w-8 h-8 bg-{{ $step['color'] }}-500 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg">{{ $index + 1 }}</div>
                         </div>
-                    @empty
-                        <div class="col-span-3 text-center py-12">
-                            <p class="text-gray-500 text-lg">No trending items available at the moment.</p>
-                        </div>
-                    @endforelse
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">{{ $step['title'] }}</h3>
+                        <p class="text-gray-600">{{ $step['desc'] }}</p>
+                    </div>
+                    @endforeach
                 </div>
             </div>
         </div>
 
-        {{-- Voucher Section - Accessible untuk semua user --}}
-        <div id="voucher" class="py-16">
+        {{-- Why Choose Us Section --}}
+        <div class="py-16 bg-gradient-to-b from-gray-50 to-white">
             <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-                <h2 class="text-3xl lg:text-4xl font-bold text-center mb-16 text-gray-900">Voucher</h2>
-                @if ($vouchers->count() > 0)
-                    <div class="relative" x-data="imageSlider()">
-                        <div id="imageSlider" class="overflow-hidden">
-                            <div class="flex transition-transform duration-500 ease-in-out"
-                                :style="{ transform: `translateX(-${currentIndex * (100/3)}%)` }">
-                                @foreach ($vouchers as $voucher)
-                                    <div class="w-1/3 flex-shrink-0 px-4">
-                                        <div class="bg-white rounded-xl p-6 text-gray-900 cursor-pointer transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border border-gray-100"
-                                            onclick="@auth openPopup('{{ $voucher->description }}', '{{ $voucher->code }}') @else showVoucherForGuest('{{ $voucher->description }}', '{{ $voucher->code }}') @endauth">
-
-                                            <!-- Simple voucher header -->
-                                            <div
-                                                class="voucher-header-simple w-full h-32 rounded-lg mb-4 flex items-center justify-center">
-                                                <div class="text-white text-center">
-                                                    <div class="text-3xl font-bold mb-1">
-                                                        {{ $voucher->discount_percentage ?? 50 }}%
-                                                    </div>
-                                                    <div class="text-white/90 font-medium text-sm">DISCOUNT</div>
-                                                </div>
-                                            </div>
-
-                                            <h3 class="font-bold text-lg mb-2 text-gray-900">
-                                                {{ $voucher->discount_percentage ?? 50 }}% Off
-                                            </h3>
-                                            <p class="text-sm text-gray-600 mb-4">{{ $voucher->description }}</p>
-                                            @auth
-                                                <button
-                                                    class="w-full bg-gray-900 text-white py-2 px-4 rounded-lg font-semibold hover:bg-gray-800 transition-colors">
-                                                    Get Voucher Code
-                                                </button>
-                                            @else
-                                                <button
-                                                    class="w-full bg-gray-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-gray-700 transition-colors">
-                                                    Login to Get Code
-                                                </button>
-                                            @endauth
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                @else
-                    <div class="text-center">
-                        <p class="text-gray-600 text-lg">No vouchers available at the moment.</p>
-                    </div>
-                @endif
-            </div>
-        </div>
-
-        <!-- Simple Voucher Popup -->
-        <div id="popup"
-            class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm hidden items-center justify-center z-50">
-            <div class="bg-white p-6 rounded-xl max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto relative shadow-lg">
-                <button onclick="closePopup()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600">
-                    <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                        height="24" fill="currentColor" viewBox="0 0 24 24">
-                        <path fill-rule="evenodd"
-                            d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z"
-                            clip-rule="evenodd" />
-                    </svg>
-                </button>
-                <div id="popupImage" class="w-full h-32 rounded-lg mb-4"></div>
-                <h3 class="text-xl font-bold mb-3 text-gray-900">Voucher Details</h3>
-                <p id="popupDescription" class="text-gray-700 mb-4"></p>
-                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
-                    <p class="text-sm text-gray-600 mb-1">Voucher Code</p>
-                    <p class="font-mono font-bold text-lg text-gray-800" id="voucherCode"></p>
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">Why Choose HeaLife</h2>
+                    <p class="text-lg text-gray-600">Your trusted partner for wellness bookings</p>
                 </div>
-                @auth
-                    <button onclick="copyVoucherCode()"
-                        class="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors mb-3">
-                        Copy Voucher Code
-                    </button>
-                    <p class="text-green-700 text-sm text-center">
-                        <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                        You can use this voucher for your bookings!
-                    </p>
-                @else
-                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
-                        <p class="text-blue-800 text-sm mb-2">
-                            <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                                    clip-rule="evenodd"></path>
+                <div class="grid md:grid-cols-4 gap-6">
+                    @php
+                        $features = [
+                            ['icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z', 'title' => 'Verified Venues', 'desc' => 'All wellness centers are verified and quality checked', 'color' => 'emerald'],
+                            ['icon' => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', 'title' => 'Instant Booking', 'desc' => 'Book instantly with real-time availability', 'color' => 'teal'],
+                            ['icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', 'title' => 'Best Prices', 'desc' => 'Competitive pricing with exclusive vouchers', 'color' => 'cyan'],
+                            ['icon' => 'M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z', 'title' => '24/7 Support', 'desc' => 'Customer support always ready to help you', 'color' => 'blue']
+                        ];
+                    @endphp
+                    @foreach($features as $feature)
+                    <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-shadow">
+                        <div class="w-12 h-12 bg-{{ $feature['color'] }}-100 rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6 text-{{ $feature['color'] }}-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $feature['icon'] }}"></path>
                             </svg>
-                            To use this voucher, please login or create an account
-                        </p>
-                        <a href="{{ route('login') }}"
-                            class="text-white px-4 py-2 rounded text-sm hover:bg-gray-600 transition-colors"
-                            style="background-color: #374151;">
-                            Login to Use Voucher
-                        </a>
-                    </div>
-                @endauth
-            </div>
-        </div>
-
-        {{-- FAQ Section --}}
-        <div class="py-16 pb-28">
-            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-                <div class="grid lg:grid-cols-2 gap-16 items-center">
-                    <!-- Left - Image -->
-                    <div class="relative max-w-md mx-auto lg:mx-0">
-                        <img src="{{ asset('image/faq-image.png') }}" alt="Doctor with patient"
-                            class="w-full rounded-lg shadow-lg" />
-                        <div
-                            class="absolute bottom-4 left-4 flex items-center bg-white rounded-full px-4 py-2 shadow-md">
-                            <span class="text-xl mr-2">😊</span>
-                            <p class="font-semibold text-xs">84k+ <span class="font-normal text-gray-600">Happy
-                                    Patients</span></p>
                         </div>
+                        <h3 class="font-bold text-gray-900 mb-2">{{ $feature['title'] }}</h3>
+                        <p class="text-sm text-gray-600">{{ $feature['desc'] }}</p>
                     </div>
-
-                    <!-- Right - FAQ Content -->
-                    <div class="space-y-6">
-                        <div class="text-center lg:text-left mb-12">
-                            <p class="text-blue-500 text-sm font-medium mb-4">Get Your Answer</p>
-                            <h2 class="text-3xl font-bold text-gray-900">Frequently Asked Questions</h2>
-                        </div>
-
-                        <div class="space-y-4" x-data="{ openItem: null }">
-                            <!-- FAQ Item 1 -->
-                            <div class="border-b pb-4">
-                                <button @click="openItem = openItem === 1 ? null : 1"
-                                    class="flex justify-between items-center w-full text-left">
-                                    <span class="font-medium text-gray-900 flex-grow pr-3">
-                                        Why do you prefer HeaLife compared to other wellness tourism platforms?
-                                    </span>
-                                    <svg class="w-6 h-6 flex-shrink-0 text-blue-500 transform transition-transform duration-200"
-                                        :class="{ 'rotate-45': openItem === 1 }" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                    </svg>
-                                </button>
-                                <div x-show="openItem === 1" x-transition class="mt-3 text-gray-600 text-sm">
-                                    I prefer HeaLife because of its transparent pricing, helpful reviews, progress
-                                    tracking,
-                                    and ease of booking consultations and activities.
-                                </div>
-                            </div>
-
-                            <!-- FAQ Item 2 -->
-                            <div class="border-b pb-4">
-                                <button @click="openItem = openItem === 2 ? null : 2"
-                                    class="flex justify-between items-center w-full text-left">
-                                    <span class="font-medium text-gray-900 flex-grow pr-3">
-                                        What was your experience with the registration process and initial use of the
-                                        HeaLife website?
-                                    </span>
-                                    <svg class="w-6 h-6 flex-shrink-0 text-blue-500 transform transition-transform duration-200"
-                                        :class="{ 'rotate-45': openItem === 2 }" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                    </svg>
-                                </button>
-                                <div x-show="openItem === 2" x-transition class="mt-3 text-gray-600 text-sm">
-                                    The registration process was intuitive and user-friendly, making it easy to get
-                                    started.
-                                </div>
-                            </div>
-
-                            <!-- FAQ Item 3 -->
-                            <div class="border-b pb-4">
-                                <button @click="openItem = openItem === 3 ? null : 3"
-                                    class="flex justify-between items-center w-full text-left">
-                                    <span class="font-medium text-gray-900 flex-grow pr-3">
-                                        What features appealed to you the most when you first saw the HeaLife website?
-                                    </span>
-                                    <svg class="w-6 h-6 flex-shrink-0 text-blue-500 transform transition-transform duration-200"
-                                        :class="{ 'rotate-45': openItem === 3 }" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                    </svg>
-                                </button>
-                                <div x-show="openItem === 3" x-transition class="mt-3 text-gray-600 text-sm">
-                                    The online doctor consultation gave me confidence and peace of mind.
-                                </div>
-                            </div>
-
-                            <!-- FAQ Item 4 -->
-                            <div class="border-b pb-4">
-                                <button @click="openItem = openItem === 4 ? null : 4"
-                                    class="flex justify-between items-center w-full text-left">
-                                    <span class="font-medium text-gray-900 flex-grow pr-3">
-                                        How can HeaLife help you plan and enjoy your wellness journey?
-                                    </span>
-                                    <svg class="w-6 h-6 flex-shrink-0 text-blue-500 transform transition-transform duration-200"
-                                        :class="{ 'rotate-45': openItem === 4 }" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                    </svg>
-                                </button>
-                                <div x-show="openItem === 4" x-transition class="mt-3 text-gray-600 text-sm">
-                                    HeaLife recommends facilities, packages, and events tailored to your wellness
-                                    goals.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
         </div>
-    </div>
 
-    {{-- Chatbot Widget - Accessible untuk semua user --}}
-    <div id="chatbot-widget" class="fixed bottom-4 right-4 z-50">
-        <!-- Chat Button -->
-        <button id="chat-button"
-            class="text-white rounded-full p-4 shadow-lg flex items-center justify-center transition-all duration-300 transform hover:scale-105 hover:bg-gray-600"
-            style="background-color: #374151;">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-            </svg>
-        </button>
-
-        <!-- Chat Window -->
-        <div id="chat-window" class="hidden bg-white rounded-lg shadow-xl w-80 sm:w-96 h-96 flex-col overflow-hidden">
-            <!-- Chat Header -->
-            <div class="text-white p-4 flex justify-between items-center" style="background-color: #374151;">
-                <div class="flex-1">
-                    <h3 class="font-bold">HeaLife Support</h3>
-                    <div id="session-timer" class="text-xs text-gray-300 hidden">
-                        Session expires in: <span id="timer-display">15:00</span>
-                    </div>
-                </div>
-                <div class="flex space-x-2">
-                    <button id="minimize-chat" class="hover:bg-gray-600 rounded p-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 12H6" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Chat Messages -->
-            <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
-
-            <!-- Guest User Info (show for non-authenticated) -->
-            <div id="guest-info" class="p-4 bg-yellow-50 border-t border-yellow-200">
-                <p class="text-sm text-yellow-800 mb-2">
-                    <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                            clip-rule="evenodd"></path>
-                    </svg>
-                    Guest Mode: Basic support available
+        {{-- CTA Section --}}
+        <div class="py-20">
+            <div class="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
+                <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
+                    Ready to Start Your Wellness Journey?
+                </h2>
+                <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+                    Join thousands of happy users who have discovered their perfect wellness destination through HeaLife.
                 </p>
-                <button onclick="showLoginPrompt()" class="text-xs text-white px-2 py-1 rounded hover:bg-gray-600"
-                    style="background-color: #374151;">
-                    Login for Full Support
-                </button>
-            </div>
-
-            <!-- Category Selection (initially visible) -->
-            <div id="category-selection" class="p-4 bg-gray-50">
-                <p class="text-sm text-gray-600 mb-2">What would you like to discuss?</p>
-                <div class="grid grid-cols-2 gap-2">
-                    <button
-                        class="category-btn bg-white border border-gray-300 rounded p-2 text-sm hover:bg-gray-100 transition-colors"
-                        data-category="Facilities & Accommodations">Facilities & Accommodations</button>
-                    <button
-                        class="category-btn bg-white border border-gray-300 rounded p-2 text-sm hover:bg-gray-100 transition-colors"
-                        data-category="Health & Security">Health & Security</button>
-                    <button
-                        class="category-btn bg-white border border-gray-300 rounded p-2 text-sm hover:bg-gray-100 transition-colors"
-                        data-category="General Information">General Information</button>
-                    <button
-                        class="category-btn bg-white border border-gray-300 rounded p-2 text-sm hover:bg-gray-100 transition-colors"
-                        data-category="Services & Pricing">Services & Pricing</button>
-                </div>
-            </div>
-
-            <!-- Chat Input -->
-            <div id="chat-input-container" class="p-4 border-t hidden">
-                <form id="chat-form" class="flex space-x-2">
-                    <input type="text" id="chat-input"
-                        class="flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
-                        placeholder="Type your message...">
-                    <button type="submit" class="text-white rounded-lg px-4 py-2 hover:bg-gray-600 transition-colors"
-                        style="background-color: #374151;">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="{{ route('spa.index') }}" class="inline-flex items-center px-8 py-4 bg-gray-900 text-white font-semibold rounded-full hover:bg-gray-800 transition-colors shadow-lg">
+                        Browse Wellness Centers
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                         </svg>
-                    </button>
-                </form>
-            </div>
-
-            <!-- Session Timeout Warning (only for authenticated users) -->
-            <div id="timeout-warning" class="hidden bg-yellow-100 border-t border-yellow-300 p-3">
-                <div class="flex items-center">
-                    <svg class="w-4 h-4 text-yellow-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                            clip-rule="evenodd"></path>
-                    </svg>
-                    <span class="text-sm text-yellow-800">Session will expire in <span
-                            id="warning-timer">2:00</span></span>
-                    <button id="extend-session"
-                        class="ml-auto text-xs bg-yellow-600 text-white px-2 py-1 rounded hover:bg-yellow-700">
-                        Continue
-                    </button>
+                    </a>
+                    <a href="{{ route('chat') }}" class="inline-flex items-center px-8 py-4 border-2 border-gray-900 text-gray-900 font-semibold rounded-full hover:bg-gray-50 transition-colors">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                        </svg>
+                        Chat with Us
+                    </a>
                 </div>
             </div>
         </div>
     </div>
-
-    {{-- Chat JavaScript - Updated untuk semua user --}}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // DOM Elements
-            const chatButton = document.getElementById('chat-button');
-            const chatWindow = document.getElementById('chat-window');
-            const minimizeChat = document.getElementById('minimize-chat');
-            const chatMessages = document.getElementById('chat-messages');
-            const categorySelection = document.getElementById('category-selection');
-            const categoryButtons = document.querySelectorAll('.category-btn');
-            const chatInputContainer = document.getElementById('chat-input-container');
-            const chatForm = document.getElementById('chat-form');
-            const chatInput = document.getElementById('chat-input');
-
-            const sessionTimer = document.getElementById('session-timer');
-            const timerDisplay = document.getElementById('timer-display');
-            const timeoutWarning = document.getElementById('timeout-warning');
-            const warningTimer = document.getElementById('warning-timer');
-            const extendSessionBtn = document.getElementById('extend-session');
-
-            // State
-            let currentConversation = null;
-            let selectedCategory = null;
-            let adminActive = false;
-
-            let sessionTimeout = null;
-            let warningTimeout = null;
-            let timerInterval = null;
-            let sessionStartTime = null;
-            let sessionDuration = 15 * 60 * 1000; // 15 minutes in milliseconds
-            let warningTime = 2 * 60 * 1000; // Show warning 2 minutes before timeout
-
-            // Toggle chat window
-            chatButton.addEventListener('click', function() {
-                chatWindow.classList.toggle('hidden');
-                chatButton.classList.toggle('hidden');
-
-                if (!chatWindow.classList.contains('hidden')) {
-                    if (currentConversation === null) {
-                        // Guest user: basic chat with predefined responses
-                        addSystemMessage(
-                            'Welcome to HeaLife Support! I can help you with general information about our services.'
-                        );
-                    }
-                }
-            });
-
-            // Minimize chat
-            minimizeChat.addEventListener('click', function() {
-                chatWindow.classList.add('hidden');
-                chatButton.classList.remove('hidden');
-                pauseSessionTimer();
-            });
-
-            // Category selection
-            categoryButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    selectedCategory = this.dataset.category;
-                    categorySelection.classList.add('hidden');
-                    chatInputContainer.classList.remove('hidden');
-
-                    // Add system message based on category
-                    addSystemMessage(
-                        `You've selected: ${selectedCategory}. How can I help you today?`);
-
-                    // For guest users, add some helpful info
-                    setTimeout(() => {
-                        if (selectedCategory === 'General Information') {
-                            addBotMessage(
-                                'I can help you with information about our spa, yoga, and gym services. What would you like to know?'
-                            );
-                        } else if (selectedCategory === 'Services & Pricing') {
-                            addBotMessage(
-                                'You can browse all our services and pricing on our website. For booking, you\'ll need to create an account first.'
-                            );
-                        } else if (selectedCategory === 'Facilities & Accommodations') {
-                            addBotMessage(
-                                'We offer spa treatments, yoga classes, and gym facilities. Visit our service pages to see detailed information about each location.'
-                            );
-                        } else {
-                            addBotMessage(
-                                'For detailed assistance with this topic, please consider creating an account for personalized support.'
-                            );
-                        }
-                    }, 500);
-                });
-            });
-
-            // Send message
-            chatForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const message = chatInput.value.trim();
-                if (!message) return;
-
-                // Add user message to UI
-                addUserMessage(message);
-                chatInput.value = '';
-
-                // Guest user: simple bot responses
-                handleGuestMessage(message);
-            });
-
-            // Extend session (only for authenticated users)
-            if (extendSessionBtn) {
-                extendSessionBtn.addEventListener('click', function() {
-                    // For guest users, just restart the timer
-                    addSystemMessage('Session extended for guest mode.');
-                });
-            }
-
-            // Guest message handler
-            function handleGuestMessage(message) {
-                setTimeout(() => {
-                    const lowerMessage = message.toLowerCase();
-                    let response = '';
-
-                    if (lowerMessage.includes('spa') || lowerMessage.includes('massage')) {
-                        response =
-                            'Our spa services include various massage therapies, facial treatments, and body treatments. You can browse all spa locations and services on our spa page.';
-                    } else if (lowerMessage.includes('yoga')) {
-                        response =
-                            'We offer yoga classes for all skill levels. Visit our yoga page to see available studios, class schedules, and pricing information.';
-                    } else if (lowerMessage.includes('gym') || lowerMessage.includes('fitness')) {
-                        response =
-                            'Our gym facilities feature modern equipment and professional trainers. Check out our gym page for locations and membership options.';
-                    } else if (lowerMessage.includes('booking') || lowerMessage.includes('reserve')) {
-                        response =
-                            'To book any of our services, you\'ll need to create an account first. This ensures you get the best personalized experience and can manage your bookings easily.';
-                    } else if (lowerMessage.includes('price') || lowerMessage.includes('cost')) {
-                        response =
-                            'Pricing varies by location and service type. You can view detailed pricing on each service\'s page. All prices are transparently displayed before booking.';
-                    } else if (lowerMessage.includes('location') || lowerMessage.includes('address')) {
-                        response =
-                            'We have multiple locations for spa, yoga, and gym services. Each service page shows the exact addresses and contact information for all available locations.';
-                    } else if (lowerMessage.includes('hours') || lowerMessage.includes('open')) {
-                        response =
-                            'Operating hours vary by location. You can find specific hours for each facility on their detail pages, including any special holiday schedules.';
-                    } else {
-                        response =
-                            'Thank you for your question! For detailed assistance, I recommend browsing our service pages or creating an account for personalized support from our team.';
-                    }
-
-                    addBotMessage(response);
-                }, 1000);
-            }
-
-            // Session Timer Functions - Simplified for guest users
-            function startSessionTimer() {
-                // Simple timer for guest mode - no server calls needed
-                console.log('Guest chat session started');
-            }
-
-            function pauseSessionTimer() {
-                console.log('Guest chat session paused');
-            }
-
-            function resetSessionTimer() {
-                console.log('Guest chat session reset');
-            }
-
-            function updateTimerDisplay() {
-                // Not needed for guest mode
-            }
-
-            function showTimeoutWarning() {
-                // Simplified for guest mode
-                addSystemMessage('Chat has been idle for a while.');
-            }
-
-            function hideTimeoutWarning() {
-                // Not needed for guest mode
-            }
-
-            function handleSessionTimeout() {
-                // Simplified for guest mode
-                addSystemMessage('Chat session timed out. You can continue chatting anytime!');
-            }
-
-            function resetChatToInitialState() {
-                // Reset state
-                selectedCategory = null;
-
-                // Clear messages
-                chatMessages.innerHTML = '';
-
-                // Show category selection
-                categorySelection.classList.remove('hidden');
-                chatInputContainer.classList.add('hidden');
-
-                // Clear input
-                if (chatInput) chatInput.value = '';
-
-                // Add welcome message
-                addSystemMessage('Welcome back! Please select a category to continue our conversation.');
-            }
-
-            // Fetch or create conversation - Not needed for guest mode
-            function fetchConversation() {
-                console.log('Guest mode - no server conversation needed');
-            }
-
-            // Check admin status - Not needed for guest mode
-            function checkAdminStatus() {
-                console.log('Guest mode - no admin status check needed');
-            }
-
-            // Update conversation category - Not needed for guest mode
-            function updateConversationCategory(conversationId, category) {
-                console.log('Guest mode - no server category update needed');
-            }
-
-            // Send message to server - Not needed for guest mode
-            function sendMessage(message) {
-                console.log('Guest mode - no server message sending needed');
-            }
-
-            // Add user message to UI
-            function addUserMessage(message, scroll = true) {
-                const messageElement = document.createElement('div');
-                messageElement.className = 'flex justify-end';
-                messageElement.innerHTML = `
-                <div class="text-white rounded-lg py-2 px-4 max-w-[80%]" style="background-color: #374151;">
-                    <p>${escapeHtml(message)}</p>
-                </div>
-            `;
-                chatMessages.appendChild(messageElement);
-                if (scroll) scrollToBottom();
-            }
-
-            // Add bot message to UI
-            function addBotMessage(message, scroll = true) {
-                const messageElement = document.createElement('div');
-                messageElement.className = 'flex justify-start';
-                messageElement.innerHTML = `
-                <div class="bg-gray-200 rounded-lg py-2 px-4 max-w-[80%]">
-                    <p class="text-gray-800">${escapeHtml(message)}</p>
-                </div>
-            `;
-                chatMessages.appendChild(messageElement);
-                if (scroll) scrollToBottom();
-            }
-
-            // Add admin message to UI
-            function addAdminMessage(message, scroll = true) {
-                const messageElement = document.createElement('div');
-                messageElement.className = 'flex justify-start';
-                messageElement.innerHTML = `
-                <div class="bg-green-100 rounded-lg py-2 px-4 max-w-[80%]">
-                    <p class="text-gray-800"><span class="font-bold text-green-600">Admin:</span> ${escapeHtml(message)}</p>
-                </div>
-            `;
-                chatMessages.appendChild(messageElement);
-                if (scroll) scrollToBottom();
-            }
-
-            // Add system message to UI
-            function addSystemMessage(message, scroll = true) {
-                const messageElement = document.createElement('div');
-                messageElement.className = 'flex justify-center';
-                messageElement.innerHTML = `
-                <div class="bg-gray-100 text-gray-600 rounded-lg py-2 px-4 text-sm max-w-[90%] text-center">
-                    <p>${escapeHtml(message)}</p>
-                </div>
-            `;
-                chatMessages.appendChild(messageElement);
-                if (scroll) scrollToBottom();
-            }
-
-            // Scroll chat to bottom
-            function scrollToBottom() {
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
-
-            // Escape HTML to prevent XSS
-            function escapeHtml(unsafe) {
-                return unsafe
-                    .replace(/&/g, "&amp;")
-                    .replace(/</g, "&lt;")
-                    .replace(/>/g, "&gt;")
-                    .replace(/"/g, "&quot;")
-                    .replace(/'/g, "&#039;");
-            }
-
-            // Cleanup on page unload
-            window.addEventListener('beforeunload', function() {
-                clearTimeout(sessionTimeout);
-                clearTimeout(warningTimeout);
-                clearInterval(timerInterval);
-            });
-        });
-    </script>
-
-    <script>
-        // Function to show login alert for guest users
-        function showLoginAlert() {
-            if (confirm('You need to login to access this feature. Would you like to login now?')) {
-                window.location.href = '{{ route('login') }}';
-            }
-        }
-
-        // Function to show login prompt from chat
-        function showLoginPrompt() {
-            if (confirm('Login for personalized support with our team. Would you like to login now?')) {
-                window.location.href = '{{ route('login') }}';
-            }
-        }
-
-        // Function to show voucher for guest users with option to copy code or login
-        function showVoucherForGuest(description, voucherCode) {
-            Swal.fire({
-                title: 'Voucher Available!',
-                html: `
-            <div class="text-center">
-                <div class="w-full max-w-xs mx-auto rounded-lg mb-4 bg-gray-900 h-32 flex items-center justify-center">
-                    <div class="text-white text-center">
-                        <div class="text-3xl font-bold mb-1">
-                            ${voucherCode.match(/(\d+)/) ? voucherCode.match(/(\d+)/)[0] : '50'}%
-                        </div>
-                        <div class="text-white/90 font-medium text-sm">DISCOUNT</div>
-                    </div>
-                </div>
-                <h3 class="font-bold text-lg mb-2">${description}</h3>
-                <p class="text-gray-600 mb-4">You can copy this voucher code and use it for bookings!</p>
-                <div class="bg-gray-50 p-3 rounded-lg mb-4">
-                    <span class="text-sm text-gray-500">Voucher Code: </span>
-                    <span class="font-mono font-bold text-lg text-gray-800">${voucherCode}</span>
-                </div>
-            </div>
-        `,
-                showCancelButton: true,
-                showDenyButton: true,
-                confirmButtonText: 'Copy Code',
-                denyButtonText: 'Login Now',
-                cancelButtonText: 'Close',
-                confirmButtonColor: '#10b981',
-                denyButtonColor: '#3b82f6',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Copy voucher code to clipboard
-                    navigator.clipboard.writeText(voucherCode).then(() => {
-                        Swal.fire({
-                            title: 'Copied!',
-                            text: 'Voucher code copied to clipboard',
-                            icon: 'success',
-                            timer: 2000,
-                            showConfirmButton: false
-                        });
-                    });
-                } else if (result.isDenied) {
-                    window.location.href = '{{ route('login') }}';
-                }
-            });
-        }
-
-        // Function to show voucher login for guest users
-        function showVoucherLogin(description, voucherCode) {
-            Swal.fire({
-                title: 'Login Required',
-                html: `
-            <div class="text-center">
-                <div class="w-full max-w-xs mx-auto rounded-xl mb-4 bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 h-32 flex items-center justify-center relative overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 animate-pulse"></div>
-                    <div class="text-white text-center relative z-10">
-                        <div class="text-4xl font-black drop-shadow-2xl mb-1">
-                            ${voucherCode.match(/(\d+)/) ? voucherCode.match(/(\d+)/)[0] : '50'}%
-                        </div>
-                        <div class="text-white/90 font-semibold text-sm drop-shadow-lg">DISCOUNT</div>
-                    </div>
-                </div>
-                <h3 class="font-bold text-xl mb-2 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">${description}</h3>
-                <p class="text-gray-600 mb-4">Login to get your voucher code and use it for bookings!</p>
-                <div class="bg-gradient-to-r from-gray-50 to-blue-50 p-4 rounded-xl border border-gray-100">
-                    <span class="text-sm text-gray-500">Voucher Code: </span>
-                    <span class="font-mono font-bold blur-sm text-gray-800">${voucherCode}</span>
-                </div>
-            </div>
-        `,
-                showCancelButton: true,
-                confirmButtonText: 'Login Now',
-                cancelButtonText: 'Maybe Later',
-                confirmButtonColor: '#3b82f6',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = '{{ route('login') }}';
-                }
-            });
-        }
-
-        // Voucher popup functions - Accessible for all users
-        function openPopup(description, voucherCode) {
-            const popup = document.getElementById('popup');
-            const popupImage = document.getElementById('popupImage');
-            const popupDescription = document.getElementById('popupDescription');
-            const voucherCodeElement = document.getElementById('voucherCode');
-
-            // Create simple background
-            popupImage.innerHTML = `
-                <div class="w-full h-full bg-gray-900 flex items-center justify-center rounded-lg">
-                    <div class="text-white text-center">
-                        <div class="text-3xl font-bold mb-1">
-                            ${voucherCode.match(/(\d+)/) ? voucherCode.match(/(\d+)/)[0] : '50'}%
-                        </div>
-                        <div class="text-white/90 font-medium text-sm">DISCOUNT</div>
-                    </div>
-                </div>
-            `;
-            popupDescription.textContent = description;
-            voucherCodeElement.textContent = voucherCode;
-            popup.classList.remove('hidden');
-            popup.classList.add('flex');
-        }
-
-        function closePopup() {
-            const popup = document.getElementById('popup');
-            popup.classList.add('hidden');
-            popup.classList.remove('flex');
-        }
-
-        function copyVoucherCode() {
-            const voucherCode = document.getElementById('voucherCode').textContent;
-            navigator.clipboard.writeText(voucherCode).then(() => {
-                Swal.fire({
-                    title: 'Copied!',
-                    text: 'Voucher code copied to clipboard',
-                    icon: 'success',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-            }).catch(err => {
-                // Fallback for older browsers
-                const textArea = document.createElement('textarea');
-                textArea.value = voucherCode;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-
-                Swal.fire({
-                    title: 'Copied!',
-                    text: 'Voucher code copied to clipboard',
-                    icon: 'success',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-            });
-        }
-
-        function imageSlider() {
-            return {
-                currentIndex: 0,
-                totalSlides: {{ $vouchers->count() }},
-                nextSlide() {
-                    this.currentIndex = (this.currentIndex + 1) % Math.max(1, this.totalSlides - 2);
-                },
-                startSlider() {
-                    if (this.totalSlides > 3) {
-                        setInterval(() => this.nextSlide(), 3000);
-                    }
-                },
-                init() {
-                    this.startSlider();
-                }
-            }
-        }
-
-        // Handle voucher section scroll
-        document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const scroll = urlParams.get('scroll');
-            if (scroll === 'voucher') {
-                const voucherSection = document.getElementById('voucher');
-                if (voucherSection) {
-                    voucherSection.scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                }
-            }
-        });
-    </script>
-
-    @include('layouts.footer')
 </x-app-layout>

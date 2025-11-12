@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Voucher;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class VouchersController extends Controller
 {
@@ -25,6 +27,43 @@ class VouchersController extends Controller
 
         return view('fitur.voucher', compact('vouchers'));
     }
+
+    /**
+     * Get public vouchers for API/AJAX requests
+     */
+    public function getPublicVouchers()
+    {
+        $vouchers = Voucher::where(function($query) {
+                $query->whereNull('expired_at')
+                    ->orWhere('expired_at', '>', Carbon::now());
+            })
+            ->where(function($query) {
+                $query->whereNull('usage_limit')
+                    ->orWhere('usage_count', '<', \DB::raw('usage_limit'));
+            })
+            ->where('is_used', false)
+            ->orderBy('expired_at', 'asc')
+            ->get()
+            ->map(function($voucher) {
+                return [
+                    'id' => $voucher->id,
+                    'code' => $voucher->code,
+                    'description' => $voucher->description,
+                    'discount_type' => $voucher->discount_type,
+                    'discount_percentage' => $voucher->discount_percentage,
+                    'discount_amount' => $voucher->discount_amount,
+                    'expired_at' => $voucher->expired_at ? $voucher->expired_at->format('Y-m-d') : null,
+                    'usage_count' => $voucher->usage_count,
+                    'usage_limit' => $voucher->usage_limit,
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'vouchers' => $vouchers
+        ]);
+    }
+
 
     public function apply(Request $request)
     {

@@ -39,7 +39,7 @@ class GymAdminController extends Controller
             'services' => 'required|array|min:3|max:3', // Gym requires exactly 3 services
             'services.*.name' => 'required|string|max:255',
             'services.*.description' => 'required|string',
-            'services.*.price' => 'required|numeric|min:0',
+            'services.*.price' => 'nullable|numeric|min:0',
             'services.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -48,13 +48,13 @@ class GymAdminController extends Controller
             // Handle main image upload
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
-                $imageName = time() . '_gym_' . $image->getClientOriginalName();
-                $imagePath = $image->storeAs('images', $imageName, 'public');
-                $validatedData['image'] = 'images/' . $imageName;
+                $imageName = time() . '_gym_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $image->getClientOriginalName());
+                $image->storeAs('images', $imageName, 'public');
+                $validatedData['image'] = 'storage/images/' . $imageName;
             }
 
             // Set default values
-            $validatedData['is_open'] = $request->has('is_open') ? true : false;
+            $validatedData['is_open'] = $request->input('is_open', '0') == '1' ? true : false;
 
             // Handle services data
             $servicesData = [];
@@ -62,16 +62,20 @@ class GymAdminController extends Controller
                 foreach ($request->services as $index => $service) {
                     $serviceData = [
                         'name' => $service['name'],
-                        'description' => $service['description'],
-                        'price' => $service['price']
+                        'description' => $service['description']
                     ];
+
+                    // Add price if provided
+                    if (isset($service['price']) && $service['price'] !== null && $service['price'] !== '') {
+                        $serviceData['price'] = $service['price'];
+                    }
 
                     // Handle service image upload
                     if ($request->hasFile("services.{$index}.image")) {
                         $serviceImage = $request->file("services.{$index}.image");
-                        $serviceImageName = time() . '_gym_service_' . $index . '_' . $serviceImage->getClientOriginalName();
-                        $serviceImagePath = $serviceImage->storeAs('images/services', $serviceImageName, 'public');
-                        $serviceData['image'] = 'images/services/' . $serviceImageName;
+                        $serviceImageName = time() . '_service_' . $index . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $serviceImage->getClientOriginalName());
+                        $serviceImage->storeAs('images', $serviceImageName, 'public');
+                        $serviceData['image'] = 'storage/images/' . $serviceImageName;
                     }
 
                     $servicesData[] = $serviceData;
@@ -79,7 +83,7 @@ class GymAdminController extends Controller
             }
             $validatedData['services'] = $servicesData;
 
-            $gym = Gym::create($validatedData);
+            Gym::create($validatedData);
 
             DB::commit();
             return redirect()->route('admin.gyms.index')->with('success', 'Gym berhasil ditambahkan!');
@@ -114,7 +118,7 @@ class GymAdminController extends Controller
             'services' => 'required|array|min:3|max:3', // Gym requires exactly 3 services
             'services.*.name' => 'required|string|max:255',
             'services.*.description' => 'required|string',
-            'services.*.price' => 'required|numeric|min:0',
+            'services.*.price' => 'nullable|numeric|min:0', // Make price optional in edit
             'services.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -130,11 +134,11 @@ class GymAdminController extends Controller
                 $image = $request->file('image');
                 $imageName = time() . '_gym_' . $image->getClientOriginalName();
                 $imagePath = $image->storeAs('images', $imageName, 'public');
-                $validatedData['image'] = 'images/' . $imageName;
+                $validatedData['image'] = 'storage/images/' . $imageName;
             }
 
             // Set default values
-            $validatedData['is_open'] = $request->has('is_open') ? true : false;
+            $validatedData['is_open'] = $request->input('is_open', '0') == '1' ? true : false;
 
             // Handle services data
             $servicesData = [];
@@ -142,16 +146,32 @@ class GymAdminController extends Controller
                 foreach ($request->services as $index => $service) {
                     $serviceData = [
                         'name' => $service['name'],
-                        'description' => $service['description'],
-                        'price' => $service['price']
+                        'description' => $service['description']
                     ];
+
+                    // Add price if provided
+                    if (isset($service['price']) && $service['price'] !== null && $service['price'] !== '') {
+                        $serviceData['price'] = $service['price'];
+                    } else {
+                        // Keep existing price if available
+                        $existingServices = $gym->services ?? [];
+                        if (isset($existingServices[$index]['price'])) {
+                            $serviceData['price'] = $existingServices[$index]['price'];
+                        }
+                    }
 
                     // Handle service image upload
                     if ($request->hasFile("services.{$index}.image")) {
+                        // Delete old service image if exists
+                        $existingServices = $gym->services ?? [];
+                        if (isset($existingServices[$index]['image']) && Storage::disk('public')->exists(str_replace('storage/', '', $existingServices[$index]['image']))) {
+                            Storage::disk('public')->delete(str_replace('storage/', '', $existingServices[$index]['image']));
+                        }
+
                         $serviceImage = $request->file("services.{$index}.image");
-                        $serviceImageName = time() . '_gym_service_' . $index . '_' . $serviceImage->getClientOriginalName();
-                        $serviceImagePath = $serviceImage->storeAs('images/services', $serviceImageName, 'public');
-                        $serviceData['image'] = 'images/services/' . $serviceImageName;
+                        $serviceImageName = time() . '_service_' . $index . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $serviceImage->getClientOriginalName());
+                        $serviceImage->storeAs('images', $serviceImageName, 'public');
+                        $serviceData['image'] = 'storage/images/' . $serviceImageName;
                     } else {
                         // Keep existing image if available
                         $existingServices = $gym->services ?? [];
@@ -168,7 +188,7 @@ class GymAdminController extends Controller
             $gym->update($validatedData);
 
             DB::commit();
-            return redirect()->route('admin.gyms.index')->with('success', 'Gym berhasil diperbarui!');
+            return redirect()->route('admin.gyms.show', $gym->id_gym)->with('success', 'Gym berhasil diperbarui!');
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->back()->with('error', 'Gagal memperbarui gym: ' . $e->getMessage())->withInput();

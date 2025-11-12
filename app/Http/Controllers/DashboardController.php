@@ -72,7 +72,7 @@ class DashboardController extends Controller
                     return [
                         'name' => $service['name'] ?? 'Spa Service',
                         'description' => $service['description'] ?? 'Professional spa service',
-                        'image' => isset($service['image']) ? asset('storage/' . $service['image']) : 'image/spa-service.png'
+                        'image' => isset($service['image']) ? asset($service['image']) : 'image/spa-service.png'
                     ];
                 });
             } else {
@@ -89,7 +89,7 @@ class DashboardController extends Controller
                 'id' => $spa->id_spa,
                 'name' => $spa->nama,
                 'location' => $spa->alamat,
-                'image' => $spa->image ? asset('storage/' . $spa->image) : asset('image/spa-default.jpg'),
+                'image' => $spa->image ? asset($spa->image) : asset('image/spa-default.jpg'),
                 'opening_hours' => $this->formatOpeningHours($spa->waktuBuka),
                 'services' => $services,
                 'phone' => $spa->noHP ?? '',
@@ -104,7 +104,7 @@ class DashboardController extends Controller
                 'id' => $yoga->id_yoga,
                 'name' => $yoga->nama,
                 'location' => $yoga->alamat,
-                'image' => $yoga->image ? asset('storage/' . $yoga->image) : asset('image/yoga-default.jpg'),
+                'image' => $yoga->image ? asset($yoga->image) : asset('image/yoga-default.jpg'),
                 'opening_hours' => $this->formatOpeningHours($yoga->waktuBuka),
                 'price' => $yoga->harga ?? 0,
                 'formatted_price' => $this->formatPrice($yoga->harga ?? 0),
@@ -124,7 +124,7 @@ class DashboardController extends Controller
                     return [
                         'name' => $service['name'] ?? 'Gym Service',
                         'description' => $service['description'] ?? 'Professional gym service',
-                        'image' => isset($service['image']) ? asset('storage/' . $service['image']) : 'image/gym-service.png'
+                        'image' => isset($service['image']) ? asset($service['image']) : 'image/gym-service.png'
                     ];
                 });
             } else {
@@ -141,8 +141,8 @@ class DashboardController extends Controller
                 'id' => $gym->id_gym,
                 'name' => $gym->nama,
                 'location' => $gym->alamat,
-                'image' => $gym->image ? asset('storage/' . $gym->image) : asset('image/gym-default.jpg'),
-                'opening_hours' => $this->formatOpeningHours($gym->waktuBuka),
+                'image' => $gym->image ? asset($gym->image) : asset('image/gym-default.jpg'),
+                'opening_hours' => $this->formatOpeningHours($gym->waktuBuka ?? ''),
                 'services' => $services,
                 'is_open' => $gym->is_open ?? true,
                 'open_status' => $gym->is_open ? 'Open' : 'Closed',

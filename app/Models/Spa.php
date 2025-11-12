@@ -80,6 +80,40 @@ class Spa extends Model
     }
 
     /**
+     * Get the testimonials for this spa
+     */
+    public function testimonials()
+    {
+        return $this->hasMany(Testimonial::class, 'testimonial_id', 'id_spa')
+                    ->where('testimonial_type', 'spa');
+    }
+
+    /**
+     * Get approved testimonials only
+     */
+    public function approvedTestimonials()
+    {
+        return $this->testimonials()->where('is_approved', true);
+    }
+
+    /**
+     * Get average rating from approved testimonials
+     */
+    public function getAverageRatingAttribute()
+    {
+        $avg = $this->approvedTestimonials()->avg('rating');
+        return $avg ? round($avg, 1) : 0;
+    }
+
+    /**
+     * Get total count of approved testimonials
+     */
+    public function getTestimonialsCountAttribute()
+    {
+        return $this->approvedTestimonials()->count();
+    }
+
+    /**
      * Get JSON services as attribute (different from relationship)
      */
     public function getJsonServicesAttribute()

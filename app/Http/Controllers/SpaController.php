@@ -193,14 +193,20 @@ class SpaController extends Controller
     {
         try {
             // Load spa with relationships - FIXED: use proper relationship names
-            $spa = Spa::with(['spaDetail', 'services'])->findOrFail($id_spa);
-            
+            $spa = Spa::with(['spaDetail', 'services', 'approvedTestimonials'])->findOrFail($id_spa);
+
             // Ensure maps URL is properly formatted if you have a sanitizer method
             if (method_exists($this, 'sanitizeMapsUrl')) {
                 $spa->maps = $this->sanitizeMapsUrl($spa->maps);
             }
-            
-            return view('fitur.spa-detail', compact('spa'));
+
+            // Load testimonials separately to avoid eager loading issues
+            $testimonials = $spa->approvedTestimonials()
+                ->orderBy('created_at', 'desc')
+                ->limit(10)
+                ->get();
+
+            return view('fitur.spa-detail', compact('spa', 'testimonials'));
         } catch (\Exception $e) {
             // If spa not found, redirect to spa index with error message
             return redirect()->route('spa.index')->with('error', 'Spa not found.');

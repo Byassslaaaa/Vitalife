@@ -150,6 +150,18 @@
                                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
+
+                                <div>
+                                    <label for="services_{{ $i }}_price" class="block text-sm font-medium text-gray-700">Harga (Opsional)</label>
+                                    <input type="number" name="services[{{ $i }}][price]" id="services_{{ $i }}_price"
+                                           value="{{ old('services.'.$i.'.price') }}"
+                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                           placeholder="Contoh: 150000" min="0" step="1000">
+                                    @error('services.'.$i.'.price')
+                                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                    @enderror
+                                    <p class="text-xs text-gray-500 mt-1">Masukkan harga dalam Rupiah (tanpa titik atau koma)</p>
+                                </div>
                             </div>
                         </div>
                     @endfor

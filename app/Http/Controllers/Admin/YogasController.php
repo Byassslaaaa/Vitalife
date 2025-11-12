@@ -109,6 +109,7 @@ class YogasController extends Controller
             'services.*.price' => 'required_with:services|numeric|min:0',
             'services.*.duration' => 'nullable|string',
             'services.*.category' => 'nullable|string',
+            'services.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         DB::beginTransaction();
@@ -134,7 +135,16 @@ class YogasController extends Controller
 
             // Create services if provided
             if (!empty($validatedData['services'])) {
-                foreach ($validatedData['services'] as $serviceData) {
+                foreach ($validatedData['services'] as $index => $serviceData) {
+                    // Handle service image upload
+                    $serviceImagePath = null;
+                    if ($request->hasFile("services.{$index}.image")) {
+                        $serviceImage = $request->file("services.{$index}.image");
+                        $serviceImageName = time() . '_service_' . $index . '.' . $serviceImage->extension();
+                        $serviceImage->move(public_path('images/services'), $serviceImageName);
+                        $serviceImagePath = 'images/services/' . $serviceImageName;
+                    }
+
                     YogaService::create([
                         'yoga_id' => $yoga->id_yoga,
                         'name' => $serviceData['name'],
@@ -142,6 +152,7 @@ class YogasController extends Controller
                         'price' => $serviceData['price'],
                         'duration' => $serviceData['duration'] ?? null,
                         'category' => $serviceData['category'] ?? 'general',
+                        'image' => $serviceImagePath,
                         'is_active' => true,
                     ]);
                 }
