@@ -32,10 +32,64 @@ class SpaAdminController extends Controller
             'noHP' => 'nullable|string|max:20',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_open' => 'boolean',
+            'waktuBuka' => 'nullable|array',
+            'waktuBuka.*' => 'nullable|string',
+            'maps' => 'nullable|string',
+            'services' => 'required|array|min:3|max:3',
+            'services.*.name' => 'required|string|max:255',
+            'services.*.description' => 'required|string',
+            'services.*.price' => 'nullable|numeric|min:0',
+            'services.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        Spa::create($validatedData);
-        return redirect()->route('admin.spas.index')->with('success', 'Spa berhasil ditambahkan!');
+        DB::beginTransaction();
+        try {
+            // Handle main image upload
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = time() . '_spa_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $image->getClientOriginalName());
+                $image->storeAs('images', $imageName, 'public');
+                $validatedData['image'] = 'storage/images/' . $imageName;
+            }
+
+            // Set default values
+            $validatedData['is_open'] = $request->input('is_open', '0') == '1' ? true : false;
+
+            // Handle services data
+            $servicesData = [];
+            if ($request->has('services')) {
+                foreach ($request->services as $index => $service) {
+                    $serviceData = [
+                        'name' => $service['name'],
+                        'description' => $service['description']
+                    ];
+
+                    // Add price if provided
+                    if (isset($service['price']) && $service['price'] !== null && $service['price'] !== '') {
+                        $serviceData['price'] = $service['price'];
+                    }
+
+                    // Handle service image upload
+                    if ($request->hasFile("services.{$index}.image")) {
+                        $serviceImage = $request->file("services.{$index}.image");
+                        $serviceImageName = time() . '_service_' . $index . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $serviceImage->getClientOriginalName());
+                        $serviceImage->storeAs('images', $serviceImageName, 'public');
+                        $serviceData['image'] = 'storage/images/' . $serviceImageName;
+                    }
+
+                    $servicesData[] = $serviceData;
+                }
+            }
+            $validatedData['services'] = $servicesData;
+
+            Spa::create($validatedData);
+
+            DB::commit();
+            return redirect()->route('admin.spas.index')->with('success', 'Spa berhasil ditambahkan!');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with('error', 'Gagal menambahkan spa: ' . $e->getMessage())->withInput();
+        }
     }
 
     public function show($id)
@@ -60,10 +114,87 @@ class SpaAdminController extends Controller
             'noHP' => 'nullable|string|max:20',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_open' => 'boolean',
+            'waktuBuka' => 'nullable|array',
+            'waktuBuka.*' => 'nullable|string',
+            'maps' => 'nullable|string',
+            'services' => 'required|array|min:3|max:3',
+            'services.*.name' => 'required|string|max:255',
+            'services.*.description' => 'required|string',
+            'services.*.price' => 'nullable|numeric|min:0',
+            'services.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $spa->update($validatedData);
-        return redirect()->route('admin.spas.index')->with('success', 'Spa berhasil diperbarui!');
+        DB::beginTransaction();
+        try {
+            // Handle main image upload
+            if ($request->hasFile('image')) {
+                // Delete old image
+                if ($spa->image && \Storage::disk('public')->exists(str_replace('storage/', '', $spa->image))) {
+                    \Storage::disk('public')->delete(str_replace('storage/', '', $spa->image));
+                }
+
+                $image = $request->file('image');
+                $imageName = time() . '_spa_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $image->getClientOriginalName());
+                $image->storeAs('images', $imageName, 'public');
+                $validatedData['image'] = 'storage/images/' . $imageName;
+            }
+
+            // Set default values
+            $validatedData['is_open'] = $request->input('is_open', '0') == '1' ? true : false;
+
+            // Handle services data
+            $servicesData = [];
+            if ($request->has('services')) {
+                foreach ($request->services as $index => $service) {
+                    $serviceData = [
+                        'name' => $service['name'],
+                        'description' => $service['description']
+                    ];
+
+                    // Add price if provided
+                    if (isset($service['price']) && $service['price'] !== null && $service['price'] !== '') {
+                        $serviceData['price'] = $service['price'];
+                    } else {
+                        // Keep existing price if available
+                        $existingServices = $spa->services ?? [];
+                        if (isset($existingServices[$index]['price'])) {
+                            $serviceData['price'] = $existingServices[$index]['price'];
+                        }
+                    }
+
+                    // Handle service image upload
+                    if ($request->hasFile("services.{$index}.image")) {
+                        // Delete old service image if exists
+                        $existingServices = $spa->services ?? [];
+                        if (isset($existingServices[$index]['image']) && \Storage::disk('public')->exists(str_replace('storage/', '', $existingServices[$index]['image']))) {
+                            \Storage::disk('public')->delete(str_replace('storage/', '', $existingServices[$index]['image']));
+                        }
+
+                        $serviceImage = $request->file("services.{$index}.image");
+                        $serviceImageName = time() . '_service_' . $index . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $serviceImage->getClientOriginalName());
+                        $serviceImage->storeAs('images', $serviceImageName, 'public');
+                        $serviceData['image'] = 'storage/images/' . $serviceImageName;
+                    } else {
+                        // Keep existing image if available
+                        $existingServices = $spa->services ?? [];
+                        if (isset($existingServices[$index]['image'])) {
+                            $serviceData['image'] = $existingServices[$index]['image'];
+                        }
+                    }
+
+                    $servicesData[] = $serviceData;
+                }
+            }
+            $validatedData['services'] = $servicesData;
+
+            $spa->update($validatedData);
+
+            DB::commit();
+            return redirect()->route('admin.spas.index')->with('success', 'Spa berhasil diperbarui!');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with('error', 'Gagal memperbarui spa: ' . $e->getMessage())->withInput();
+        }
     }
 
     public function destroy($id)

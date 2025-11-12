@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use App\Models\ChatConversation;
+use App\Models\ChatMessage;
 use App\Models\User;
 use App\Services\ChatService;
 use App\Http\Requests\ChatMessageRequest;
@@ -26,21 +27,39 @@ class ChatController extends Controller
     }
 
     /**
-     * Get or create a conversation for the current user
+     * Get or create a conversation for the current user or guest
      */
     public function getOrCreateConversation(Request $request)
     {
         try {
             $user = Auth::user();
-            if (!$user) {
-                return response()->json(['error' => 'User not authenticated'], 401);
-            }
 
-            $conversation = $this->chatService->getOrCreateConversation($user->id);
+            // Support guest users with session ID
+            if (!$user) {
+                $sessionId = $request->session()->getId();
+
+                // Find or create guest conversation
+                $conversation = ChatConversation::where('session_id', $sessionId)
+                    ->where('is_guest', true)
+                    ->where('status', '!=', 'resolved')
+                    ->first();
+
+                if (!$conversation) {
+                    $conversation = ChatConversation::create([
+                        'session_id' => $sessionId,
+                        'is_guest' => true,
+                        'status' => 'active',
+                        'category' => $request->input('category', 'General Information'),
+                    ]);
+                }
+            } else {
+                $conversation = $this->chatService->getOrCreateConversation($user->id);
+            }
 
             return response()->json([
                 'conversation' => $conversation,
-                'messages' => $conversation->messages()->orderBy('created_at', 'asc')->get()
+                'messages' => $conversation->messages()->orderBy('created_at', 'asc')->get(),
+                'is_guest' => !$user
             ]);
         } catch (\Exception $e) {
             Log::error('Error in getOrCreateConversation: ' . $e->getMessage());
@@ -49,39 +68,104 @@ class ChatController extends Controller
     }
 
     /**
-     * Send a message with smart AI/Admin routing (Shopee-like)
+     * Send a message with smart AI/Admin routing (Shopee-like) - supports guests
      */
-    public function sendMessage(ChatMessageRequest $request)
+    public function sendMessage(Request $request)
     {
         try {
-            $user = Auth::user();
-            if (!$user) {
-                return response()->json(['error' => 'User not authenticated'], 401);
-            }
+            $request->validate([
+                'conversation_id' => 'nullable|exists:chat_conversations,id',
+                'message' => 'required|string|max:1000',
+                'category' => 'nullable|string',
+            ]);
 
+            $user = Auth::user();
             $conversationId = $request->conversation_id;
+
+            // Get or create conversation
             if (!$conversationId) {
-                $conversation = $this->chatService->getOrCreateConversation($user->id);
+                if ($user) {
+                    $conversation = $this->chatService->getOrCreateConversation($user->id);
+                } else {
+                    // Guest user
+                    $sessionId = $request->session()->getId();
+                    $conversation = ChatConversation::where('session_id', $sessionId)
+                        ->where('is_guest', true)
+                        ->where('status', '!=', 'resolved')
+                        ->first();
+
+                    if (!$conversation) {
+                        $conversation = ChatConversation::create([
+                            'session_id' => $sessionId,
+                            'is_guest' => true,
+                            'status' => 'active',
+                            'category' => $request->input('category', 'General Information'),
+                        ]);
+                    }
+                }
             } else {
                 $conversation = ChatConversation::findOrFail($conversationId);
             }
 
-            // Process message using new ChatService with smart routing
-            $result = $this->chatService->processUserMessage(
-                $conversation,
-                $request->message,
-                $user->id
-            );
+            // Update category if provided
+            if ($request->has('category') && $request->category) {
+                $conversation->update(['category' => $request->category]);
+            }
+
+            // Save user message
+            $userMessage = ChatMessage::create([
+                'conversation_id' => $conversation->id,
+                'sender_type' => 'user',
+                'message' => $request->message,
+                'is_read' => false,
+            ]);
+
+            // Update conversation
+            $conversation->update([
+                'unread_by_admin' => ($conversation->unread_by_admin ?? 0) + 1,
+            ]);
+
+            // Check if admin is available
+            $adminActive = $this->isAnyAdminActive();
+
+            if ($adminActive && $conversation->status === 'active') {
+                // Assign to waiting for admin
+                $conversation->update([
+                    'status' => 'waiting_admin',
+                    'waiting_since' => now(),
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'type' => 'forwarded_to_admin',
+                    'message' => $userMessage,
+                    'bot_message' => 'Pesan Anda telah diteruskan ke admin kami. Mohon tunggu sebentar.',
+                    'admin_assigned' => false,
+                    'estimated_wait' => '1-2 menit',
+                ]);
+            }
+
+            // Bot response for common questions
+            $botResponse = $this->generateBotResponse($request->message);
+
+            $botMessage = ChatMessage::create([
+                'conversation_id' => $conversation->id,
+                'sender_type' => 'bot',
+                'message' => $botResponse['message'],
+                'is_read' => false,
+            ]);
+
+            $conversation->update([
+                'unread_by_user' => ($conversation->unread_by_user ?? 0) + 1,
+            ]);
 
             return response()->json([
                 'success' => true,
-                'type' => $result['type'],
-                'message' => $result['message'],
-                'quick_replies' => $result['quick_replies'] ?? [],
-                'suggest_admin' => $result['suggest_admin'] ?? false,
-                'confidence' => $result['confidence'] ?? null,
-                'admin_assigned' => $result['admin_assigned'] ?? false,
-                'estimated_wait' => $result['estimated_wait'] ?? null,
+                'type' => 'bot',
+                'message' => $userMessage,
+                'bot_message' => $botResponse['message'],
+                'quick_replies' => $botResponse['quick_replies'] ?? [],
+                'suggest_admin' => !$adminActive,
             ]);
 
         } catch (\Exception $e) {
@@ -90,6 +174,76 @@ class ChatController extends Controller
             ]);
             return response()->json(['error' => 'Failed to send message: ' . $e->getMessage()], 500);
         }
+    }
+
+    /**
+     * Generate bot response for common questions
+     */
+    private function generateBotResponse($message)
+    {
+        $lowerMessage = strtolower($message);
+
+        // Spa related
+        if (str_contains($lowerMessage, 'spa') || str_contains($lowerMessage, 'pijat') || str_contains($lowerMessage, 'massage')) {
+            return [
+                'message' => 'Kami menyediakan berbagai layanan spa dan massage. Anda dapat melihat daftar lengkap spa center kami dengan rating dan harga di halaman Spa. Apakah ada yang ingin Anda tanyakan lebih lanjut?',
+                'quick_replies' => ['Lihat Daftar Spa', 'Cara Booking Spa', 'Harga Treatment'],
+            ];
+        }
+
+        // Yoga related
+        if (str_contains($lowerMessage, 'yoga') || str_contains($lowerMessage, 'meditasi')) {
+            return [
+                'message' => 'Kami memiliki berbagai studio yoga untuk semua level, dari pemula hingga advanced. Kelas tersedia dengan instruktur bersertifikat. Apakah Anda ingin mengetahui jadwal kelas?',
+                'quick_replies' => ['Lihat Studio Yoga', 'Jadwal Kelas', 'Harga Membership'],
+            ];
+        }
+
+        // Gym related
+        if (str_contains($lowerMessage, 'gym') || str_contains($lowerMessage, 'fitness') || str_contains($lowerMessage, 'olahraga')) {
+            return [
+                'message' => 'Fasilitas gym kami dilengkapi dengan peralatan modern dan personal trainer profesional. Kami menawarkan berbagai paket membership. Apa yang ingin Anda ketahui?',
+                'quick_replies' => ['Lihat Gym Facilities', 'Paket Membership', 'Personal Trainer'],
+            ];
+        }
+
+        // Booking related
+        if (str_contains($lowerMessage, 'booking') || str_contains($lowerMessage, 'pesan') || str_contains($lowerMessage, 'reservasi')) {
+            return [
+                'message' => 'Untuk melakukan booking, silakan pilih layanan yang Anda inginkan (Spa/Yoga/Gym), lalu klik tombol "Book Now". Anda perlu login terlebih dahulu untuk menyelesaikan pemesanan.',
+                'quick_replies' => ['Cara Login', 'Syarat Booking', 'Pembatalan'],
+            ];
+        }
+
+        // Price related
+        if (str_contains($lowerMessage, 'harga') || str_contains($lowerMessage, 'biaya') || str_contains($lowerMessage, 'tarif')) {
+            return [
+                'message' => 'Harga bervariasi tergantung lokasi dan jenis layanan. Semua harga tertera jelas di halaman detail masing-masing venue. Kami juga sering memberikan voucher diskon!',
+                'quick_replies' => ['Lihat Voucher', 'Harga Spa', 'Harga Yoga', 'Harga Gym'],
+            ];
+        }
+
+        // Location related
+        if (str_contains($lowerMessage, 'lokasi') || str_contains($lowerMessage, 'alamat') || str_contains($lowerMessage, 'dimana')) {
+            return [
+                'message' => 'Kami memiliki banyak lokasi di berbagai kota. Setiap venue menampilkan alamat lengkap dan peta. Anda bisa menggunakan fitur pencarian untuk menemukan yang terdekat dengan Anda.',
+                'quick_replies' => ['Cari Lokasi Terdekat', 'Lihat Semua Lokasi'],
+            ];
+        }
+
+        // Operating hours
+        if (str_contains($lowerMessage, 'jam') || str_contains($lowerMessage, 'buka') || str_contains($lowerMessage, 'tutup')) {
+            return [
+                'message' => 'Jam operasional berbeda untuk setiap venue. Anda dapat melihat jam buka dan tutup di halaman detail masing-masing tempat. Umumnya buka pukul 08:00 - 21:00.',
+                'quick_replies' => ['Lihat Jam Operasional'],
+            ];
+        }
+
+        // Default response
+        return [
+            'message' => 'Terima kasih atas pertanyaan Anda! Saya adalah bot asisten HeaLife. Saat ini tidak ada admin yang tersedia. Anda bisa menunggu admin online atau saya akan coba membantu menjawab pertanyaan umum Anda.',
+            'quick_replies' => ['Info Spa', 'Info Yoga', 'Info Gym', 'Cara Booking', 'Lihat Voucher'],
+        ];
     }
 
     /**
@@ -145,7 +299,45 @@ class ChatController extends Controller
     }
 
     /**
-     * Admin get conversations with enhanced info
+     * Poll for new messages (for both user and guest)
+     */
+    public function pollMessages(Request $request, $conversationId)
+    {
+        try {
+            $conversation = ChatConversation::findOrFail($conversationId);
+
+            // Get messages after last_message_id if provided
+            $lastMessageId = $request->input('last_message_id', 0);
+
+            $newMessages = $conversation->messages()
+                ->where('id', '>', $lastMessageId)
+                ->orderBy('created_at', 'asc')
+                ->get();
+
+            // Mark admin messages as read by user
+            if ($newMessages->count() > 0) {
+                $conversation->messages()
+                    ->where('sender_type', 'admin')
+                    ->where('is_read', false)
+                    ->where('id', '>', $lastMessageId)
+                    ->update(['is_read' => true, 'read_at' => now()]);
+
+                $conversation->update(['unread_by_user' => 0]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'messages' => $newMessages,
+                'has_new' => $newMessages->count() > 0,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error in pollMessages: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to poll messages'], 500);
+        }
+    }
+
+    /**
+     * Admin get conversations with enhanced info (includes guests)
      */
     public function adminGetConversations()
     {
@@ -161,8 +353,27 @@ class ChatController extends Controller
                 ->orderBy('updated_at', 'desc')
                 ->get()
                 ->map(function ($conversation) {
+                    // Determine display name
+                    $displayName = 'Guest User';
+                    $displayEmail = null;
+
+                    if ($conversation->is_guest) {
+                        if ($conversation->guest_name) {
+                            $displayName = $conversation->guest_name;
+                        }
+                        if ($conversation->guest_email) {
+                            $displayEmail = $conversation->guest_email;
+                        }
+                    } else if ($conversation->user) {
+                        $displayName = $conversation->user->name;
+                        $displayEmail = $conversation->user->email;
+                    }
+
                     return [
                         'id' => $conversation->id,
+                        'is_guest' => $conversation->is_guest,
+                        'display_name' => $displayName,
+                        'display_email' => $displayEmail,
                         'user' => $conversation->user,
                         'admin' => $conversation->admin,
                         'status' => $conversation->status,

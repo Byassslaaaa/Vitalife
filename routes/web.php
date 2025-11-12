@@ -20,6 +20,8 @@ use App\Http\Controllers\WeatherController;
 use App\Http\Controllers\AdminProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\VoucherController;
+use App\Http\Controllers\Admin\TestimonialController as AdminTestimonialController;
+use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\VouchersController;
@@ -29,6 +31,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\Admin\YogaDetailController;
 use App\Http\Controllers\Admin\YogaServiceController;
 use App\Http\Controllers\Admin\GymServiceController;
+use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -86,7 +89,17 @@ Route::prefix('api')->group(function () {
     Route::get('/yoga/{yogaId}/services', [BookingController::class, 'getYogaServices'])->name('yoga.services');
     Route::get('/vouchers/public', [VouchersController::class, 'getPublicVouchers'])->name('vouchers.public');
     Route::get('/weather', [WeatherController::class, 'getWeather'])->name('weather.api');
+
+    // Testimonial API endpoints
+    Route::get('/testimonials', [TestimonialController::class, 'getTestimonials'])->name('testimonials.get');
+    Route::get('/testimonials/services', [TestimonialController::class, 'getServices'])->name('testimonials.services');
+
+    // Global Search API endpoint
+    Route::get('/search', [SearchController::class, 'search'])->name('search.global');
 });
+
+// Public Testimonial Routes
+Route::post('/testimonials', [TestimonialController::class, 'store'])->name('testimonials.store');
 
 // Social Login Routes
 Route::get('auth/{provider}', [SocialAuthController::class, 'redirectToProvider'])
@@ -96,6 +109,17 @@ Route::get('auth/{provider}/callback', [SocialAuthController::class, 'handleProv
 
 // Language change
 Route::post('/change-language', [LanguageController::class, 'changeLanguage']);
+
+// ============================================================================
+// CHAT ROUTES (GUEST & AUTHENTICATED) - Must be outside auth middleware
+// ============================================================================
+Route::get('/chat', function () {
+    return view('fitur.chat');
+})->name('chat');
+Route::get('/chat/conversation', [ChatController::class, 'getOrCreateConversation']);
+Route::post('/chat/send', [ChatController::class, 'sendMessage']);
+Route::get('/chat/check-admin-status', [ChatController::class, 'checkAdminActivityStatus']);
+Route::get('/chat/poll/{conversationId}', [ChatController::class, 'pollMessages'])->name('chat.poll');
 
 // ============================================================================
 // AUTHENTICATED USER ROUTES
@@ -147,11 +171,6 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/profile/email', [ProfileController::class, 'updateEmail'])->name('profile.update.email');
     Route::post('/profile/image', [ProfileController::class, 'updateImage'])->name('profile.update.image');
 
-    // Chat routes for users
-    Route::get('/chat/conversation', [ChatController::class, 'getOrCreateConversation']);
-    Route::post('/chat/send', [ChatController::class, 'sendMessage']);
-    Route::get('/chat/check-admin-status', [ChatController::class, 'checkAdminActivityStatus']);
-
     // Payment routes
     Route::post('/api/save-payment', [PaymentController::class, 'savePayment']);
     Route::post('/midtrans/callback', [BookingController::class, 'handleMidtransCallback']);
@@ -161,9 +180,7 @@ Route::middleware(['auth'])->group(function () {
         return view('universal-booking');
     })->name('universal.booking.form');
 
-    // Voucher Routes (REQUIRES AUTH for claiming)
-    Route::post('/voucher/claim', [VouchersController::class, 'claim'])->name('voucher.claim');
-    Route::get('/voucher/my-vouchers', [VouchersController::class, 'myVouchers'])->name('voucher.my');
+    // Voucher Apply Route (REQUIRES AUTH)
     Route::post('/voucher/apply', [VouchersController::class, 'apply'])->name('voucher.apply');
 
     // Universal Booking API
@@ -189,13 +206,30 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::resource('vouchers', VoucherController::class);
     Route::post('/apply-voucher', [VoucherController::class, 'apply'])->name('apply.voucher');
 
-    // Account management
+    // Testimonial management
+    Route::resource('testimonials', AdminTestimonialController::class);
+    Route::post('/testimonials/{testimonial}/approve', [AdminTestimonialController::class, 'approve'])->name('testimonials.approve');
+    Route::post('/testimonials/{testimonial}/reject', [AdminTestimonialController::class, 'reject'])->name('testimonials.reject');
+
+    // Account management (Users)
     Route::get('/account/create', [AdminController::class, 'create'])->name('account.create');
     Route::post('/account', [AdminController::class, 'store'])->name('account.store');
     Route::get('/account/{user}/edit', [AdminController::class, 'edit'])->name('account.edit');
     Route::put('/account/{user}', [AdminController::class, 'update'])->name('account.update');
     Route::delete('/account/{user}', [AdminController::class, 'destroy'])->name('account.destroy');
     Route::get('/accountuser', [AccountUserController::class, 'index'])->name('accountuser');
+
+    // Admin Management (Kelola Admin)
+    Route::prefix('admins')->name('admins.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\AdminManagementController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\AdminManagementController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\AdminManagementController::class, 'store'])->name('store');
+        Route::get('/{admin}', [\App\Http\Controllers\AdminManagementController::class, 'show'])->name('show');
+        Route::get('/{admin}/edit', [\App\Http\Controllers\AdminManagementController::class, 'edit'])->name('edit');
+        Route::put('/{admin}', [\App\Http\Controllers\AdminManagementController::class, 'update'])->name('update');
+        Route::delete('/{admin}', [\App\Http\Controllers\AdminManagementController::class, 'destroy'])->name('destroy');
+        Route::patch('/{admin}/toggle-status', [\App\Http\Controllers\AdminManagementController::class, 'toggleStatus'])->name('toggle-status');
+    });
 
     // Payment management
     Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');

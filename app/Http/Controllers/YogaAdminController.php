@@ -34,12 +34,17 @@ class YogaAdminController extends Controller
             'nama' => 'required|string|max:255',
             'alamat' => 'required|string',
             'noHP' => 'nullable|string|max:20',
+            'harga' => 'nullable|numeric|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_open' => 'boolean',
-            'services' => 'required|array|min:3|max:3', // Yoga requires exactly 3 services
+            'waktuBuka' => 'nullable|array',
+            'waktuBuka.*' => 'nullable|string',
+            'maps' => 'nullable|string',
+            'class_type' => 'nullable|string',
+            'services' => 'required|array|min:3|max:3',
             'services.*.name' => 'required|string|max:255',
             'services.*.description' => 'required|string',
-            'services.*.price' => 'required|numeric|min:0',
+            'services.*.price' => 'nullable|numeric|min:0',
             'services.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -48,13 +53,13 @@ class YogaAdminController extends Controller
             // Handle main image upload
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
-                $imageName = time() . '_yoga_' . $image->getClientOriginalName();
-                $imagePath = $image->storeAs('images', $imageName, 'public');
-                $validatedData['image'] = 'images/' . $imageName;
+                $imageName = time() . '_yoga_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $image->getClientOriginalName());
+                $image->storeAs('images', $imageName, 'public');
+                $validatedData['image'] = 'storage/images/' . $imageName;
             }
 
             // Set default values
-            $validatedData['is_open'] = $request->has('is_open') ? true : false;
+            $validatedData['is_open'] = $request->input('is_open', '0') == '1' ? true : false;
 
             // Handle services data
             $servicesData = [];
@@ -62,16 +67,20 @@ class YogaAdminController extends Controller
                 foreach ($request->services as $index => $service) {
                     $serviceData = [
                         'name' => $service['name'],
-                        'description' => $service['description'],
-                        'price' => $service['price']
+                        'description' => $service['description']
                     ];
+
+                    // Add price if provided
+                    if (isset($service['price']) && $service['price'] !== null && $service['price'] !== '') {
+                        $serviceData['price'] = $service['price'];
+                    }
 
                     // Handle service image upload
                     if ($request->hasFile("services.{$index}.image")) {
                         $serviceImage = $request->file("services.{$index}.image");
-                        $serviceImageName = time() . '_yoga_service_' . $index . '_' . $serviceImage->getClientOriginalName();
-                        $serviceImagePath = $serviceImage->storeAs('images/services', $serviceImageName, 'public');
-                        $serviceData['image'] = 'images/services/' . $serviceImageName;
+                        $serviceImageName = time() . '_service_' . $index . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $serviceImage->getClientOriginalName());
+                        $serviceImage->storeAs('images', $serviceImageName, 'public');
+                        $serviceData['image'] = 'storage/images/' . $serviceImageName;
                     }
 
                     $servicesData[] = $serviceData;
@@ -79,7 +88,7 @@ class YogaAdminController extends Controller
             }
             $validatedData['services'] = $servicesData;
 
-            $yoga = Yoga::create($validatedData);
+            Yoga::create($validatedData);
 
             DB::commit();
             return redirect()->route('admin.yogas.index')->with('success', 'Yoga berhasil ditambahkan!');
@@ -109,12 +118,17 @@ class YogaAdminController extends Controller
             'nama' => 'required|string|max:255',
             'alamat' => 'required|string',
             'noHP' => 'nullable|string|max:20',
+            'harga' => 'nullable|numeric|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_open' => 'boolean',
-            'services' => 'required|array|min:3|max:3', // Yoga requires exactly 3 services
-            'services.*.name' => 'required|string|max:255',
-            'services.*.description' => 'required|string',
-            'services.*.price' => 'required|numeric|min:0',
+            'waktuBuka' => 'nullable|array',
+            'waktuBuka.*' => 'nullable|string',
+            'maps' => 'nullable|string',
+            'class_type' => 'nullable|string',
+            'services' => 'nullable|array|max:3',
+            'services.*.name' => 'required_with:services|string|max:255',
+            'services.*.description' => 'required_with:services|string',
+            'services.*.price' => 'nullable|numeric|min:0',
             'services.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -123,35 +137,51 @@ class YogaAdminController extends Controller
             // Handle main image upload
             if ($request->hasFile('image')) {
                 // Delete old image
-                if ($yoga->image && Storage::disk('public')->exists($yoga->image)) {
-                    Storage::disk('public')->delete($yoga->image);
+                if ($yoga->image && Storage::disk('public')->exists(str_replace('storage/', '', $yoga->image))) {
+                    Storage::disk('public')->delete(str_replace('storage/', '', $yoga->image));
                 }
 
                 $image = $request->file('image');
-                $imageName = time() . '_yoga_' . $image->getClientOriginalName();
-                $imagePath = $image->storeAs('images', $imageName, 'public');
-                $validatedData['image'] = 'images/' . $imageName;
+                $imageName = time() . '_yoga_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $image->getClientOriginalName());
+                $image->storeAs('images', $imageName, 'public');
+                $validatedData['image'] = 'storage/images/' . $imageName;
             }
 
             // Set default values
-            $validatedData['is_open'] = $request->has('is_open') ? true : false;
+            $validatedData['is_open'] = $request->input('is_open', '0') == '1' ? true : false;
 
-            // Handle services data
-            $servicesData = [];
-            if ($request->has('services')) {
+            // Handle services data if provided
+            if ($request->has('services') && is_array($request->services)) {
+                $servicesData = [];
                 foreach ($request->services as $index => $service) {
                     $serviceData = [
                         'name' => $service['name'],
-                        'description' => $service['description'],
-                        'price' => $service['price']
+                        'description' => $service['description']
                     ];
+
+                    // Add price if provided
+                    if (isset($service['price']) && $service['price'] !== null && $service['price'] !== '') {
+                        $serviceData['price'] = $service['price'];
+                    } else {
+                        // Keep existing price if available
+                        $existingServices = $yoga->services ?? [];
+                        if (isset($existingServices[$index]['price'])) {
+                            $serviceData['price'] = $existingServices[$index]['price'];
+                        }
+                    }
 
                     // Handle service image upload
                     if ($request->hasFile("services.{$index}.image")) {
+                        // Delete old service image if exists
+                        $existingServices = $yoga->services ?? [];
+                        if (isset($existingServices[$index]['image']) && Storage::disk('public')->exists(str_replace('storage/', '', $existingServices[$index]['image']))) {
+                            Storage::disk('public')->delete(str_replace('storage/', '', $existingServices[$index]['image']));
+                        }
+
                         $serviceImage = $request->file("services.{$index}.image");
-                        $serviceImageName = time() . '_yoga_service_' . $index . '_' . $serviceImage->getClientOriginalName();
-                        $serviceImagePath = $serviceImage->storeAs('images/services', $serviceImageName, 'public');
-                        $serviceData['image'] = 'images/services/' . $serviceImageName;
+                        $serviceImageName = time() . '_service_' . $index . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $serviceImage->getClientOriginalName());
+                        $serviceImage->storeAs('images', $serviceImageName, 'public');
+                        $serviceData['image'] = 'storage/images/' . $serviceImageName;
                     } else {
                         // Keep existing image if available
                         $existingServices = $yoga->services ?? [];
@@ -162,8 +192,8 @@ class YogaAdminController extends Controller
 
                     $servicesData[] = $serviceData;
                 }
+                $validatedData['services'] = $servicesData;
             }
-            $validatedData['services'] = $servicesData;
 
             $yoga->update($validatedData);
 

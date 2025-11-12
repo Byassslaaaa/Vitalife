@@ -226,13 +226,19 @@ class YogaController extends Controller
      */
     public function detail($id_yoga)
     {
-        $yoga = Yoga::with(['yogaServices', 'detailConfig'])->findOrFail($id_yoga);
+        $yoga = Yoga::with(['yogaServices', 'detailConfig', 'approvedTestimonials'])->findOrFail($id_yoga);
 
         // Ensure maps URL is properly formatted
         if (method_exists($this, 'sanitizeMapsUrl')) {
             $yoga->maps = $this->sanitizeMapsUrl($yoga->maps);
         }
 
-        return view('fitur.yoga-detail', compact('yoga'));
+        // Load testimonials separately
+        $testimonials = $yoga->approvedTestimonials()
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get();
+
+        return view('fitur.yoga-detail', compact('yoga', 'testimonials'));
     }
 }

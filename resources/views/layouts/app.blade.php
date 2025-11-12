@@ -11,13 +11,8 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <!-- ScrollReveal Library -->
-    <script src="https://unpkg.com/scrollreveal@4.0.9/dist/scrollreveal.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
@@ -44,6 +39,32 @@
             overflow-y: auto;
             height: 100vh;
         }
+
+        /* Fix dropdown z-index and visibility */
+        [x-cloak] {
+            display: none !important;
+        }
+
+        /* Ensure dropdowns appear above other content */
+        nav .relative {
+            position: relative;
+            z-index: 10;
+        }
+
+        nav .absolute {
+            z-index: 9999 !important;
+        }
+
+        /* Prevent click issues */
+        a, button, [role="button"] {
+            pointer-events: auto !important;
+            cursor: pointer !important;
+        }
+
+        /* Ensure links are clickable */
+        a:not([disabled]) {
+            -webkit-tap-highlight-color: transparent;
+        }
     </style>
     <script>
         // Global authentication status for JavaScript
@@ -52,44 +73,23 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased overflow-container">
-    <div class="min-h-screen">
+<body class="font-sans antialiased overflow-container bg-white">
+    <div class="min-h-screen bg-white">
         @include('layouts.navigation')
 
         <!-- Page Content -->
-        <main class="bg-blue-100">
+        <main class="bg-white pt-20">
             {{ $slot }}
         </main>
+
+        <!-- Footer -->
+        @include('layouts.footer')
+
+        <!-- Chatbot Widget - Global -->
+        <x-chatbot-widget />
     </div>
 
-    <!-- ScrollReveal Initialization -->
     <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            ScrollReveal().reveal('.reveal', {
-                delay: 200,
-                distance: '50px',
-                duration: 1000,
-                easing: 'cubic-bezier(0.5, 0, 0, 1)',
-                interval: 0,
-                opacity: 0,
-                origin: 'bottom',
-                scale: 1,
-                cleanup: false,
-                container: document.documentElement,
-                desktop: true,
-                mobile: true,
-                reset: false,
-                useDelay: 'always',
-                viewFactor: 0.0,
-                viewOffset: {
-                    top: 0,
-                    right: 0,
-                    bottom: 0,
-                    left: 0,
-                }
-            });
-        });
-
         document.addEventListener('DOMContentLoaded', () => {
             const counters = [{
                     id: 'counter1',

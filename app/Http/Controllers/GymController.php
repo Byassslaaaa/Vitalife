@@ -145,8 +145,14 @@ class GymController extends Controller
      */
     public function detail($id_gym)
     {
-        $gym = Gym::findOrFail($id_gym);
-        
-        return view('fitur.gym-detail', compact('gym'));
+        $gym = Gym::with(['approvedTestimonials'])->findOrFail($id_gym);
+
+        // Load testimonials separately
+        $testimonials = $gym->approvedTestimonials()
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get();
+
+        return view('fitur.gym-detail', compact('gym', 'testimonials'));
     }
 }

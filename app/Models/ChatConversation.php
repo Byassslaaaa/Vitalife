@@ -13,10 +13,13 @@ class ChatConversation extends Model
 
     protected $fillable = [
         'user_id',
+        'session_id',
+        'is_guest',
+        'guest_name',
+        'guest_email',
         'admin_id',
         'status',
         'category',
-        'last_message_at',
         'assigned_at',
         'waiting_since',
         'transferred_from',
@@ -31,7 +34,6 @@ class ChatConversation extends Model
     ];
 
     protected $casts = [
-        'last_message_at' => 'datetime',
         'assigned_at' => 'datetime',
         'waiting_since' => 'datetime',
         'transferred_at' => 'datetime',
