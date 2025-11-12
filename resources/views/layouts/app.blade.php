@@ -68,13 +68,7 @@
     </style>
     <script>
         // Global authentication status for JavaScript
-        // This is rendered server-side on EVERY page load - NOT cached
-        // So it will always reflect the current authentication state
         window.userAuthenticated = {{ auth()->check() ? 'true' : 'false' }};
-
-        // Debug log to verify authentication status on page load
-        console.log('[AUTH STATUS] User authenticated:', window.userAuthenticated);
-        console.log('[AUTH STATUS] Page loaded at:', new Date().toISOString());
     </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>

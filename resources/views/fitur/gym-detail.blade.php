@@ -2,11 +2,6 @@
     <!-- Add CSRF token meta tag -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- Prevent browser caching to ensure fresh authentication state -->
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-
     <style>
         .gym-gradient {
             background: linear-gradient(135deg, #ecfeff 0%, #cffafe 50%, #a5f3fc 100%);
